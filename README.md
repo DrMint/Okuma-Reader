@@ -44,3 +44,19 @@ A few rules and constraints:
 - The pages of a chapter must be numbered from 1 to n
 - If possible, all pages should have the same size (or at least the same ratio)
 - A image should correspond to one page, images that have been combined as a double-page should be split
+
+## Config files
+A config file must be provided for each book. Here's an example:
+
+```
+{
+  "numPages": [38, 24, 40, 30],
+  "fileExtension": ".jpg",
+  "japaneseOrder": true,
+  "fistPageSingle": true,
+  "preferDoublePage": true,
+  "allowDoublePage": true
+}
+```
+
+numPages is the number of pages for each chapter. In this example, this book has 4 chapters
