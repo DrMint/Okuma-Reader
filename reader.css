@@ -1,0 +1,143 @@
+body {
+  padding: 0;
+  margin: 0;
+  --image-nav-width: 30%; /* Must be between 0% and 50% */
+  --footer-height: 8vh;
+  background: grey;
+  overflow-x: hidden;
+  height: calc(100vh + var(--footer-height));
+}
+
+
+@media only screen and (max-width: 70vh) {
+  body {
+    height: 100vh !important;
+  }
+
+  #navImage > #imgPageLeft {
+    height: calc(100vh - var(--footer-height)) !important;
+  }
+
+  #navImage > #imgPageRight {
+    height: calc(100vh - var(--footer-height)) !important;
+  }
+
+  #navImage.doublePage > #imgPageLeft {
+    width: 50vw;
+    background-position: right !important;
+  }
+
+  #navImage.doublePage > #imgPageRight {
+    display: inherit;
+    width: 50vw;
+    background-position: left !important;
+  }
+
+  #navMenu p, #navMenu select, #navMenu {
+    font-size: 2.1vw;
+  }
+
+  #navMenu #pageSlider {
+    width: 20vw;
+  }
+
+  #navMenu {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+}
+
+#navImage {
+  display: grid;
+  grid-auto-flow: column;
+}
+
+#navImage > #imgPageLeft, #navImage > #imgPageRight {
+  height: 100vh;
+  width: 100vw;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+#imgPageRight {
+  height: 100vh;
+  width: 100vw;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+#navImage.doublePage > #imgPageLeft {
+  width: 50vw;
+  background-position: right;
+}
+
+#navImage.doublePage > #imgPageRight {
+  display: inherit;
+  width: 50vw;
+  background-position: left;
+}
+
+#container {
+  display: grid;
+  place-content: start center;
+  height: 100vh;
+}
+
+#navImage {
+  height: 100%;
+  width: min-content;
+  position: relative;
+}
+
+#leftPageButton, #rightPageButton {
+  position: absolute;
+  top: 0;
+  /*background: red;*/
+  height: 100%;
+  width: var(--image-nav-width);
+  cursor: pointer;
+}
+
+#leftPageButton {
+  left: 0;
+}
+
+#rightPageButton {
+  right: 0;
+}
+
+#navMenu {
+  display: grid;
+  grid-auto-flow: column;
+  place-content: center;
+  place-items: center;
+}
+
+#navMenu > div {
+  background: white;
+  color: black;
+  text-align: center;
+  width: max-content;
+  cursor: pointer;
+  height: var(--footer-height);
+  padding: 0.5em 1em 0.5em 1em;
+  display: grid;
+  grid-auto-flow: column;
+  place-items: center;
+  border: solid 1px grey;
+}
+
+#navMenu > #sliderContainer > #pageSliderLeft,
+#navMenu > #sliderContainer > #pageSliderRight {
+  width: 4em;
+  text-align: center
+}
+
+#navMenu .enabled {
+  filter: invert();
+}
