@@ -1,11 +1,13 @@
 # Reader-JS
 Online book reader written in JS with some key features like Japanese page order, double-page view and pre-caching on next pages.
+The design is entirely cilent-side, the server simply host the images.
 
 ## Features
 
 - Page turn with arrow keys or by clicking on the edge of a page
 - Support for books with multiple chapters
 - Support for Japanese page ordering.
+- Support for various screen ratio
 - Next/previous chapter buttons and chapter selection drop-down menu.
 - Asynchronous pre-caching of the next pages (or next chapter first pages when at the end of a chapter)
 - Single and double-page display with the ability to display the cover page as a single page.
@@ -60,3 +62,15 @@ A config file must be provided for each book. Here's an example:
 ```
 
 numPages is the number of pages for each chapter. In this example, this book has 4 chapters
+
+## Things I want to add/change/improve
+- Better support for vertical screen and more polished interface
+- Give the user the ability to change things like the background color, blue-light filter
+- Being able to save the current page in a book, to easily resume next time a user wants to read
+- Not having to write the number of pages in the config.json
+- More plexibility per chapter
+- Ability to give a name to each chapter
+- In double-page mode, when a chapter cut in between two pages (one chapter ends on the left and another starts on the right), show both pages even though they are from two different chapters.
+- Page turning animation?!
+- A main page to showcase all available books
+- A Download page/chapter/book buttons? That would also open-up the idea of making it an offline Progressive Web App
