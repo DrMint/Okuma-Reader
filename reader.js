@@ -79,36 +79,43 @@ function getImage(url) {
 function changePage(newTitle, newChapter, newPage) {
 
   /* Sanitize the parameters before actually changing the actual values */
-  {
-    if (newChapter < 1) newChapter = 1;
+  if (newChapter < 1) newChapter = 1;
 
-    if (newChapter > getNumChapters()) newChapter = getNumChapters();
+  if (newChapter > getNumChapters()) newChapter = getNumChapters();
 
-    if (newPage < 1) {
-      // Go the previous chapter last page if tring to go previous page on the
-      // first page on current chapter.
-      if (newChapter > 1) {
-        newChapter--;
-        newPage = getChapterNumPage(newChapter);
-      } else {
-         newPage = 1;
-      }
-
-    } else if (newPage > getChapterNumPage()) {
-      // Go the next chapter first page if tring to go next page on the
-      // last page on previous chapter.
-      if (newChapter < getNumChapters()) {
-        newChapter++;
-        newPage = 1;
-      } else {
-         newPage = getChapterNumPage();
-      }
+  if (newPage < 1) {
+    // Go the previous chapter last page if tring to go previous page on the
+    // first page on current chapter.
+    if (newChapter > 1) {
+      newChapter--;
+      newPage = getChapterNumPage(newChapter);
+    } else {
+       newPage = 1;
     }
 
-    TITLE = newTitle;
-    CHAPTER = newChapter
-    PAGE = newPage;
+  } else if (newPage > getChapterNumPage()) {
+    // Go the next chapter first page if tring to go next page on the
+    // last page on previous chapter.
+    if (newChapter < getNumChapters()) {
+      newChapter++;
+      newPage = 1;
+    } else {
+       newPage = getChapterNumPage();
+    }
   }
+
+  hasAnythingChanged = newTitle != TITLE || newChapter != CHAPTER || newPage != PAGE;
+
+  TITLE = newTitle;
+  CHAPTER = newChapter
+  PAGE = newPage;
+
+  if (hasAnythingChanged) refreshDipslayPages();
+
+}
+
+
+function refreshDipslayPages() {
 
   // To use double page, the user should have asked for double page
   doublePage = useDoublePage
@@ -134,24 +141,27 @@ function changePage(newTitle, newChapter, newPage) {
   /*  Replace the current URL without reloading the page.
       Furthermore, if the use use to go back button, it will not go to the
       previous image but the actual previous page */
-  if (window.history.replaceState) {
-    //prevents browser from storing history with each change:
-    let newURL = READER_URL + '?title=' + TITLE + '&chapter=' + CHAPTER + '&page=' + PAGE;
-    window.history.replaceState(null, '', newURL);
+  {
+    if (window.history.replaceState) {
+      //prevents browser from storing history with each change:
+      let newURL = READER_URL + '?title=' + TITLE + '&chapter=' + CHAPTER + '&page=' + PAGE;
+      window.history.replaceState(null, '', newURL);
+    }
   }
+
 
   /* Load the current page*/
-  getImage(infoToImageURL(TITLE, CHAPTER, PAGE)).then(function(successUrl) {
-    imgPageLeft.style.backgroundImage = "url(" + infoToImageURL(TITLE, CHAPTER, PAGE) + ")";
-    imgFinishedLoading();
-  });
-
-  if (doublePage) {
-    getImage(infoToImageURL(TITLE, CHAPTER, PAGE + 1)).then(function(successUrl) {
-      imgPageRight.style.backgroundImage = "url(" + infoToImageURL(TITLE, CHAPTER, PAGE + 1) + ")";
+  {
+    getImage(infoToImageURL(TITLE, CHAPTER, PAGE)).then(function(successUrl) {
+      imgPageLeft.src = infoToImageURL(TITLE, CHAPTER, PAGE);
     });
-  }
 
+    if (doublePage) {
+      getImage(infoToImageURL(TITLE, CHAPTER, PAGE + 1)).then(function(successUrl) {
+        imgPageRight.src = infoToImageURL(TITLE, CHAPTER, PAGE + 1);
+      });
+    }
+  }
 
   /* Refresh the slider bar */
   {
@@ -197,6 +207,7 @@ function changePage(newTitle, newChapter, newPage) {
 
 }
 
+
 // -----------------------------------------------------------------------------
 
 
@@ -217,10 +228,11 @@ function setHandlers() {
 
   };
 
-  imgPageLeft.onload = imgFinishedLoading();
-
   pageSlider.oninput = function() {
     changePage(TITLE, CHAPTER, parseInt(pageSlider.value));
+  }
+
+  pageSlider.onmouseup = function() {
     document.activeElement.blur(); // Remove focus
   }
 
@@ -240,6 +252,23 @@ function setHandlers() {
     }
   }
 
+
+  let isMenuVisible = true;
+  imgPageLeft.onclick = function() {
+    if (isMenuVisible) {
+      navMenu.classList.add("hidden");
+    } else {
+      navMenu.classList.remove("hidden");
+    }
+    isMenuVisible = !isMenuVisible
+  }
+
+  imgPageRight.onclick = function() {
+    imgPageLeft.click();
+  }
+
+  imgPageLeft.onload = imgFinishedLoading();
+
   previousChapterButton.onclick = function() {
     changePage(TITLE, CHAPTER - 1, 1);
   }
@@ -248,7 +277,7 @@ function setHandlers() {
     changePage(TITLE, CHAPTER + 1, 1);
   }
 
-  var isFullScreen = false;
+  let isFullScreen = false;
   fullScreenButton.onclick = function() {
     if (isFullScreen) {
       if (document.exitFullscreen) {
@@ -280,6 +309,10 @@ function setHandlers() {
     document.activeElement.blur(); // Remove focus
   }
 
+  chapterSelection.onselect = function() {
+    alert("salut");
+  }
+
   doublePageButton.onclick = function() {
       useDoublePage = !useDoublePage;
       if (useDoublePage) {
@@ -287,7 +320,7 @@ function setHandlers() {
       } else {
         doublePageButton.classList.remove("enabled");
       }
-      changePage(TITLE, CHAPTER, PAGE);
+      refreshDipslayPages();
   }
 
 }
@@ -344,8 +377,6 @@ fetch(IMAGES_URL + TITLE + '/' + 'config.json')
 
       previousChapterButton = document.getElementById("rightChapterButton");
       nextChapterButton = document.getElementById("leftChapterButton");
-      previousChapterButton.innerHTML = 'Previous<br>chapter<br>▶';
-      nextChapterButton.innerHTML = 'Next<br>chapter<br>◀';
 
       pageSlider.style.transform = "rotateZ(180deg)";
 
@@ -362,8 +393,6 @@ fetch(IMAGES_URL + TITLE + '/' + 'config.json')
 
       previousChapterButton = document.getElementById("leftChapterButton");
       nextChapterButton = document.getElementById("rightChapterButton");
-      previousChapterButton.innerHTML = 'Previous<br>chapter<br>◀';
-      nextChapterButton.innerHTML = 'Next<br>chapter<br>▶';
     }
 
     /* Populate the chapterSelection menu with the chapter from this title */
@@ -373,7 +402,12 @@ fetch(IMAGES_URL + TITLE + '/' + 'config.json')
       chapterSelection.add(option);
     }
 
-    changePage(TITLE, CHAPTER, PAGE);
+    pageSlider.min = 1;
+
+    /* When the user get on the page / refresh it, to changePage to actually
+    works, the given parameters must be different from the global TITLE, CHAPTER, PAGE variables */
+    refreshDipslayPages();
+
     setHandlers();
 
     if (!CONFIG.allowDoublePage) doublePageButton.style.display = "none";

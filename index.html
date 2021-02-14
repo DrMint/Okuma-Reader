@@ -5,41 +5,35 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Manga Reader</title>
-
-	<!-- Custom stlylesheet -->
 	<link type="text/css" rel="stylesheet" href="reader.css" />
 </head>
 
 <body>
 
-
-
-  <div id="container">
-
-    <div id="navImage">
-      <div id="imgPageLeft"></div>
-			<div id="imgPageRight"></div>
-      <div id="leftPageButton"></div>
-      <div id="rightPageButton"></div>
-   </div>
-
-  </div>
+  <div id="navImage" class="shadow">
+		<div id="leftPageButton"></div>
+		<img id="imgPageLeft">
+		<div id="rightPageButton"></div>
+		<img id="imgPageRight">
+ </div>
 
 	<div id=navMenu>
-		<div id="fullScreenButton">Full<br>screen</div>
-		<div id="doublePageButton">Double<br>page</div>
-		<div id="leftChapterButton"></div>
+		<div id="configMenu" class="button icon"></div>
+		<div id="fullScreenButton" class="button icon"></div>
+		<div id="doublePageButton" class="button icon"></div>
+		<div id="leftChapterButton" class="button icon"></div>
 		<div id="chapterSelectionContainer">
 			<select id="chapterSelection"></select>
 		</div>
-		<div id="rightChapterButton"></div>
+		<div id="rightChapterButton" class="button icon"></div>
 		<div id="sliderContainer">
 			<p id="pageSliderLeft"></p>
 			<input id="pageSlider" type="range" class="slider">
 			<p id="pageSliderRight"></p>
 		</div>
-
 	</div>
+
+	<div id="eyeFilter"></div>
 
 </body>
 
