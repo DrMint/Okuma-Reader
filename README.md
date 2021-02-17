@@ -1,4 +1,4 @@
-# Reader-JS
+# Okuma-Reader
 Online book reader written in JS with some key features like Japanese page order, double-page view and pre-caching on next pages.
 The design is entirely cilent-side, the server simply host the images.
 
