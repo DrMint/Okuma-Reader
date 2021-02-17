@@ -1,0 +1,122 @@
+@media only screen and (max-width: 80vh) {
+  #navImage #imgPageLeft,
+  #navImage #imgPageRight {
+    max-width: 100vw;
+  }
+}
+
+#navImage {
+  display: grid;
+  grid-auto-flow: column;
+  background-image: url("../img/side.webp");
+  background-size: contain;
+}
+
+body.book #navImage {
+  background-image: url("../img/side-book.webp");
+  background-size: 11vmin 100%;
+}
+
+#navImage > #continuousScrollingPages {
+  display: grid;
+}
+
+#navImage > #continuousScrollingPages > img {
+  width: 100%;
+}
+
+#navImage #imgPageLeft,
+#navImage #imgPageRight {
+  max-height: 100vh;
+}
+
+#navImage > #filters > div {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+#navImage > #filters > #paperTexture.enabled {
+  background-image: url("../img/paper.webp");
+  mix-blend-mode: exclusion;
+  background-size: 20vmin 20vmin;
+}
+
+body.book #navImage > #filters > #paperTexture.enabled {
+  background-image: url("../img/paper-book.webp");
+  opacity: 0.8;
+}
+
+#navImage.bookShadow {
+  box-shadow: 0 0 0.5vmin rgba(0,0,0,0.3), 0 1vmin 1vmin rgba(0,0,0,0.4), 0 2vmin 2vmin rgba(0,0,0,0.6), 0 6vmin 6vmin rgba(0,0,0,0.5);
+}
+
+#navImage.doublePage.bookShadow {
+    box-shadow: 0 0 0.5vmin rgba(0,0,0,0.3), 0 1vmin 1vmin rgba(0,0,0,0.4), 0 2vmin 2vmin rgba(0,0,0,0.6), 0 12vmin 12vmin rgba(0,0,0,0.8);
+}
+
+#navImage.doublePage > #filters > #bookFold.enabled {
+  background-image: url("../img/bookFold.webp");
+  background-size: 100% 100%;
+  mix-blend-mode: multiply;
+}
+
+#navImage > #filters > #lighting.enabled {
+  background-image: url("../img/lightingSinglePage.webp");
+  background-size: 100% 100%;
+  mix-blend-mode: multiply;
+}
+
+#navImage.doublePage > #filters > #lighting.enabled {
+  background-image: url("../img/lightingDoublePage.webp");
+}
+
+#navImage > #filters > #specular.enabled {
+  background-image: url("../img/specularSinglePage.webp");
+  background-size: 100% 100%;
+  background-blend-mode: multiply;
+  mix-blend-mode: soft-light;
+}
+
+body.book #navImage > #filters > #specular.enabled {
+  opacity: 0.5;
+}
+
+#navImage.doublePage > #filters > #specular.enabled {
+  background-image: url("../img/specularDoublePage.webp");
+}
+
+#navImage.doublePage #imgPageLeft,
+#navImage.doublePage #imgPageRight {
+  max-width: 50vw;
+}
+
+#navImage {
+  height: 100%;
+  width: min-content;
+  position: relative;
+}
+
+#navImage > #leftPageButton,
+#navImage > #rightPageButton {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: var(--image-nav-width);
+  cursor: pointer;
+  z-index: 5;
+}
+
+#navImage > #middlePageButton {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+#navImage > #leftPageButton {left: 0;}
+#navImage > #rightPageButton {right: 0;}

@@ -5,22 +5,36 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Manga Reader</title>
-	<link type="text/css" rel="stylesheet" href="reader.css" />
+	<link type="text/css" rel="stylesheet" href="./css/main.css"/>
+	<link type="text/css" rel="stylesheet" href="./css/navImage.css"/>
+	<link type="text/css" rel="stylesheet" href="./css/navMenu.css"/>
+	<link type="text/css" rel="stylesheet" href="./css/config.css"/>
 </head>
 
 <body>
 
-  <div id="navImage" class="shadow">
-		<div id="leftPageButton"></div>
+	<div id=topMenu class="navMenu darkMode">
+		<div id="bookInfo"><h2 id="bookTitle"></h2><h3 id="bookChapter"></h3></div>
+		<div id="fullScreenButton" class="button icon"></div>
+		<div id="configButton" class="button icon"></div>
+	</div>
+
+  <div id="navImage">
 		<img id="imgPageLeft">
-		<div id="rightPageButton"></div>
 		<img id="imgPageRight">
+		<div id="middlePageButton"></div>
+		<div id="leftPageButton"></div>
+		<div id="rightPageButton"></div>
+		<div id="continuousScrollingPages"></div>
+		<div id="filters">
+			<div id="paperTexture"></div>
+			<div id="bookFold"></div>
+			<div id="lighting"></div>
+			<div id="specular"></div>
+		</div>
  </div>
 
-	<div id=navMenu>
-		<div id="configMenu" class="button icon"></div>
-		<div id="fullScreenButton" class="button icon"></div>
-		<div id="doublePageButton" class="button icon"></div>
+	<div id=bottomMenu class="navMenu darkMode">
 		<div id="leftChapterButton" class="button icon"></div>
 		<div id="chapterSelectionContainer">
 			<select id="chapterSelection"></select>
@@ -33,10 +47,24 @@
 		</div>
 	</div>
 
+	<div id="configMenu" class="darkMode">
+		<div id="closeMenu" class="button icon"></div>
+		<div id="pageWidthContainer">
+			<p>Page width</p>
+			<input id="pageWidthSlider" type="range" min="10" max="100" class="slider">
+		</div>
+		<div id="doublePageButton" class="button icon">Display mode</div>
+		<div id="paperTextureButton" class="button icon">Paper texture</div>
+		<div id="bookFoldButton" class="button icon">Book fold</div>
+		<div id="lightingButton" class="button icon">Realistic lighting</div>
+		<div id="sidePagesButton" class="button icon">Side pages</div>
+		<div id="bookShadowButton" class="button icon">Book shadow</div>
+	</div>
+
 	<div id="eyeFilter"></div>
 
 </body>
 
-<script src="reader.js"></script>
+<script type="module" src="reader.js"></script>
 
 </html>

@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css?family=Quicksand&display=swap');
+
+body {
+  font-family: Quicksand;
+  padding: 0;
+  margin: 0;
+  --image-nav-width: 30%; /* Must be between 0% and 50% */
+  --footer-height: 4em;
+  --background-color: rgb(50, 50, 50);
+  --slider-height: 1em;
+  background-color: var(--background-color);
+  overflow: hidden;
+  display: grid;
+  place-content: center;
+  height: 100vh;
+}
+
+body.continuousScrolling {
+  height: unset;
+  overflow-y: visible;
+}
+
+#eyeFilter.enabled {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background-color: rgba(255,200,130);
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.disabled {
+  display: none;
+}
+
+
+.slider {
+  -webkit-appearance: none;
+  height: calc(var(--slider-height) / 2);
+  border-radius: 1em;
+  background: lightgray;
+  outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: var(--slider-height);
+  height: var(--slider-height);
+  border-radius: 50%;
+  background: black;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: var(--slider-height);
+  height: var(--slider-height);
+  border-radius: 50%;
+  background: black;
+  cursor: pointer;
+}

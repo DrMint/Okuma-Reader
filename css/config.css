@@ -1,0 +1,69 @@
+#configMenu {
+  display: grid;
+  grid-auto-rows: min-content;
+  position: fixed;
+  background: white;
+  color: black;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  transform: translateX(150%);
+  transition: .4s transform;
+  transition-timing-function: ease-in-out;
+  z-index: 25;
+  padding: 2em;
+  box-shadow: 0 0 5em white;
+}
+
+#configMenu > div {
+  font-weight: bold;
+  height: 1.5em;
+  padding: 1em;
+  display: grid;
+  place-content: center start;
+}
+
+#configMenu.darkMode {
+  filter: invert(0.9);
+}
+
+#configMenu.enabled {
+  transform: translateX(0);
+}
+
+#configMenu > .icon {
+  padding-left: 4em;
+  background-repeat: no-repeat;
+  background-position: left;
+  background-image: url("../img/icon/off.png");
+  background-size: 2.5em;
+}
+
+#configMenu > .icon.enabled {
+  background-image: url("../img/icon/on.png");
+}
+
+#closeMenu {
+  background-image: url("../img/icon/close.png") !important;
+  background-size: 1em !important;
+}
+
+#configMenu > #pageWidthContainer > p{
+  margin: 0;
+  margin-bottom: 0.2em;
+  text-align: center;
+}
+
+#doublePageButton {
+  background-image: url("../img/icon/singlePageMode.png") !important;
+  background-size: 2em !important;
+}
+
+#doublePageButton.enabled {
+  background-image: url("../img/icon/doublePageMode.png") !important;
+  background-size: 2.5em !important;
+}
+
+#configMenu > .button {
+  cursor: pointer;
+}

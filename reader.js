@@ -24,6 +24,23 @@ function getNumChapters() {
   return CONFIG.numPages.length;
 }
 
+function getNumPagesBefore() {
+  let result = 0;
+  for (var i = 0; i < CHAPTER - 1; i++) {
+    result += CONFIG.numPages[i];
+  }
+  result += PAGE;
+  return result;
+}
+
+function getTotalPages() {
+  let result = 0;
+  for (var i = 0; i < CONFIG.numPages.length; i++) {
+    result += CONFIG.numPages[i];
+  }
+  return result;
+}
+
 function imgFinishedLoading() {
 
   /*  Create a list of pages to cache and then cache them asynchronously
@@ -97,46 +114,206 @@ function changePage(newTitle, newChapter, newPage) {
     // Go the next chapter first page if tring to go next page on the
     // last page on previous chapter.
     if (newChapter < getNumChapters()) {
+
+      // If you currently are on the last page of a chapter and in double page
+      // mode, the first page of the next chapter is already shown
+      // thus go to the second page of the new chapter.
+      if (PAGE == getChapterNumPage() && doublePage) {
+        newPage = 2;
+      } else {
+        newPage = 1;
+      }
       newChapter++;
-      newPage = 1;
+
     } else {
-       newPage = getChapterNumPage();
+
+      // If we are currently on the second last page of the book and in double
+      // page mode, the last page is also shown. No need to change pages.
+      if (PAGE == getChapterNumPage() - 1 && doublePage) {
+        newPage = PAGE;
+      } else {
+        newPage = getChapterNumPage();
+      }
     }
   }
 
-  hasAnythingChanged = newTitle != TITLE || newChapter != CHAPTER || newPage != PAGE;
+  let hasAnythingChanged = newTitle != TITLE || newChapter != CHAPTER || newPage != PAGE;
+  let hasChapterChanged = newChapter != CHAPTER;
 
   TITLE = newTitle;
   CHAPTER = newChapter
   PAGE = newPage;
 
-  if (hasAnythingChanged) refreshDipslayPages();
+  if (CONFIG.continuousScrolling) {
+    document.getElementById('continuousScrollingPages').innerHTML = "";
+    for (var i = 1; i <= getChapterNumPage(); i++) {
+      var img = document.createElement('img');
+      img.src = infoToImageURL(TITLE, CHAPTER, i);
+      img.loading = "lazy";
+      document.getElementById('continuousScrollingPages').appendChild(img);
+    }
+  }
+
+  if (hasAnythingChanged) {
+    refreshDipslayPages();
+  }
 
 }
 
 
 function refreshDipslayPages() {
 
-  // To use double page, the user should have asked for double page
-  doublePage = useDoublePage
+  if (CONFIG.continuousScrolling) {
 
-  // If the CONFIG file asked for the fist page to be single, doublePage should
-  // only be enable for pages other than the first one
-  doublePage = doublePage && (PAGE != 1 || !CONFIG.fistPageSingle);
-
-  // Lastly double page should be disable if the last page is left alone.
-  doublePage = doublePage && (PAGE + 1 <= getChapterNumPage());
-
-  // If the first page is set to be single, the page number should be event
-  if (doublePage && (CONFIG.fistPageSingle && PAGE % 2 == 1)) PAGE--;
-
-  if (doublePage) {
-    imgPageRight.style.display = "inherit";
-    document.getElementById("navImage").classList.add("doublePage");
-  } else {
+    window.scrollTo(0, 0);
+    document.getElementsByTagName('body')[0].classList.add("continuousScrolling");
+    imgPageLeft.style.display = "none";
     imgPageRight.style.display = "none";
-    document.getElementById("navImage").classList.remove("doublePage");
+    rightPageButton.style.display = "none";
+    leftPageButton.style.display = "none";
+    sliderContainer.style.display = "none";
+
+
+  } else {
+
+    document.getElementsByTagName('body')[0].classList.remove("continuousScrolling");
+    imgPageLeft.style.display = null;
+    imgPageRight.style.display = null;
+    rightPageButton.style.display = null;
+    leftPageButton.style.display = null;
+    sliderContainer.style.display = null;
+
+
+    // To use double page, the user should have asked for double page
+    doublePage = useDoublePage
+
+    // If the CONFIG file asked for the fist page to be single, doublePage should
+    // only be enable for pages other than the first one
+    doublePage = doublePage && (PAGE != 1 || !CONFIG.fistPageSingle);
+
+    // Lastly double page should be disable if the last page is left alone.
+    doublePage = doublePage && (PAGE + 1 <= getChapterNumPage() || CHAPTER < getNumChapters());
+
+    // If the first page is set to be single, the page number should be event
+    if (doublePage && (CONFIG.fistPageSingle && PAGE % 2 == 1)) PAGE--;
+
+    if (doublePage) {
+      imgPageRight.style.display = null;
+      navImage.classList.add("doublePage");
+    } else {
+      imgPageRight.style.display = "none";
+      navImage.classList.remove("doublePage");
+    }
+
+    /* Load the current page*/
+    {
+      getImage(infoToImageURL(TITLE, CHAPTER, PAGE)).then(function(successUrl) {
+        imgPageLeft.src = infoToImageURL(TITLE, CHAPTER, PAGE);
+      });
+
+      if (doublePage) {
+        if (PAGE < getChapterNumPage()) {
+          getImage(infoToImageURL(TITLE, CHAPTER, PAGE + 1)).then(function(successUrl) {
+            imgPageRight.src = infoToImageURL(TITLE, CHAPTER, PAGE + 1);
+          });
+        } else {
+          getImage(infoToImageURL(TITLE, CHAPTER + 1, 1)).then(function(successUrl) {
+            imgPageRight.src = infoToImageURL(TITLE, CHAPTER + 1, 1);
+          });
+        }
+
+      }
+    }
+
+
+    /* Show or hide buttons */
+    {
+      // Showing or hiding the previous page button
+      if (PAGE > 1 || CHAPTER > 1) {
+        previousPageButton.style.display = null;
+      } else {
+        previousPageButton.style.display = "none";
+      }
+
+      // Showing or hiding the next page button
+      if (PAGE < getChapterNumPage() || CHAPTER < getNumChapters()) {
+        nextPageButton.style.display = null;
+      } else {
+        nextPageButton.style.display = "none";
+      }
+    }
+
+
+    /* Move the side page to simulate the fact that you place the next page on the side */
+    {
+
+      let sidePageMaxValue = Math.min(getTotalPages() / 150 * 4, 6);
+      let progress = getNumPagesBefore() / getTotalPages();
+      let viewedPagesWidth = (progress * sidePageMaxValue).toString() + "vmin";
+      let toBeViewedPagesWidth = ((1 - progress) * sidePageMaxValue).toString() + "vmin";
+      if (sidePages && doublePage) {
+        if (CONFIG.japaneseOrder) {
+          navImage.style.paddingLeft = toBeViewedPagesWidth;
+          navImage.style.paddingRight = viewedPagesWidth;
+        } else {
+          navImage.style.paddingLeft = viewedPagesWidth;
+          navImage.style.paddingRight = toBeViewedPagesWidth;
+        }
+
+        if (CONFIG.japaneseOrder) {
+          document.getElementById("lighting").style.backgroundSize = "calc(100% + " + (toBeViewedPagesWidth).toString() + " - " + (viewedPagesWidth).toString() + ") 100%";
+          document.getElementById("specular").style.backgroundSize = "calc(100% + " + (toBeViewedPagesWidth).toString() + " - " + (viewedPagesWidth).toString() + ") 100%";
+          document.getElementById("bookFold").style.backgroundSize = "calc(100% + " + (toBeViewedPagesWidth).toString() + " - " + (viewedPagesWidth).toString() + ") 100%";
+        } else {
+          document.getElementById("lighting").style.backgroundSize = "calc(100% + " + (viewedPagesWidth).toString() + " - " + (toBeViewedPagesWidth).toString() + ") 100%";
+          document.getElementById("specular").style.backgroundSize = "calc(100% + " + (viewedPagesWidth).toString() + " - " + (toBeViewedPagesWidth).toString() + ") 100%";
+          document.getElementById("bookFold").style.backgroundSize = "calc(100% + " + (viewedPagesWidth).toString() + " - " + (toBeViewedPagesWidth).toString() + ") 100%";
+        }
+
+
+
+
+      } else {
+
+        navImage.style.paddingLeft = "unset";
+        navImage.style.paddingRight = "unset";
+        document.getElementById("lighting").style.backgroundSize = null;
+        document.getElementById("specular").style.backgroundSize = null;
+        document.getElementById("bookFold").style.backgroundSize = null;
+
+      }
+    }
+
+
   }
+
+
+  // Hide config options when not suited
+  {
+    if (CONFIG.continuousScrolling) {
+      document.getElementById("pageWidthContainer").style.display = null;
+      document.getElementById("bookFoldButton").style.display = "none";
+      document.getElementById("sidePagesButton").style.display = "none";
+      document.getElementById("lightingButton").style.display = "none";
+    } else {
+      document.getElementById("pageWidthContainer").style.display = "none";
+      document.getElementById("bookFoldButton").style.display = null;
+      document.getElementById("sidePagesButton").style.display = null;
+      document.getElementById("lightingButton").style.display = null;
+    }
+    
+    if (doublePage) {
+      document.getElementById("bookFoldButton").style.display = null;
+      document.getElementById("sidePagesButton").style.display = null;
+    } else {
+      document.getElementById("bookFoldButton").style.display = "none";
+      document.getElementById("sidePagesButton").style.display = "none";
+    }
+
+  }
+
+
+
 
   /*  Replace the current URL without reloading the page.
       Furthermore, if the use use to go back button, it will not go to the
@@ -150,19 +327,6 @@ function refreshDipslayPages() {
   }
 
 
-  /* Load the current page*/
-  {
-    getImage(infoToImageURL(TITLE, CHAPTER, PAGE)).then(function(successUrl) {
-      imgPageLeft.src = infoToImageURL(TITLE, CHAPTER, PAGE);
-    });
-
-    if (doublePage) {
-      getImage(infoToImageURL(TITLE, CHAPTER, PAGE + 1)).then(function(successUrl) {
-        imgPageRight.src = infoToImageURL(TITLE, CHAPTER, PAGE + 1);
-      });
-    }
-  }
-
   /* Refresh the slider bar */
   {
     pageSlider.max = getChapterNumPage();
@@ -174,36 +338,38 @@ function refreshDipslayPages() {
   // Change currently selected chapter in chapterSelection
   chapterSelection.selectedIndex = CHAPTER - 1;
 
-  /* Show or hide buttons */
   {
-    // Showing or hiding the previous page button
-    if (PAGE > 1 || CHAPTER > 1) {
-      previousPageButton.style.display = "inherit";
-    } else {
-      previousPageButton.style.display = "none";
-    }
-
-    // Showing or hiding the next page button
-    if (PAGE < getChapterNumPage() || CHAPTER < getNumChapters()) {
-      nextPageButton.style.display = "inherit";
-    } else {
-      nextPageButton.style.display = "none";
-    }
-
     // Showing or hiding the previous chapter button$
     if (CHAPTER > 1) {
-      previousChapterButton.style.display = "inherit";
+      previousChapterButton.style.display = null;
     } else {
       previousChapterButton.style.display = "none";
     }
 
     // Showing or hiding the next chapter button
     if (CHAPTER < getNumChapters()) {
-      nextChapterButton.style.display = "inherit";
+      nextChapterButton.style.display = null;
     } else {
       nextChapterButton.style.display = "none";
     }
   }
+
+
+
+  // Move the paper texture arround so it doesn't always looks the same between pages
+  document.getElementById("paperTexture").style.backgroundPosition = Math.floor((Math.random() * 100) + 1).toString() + "%" + Math.floor((Math.random() * 100) + 1).toString() + "%";
+
+  // Refresh the book info at the top
+  bookTitle.innerHTML = CONFIG.title;
+  bookChapter.innerHTML = "Chapter " + CHAPTER;
+
+  // Hide the select chapter menu if there is just one chapter
+  if (getNumChapters() < 2) {
+    document.getElementById("chapterSelectionContainer").style.display = "none";
+  } else {
+    document.getElementById("chapterSelectionContainer").style.display = null;
+  }
+
 
 }
 
@@ -213,7 +379,9 @@ function refreshDipslayPages() {
 
 function setHandlers() {
   /* EVENTS HANDLERS */
+
   document.onkeydown = function() {
+    if (!CONFIG.continuousScrolling) {
       if (CONFIG.japaneseOrder) {
         switch (window.event.keyCode) {
           case 39: previousPageButton.click(); break;
@@ -225,7 +393,7 @@ function setHandlers() {
           case 39: nextPageButton.click(); break;
         }
       }
-
+    }
   };
 
   pageSlider.oninput = function() {
@@ -237,7 +405,7 @@ function setHandlers() {
   }
 
   previousPageButton.onclick = function() {
-    if (doublePage && PAGE != 2) {
+    if (doublePage) {
       changePage(TITLE, CHAPTER, PAGE - 2);
     } else {
       changePage(TITLE, CHAPTER, PAGE - 1);
@@ -254,17 +422,15 @@ function setHandlers() {
 
 
   let isMenuVisible = true;
-  imgPageLeft.onclick = function() {
+  middlePageButton.onclick = function() {
     if (isMenuVisible) {
-      navMenu.classList.add("hidden");
+      document.getElementById("topMenu").classList.add("hidden");
+      document.getElementById("bottomMenu").classList.add("hidden");
     } else {
-      navMenu.classList.remove("hidden");
+      document.getElementById("topMenu").classList.remove("hidden");
+      document.getElementById("bottomMenu").classList.remove("hidden");
     }
     isMenuVisible = !isMenuVisible
-  }
-
-  imgPageRight.onclick = function() {
-    imgPageLeft.click();
   }
 
   imgPageLeft.onload = imgFinishedLoading();
@@ -323,6 +489,64 @@ function setHandlers() {
       refreshDipslayPages();
   }
 
+  toggleElement("configButton", false, ["configMenu"]);
+  toggleElement("paperTextureButton", false, ["paperTextureButton", "paperTexture"]);
+  toggleElement("bookFoldButton", false, ["bookFoldButton", "bookFold"]);
+  toggleElement("lightingButton", false, ["lightingButton", "lighting", "specular"]);
+
+
+  document.getElementById("sidePagesButton").onclick = function() {
+    sidePages = !sidePages;
+    if (sidePages) {
+      document.getElementById("sidePagesButton").classList.add("enabled");
+    } else {
+      document.getElementById("sidePagesButton").classList.remove("enabled");
+    }
+    refreshDipslayPages();
+  };
+
+  let bookShadow = false;
+  document.getElementById("bookShadowButton").onclick = function() {
+    bookShadow = !bookShadow;
+    if (bookShadow) {
+      document.getElementById("bookShadowButton").classList.add("enabled");
+      navImage.classList.add("bookShadow");
+    } else {
+      document.getElementById("bookShadowButton").classList.remove("enabled");
+      navImage.classList.remove("bookShadow");
+    }
+  };
+
+
+
+  document.getElementById("closeMenu").onclick = function() {
+    document.getElementById("configButton").click();
+  };
+
+  document.getElementById("pageWidthSlider").oninput = function() {
+    document.getElementById("continuousScrollingPages").style.width = document.getElementById("pageWidthSlider").value + "vw";
+  }
+
+  document.getElementById("pageWidthSlider").onmouseup = function() {
+    document.activeElement.blur(); // Remove focus
+  }
+
+}
+
+function toggleElement(button, varState, targets, className = "enabled") {
+  document.getElementById(button).onclick = function() {
+    varState = !varState;
+
+    targets.forEach((target) => {
+      if (varState) {
+        document.getElementById(target).classList.add(className);
+      } else {
+        document.getElementById(target).classList.remove(className);
+      }
+    });
+
+  }
+
 }
 
 
@@ -337,6 +561,11 @@ var nextPageButton;
 var imgPageLeft;
 var imgPageRight;
 
+const navImage = document.getElementById("navImage");
+const bookTitle = document.getElementById("bookTitle");
+const bookChapter = document.getElementById("bookChapter");
+const middlePageButton = document.getElementById("middlePageButton");
+
 const fullScreenButton = document.getElementById("fullScreenButton");
 const doublePageButton = document.getElementById("doublePageButton");
 var previousChapterButton = document.getElementById("previousChapter");
@@ -349,6 +578,8 @@ var pageSliderTotal;
 
 var useDoublePage = false;
 var doublePage = useDoublePage;
+var sidePages = false;
+
 /* END CONFIGURATION */
 
 // Loads values from the GET
@@ -404,8 +635,7 @@ fetch(IMAGES_URL + TITLE + '/' + 'config.json')
 
     pageSlider.min = 1;
 
-    /* When the user get on the page / refresh it, to changePage to actually
-    works, the given parameters must be different from the global TITLE, CHAPTER, PAGE variables */
+    changePage(TITLE, CHAPTER, PAGE);
     refreshDipslayPages();
 
     setHandlers();
@@ -415,5 +645,34 @@ fetch(IMAGES_URL + TITLE + '/' + 'config.json')
     if (CONFIG.preferDoublePage) {
       doublePageButton.click();
     }
+
+    // Set default value for the width of the continuous pages
+    {
+      if (CONFIG.continuousScrolling) {
+        if(window.innerHeight > window.innerWidth) {
+          document.getElementById("pageWidthSlider").value = "100"
+        } else {
+          document.getElementById("pageWidthSlider").value = "40"
+        }
+        document.getElementById("continuousScrollingPages").style.width = document.getElementById("pageWidthSlider").value + "vw";
+      }
+    }
+
+    document.getElementsByTagName("body")[0].classList.add(CONFIG.bookType);
+
+    // Default values for the filters
+    {
+      if (CONFIG.continuousScrolling) {
+        document.getElementById("bookShadowButton").click();
+      } else {
+        document.getElementById("paperTextureButton").click();
+        document.getElementById("bookFoldButton").click();
+        document.getElementById("lightingButton").click();
+        document.getElementById("sidePagesButton").click();
+        document.getElementById("bookShadowButton").click();
+      }
+
+    }
+
 
   });

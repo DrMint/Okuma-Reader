@@ -1,0 +1,220 @@
+.navMenu > .icon {
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: var(--footer-height);
+}
+
+.navMenu > .button {
+  cursor: pointer;
+}
+
+.navMenu > div {
+  background: white;
+  text-align: center;
+  height: var(--footer-height);
+  padding: 0.5em 1em 0.5em 1em;
+  box-sizing: border-box;
+  display: grid;
+  grid-auto-flow: column;
+  place-items: center;
+  place-content: center;
+}
+
+.navMenu p, .navMenu select, .navMenu {
+  font-family: Quicksand;
+  font-weight: bold !important;
+  font-size: 120%;
+  margin: 0
+}
+
+@media only screen and (max-width: 80vh) {
+
+  .navMenu p, .navMenu select, .navMenu {
+    font-size: 5vw;
+  }
+
+  .navMenu {
+    place-content: unset !important;
+    background: white;
+  }
+
+  .navMenu.darkMode {
+    background-color: rgb(25, 25, 25);
+  }
+
+}
+
+.navMenu {
+  color: black;
+  display: grid;
+  grid-auto-flow: column;
+  place-content: center;
+  place-items: center;
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  transition: .2s transform;
+  filter: drop-shadow(0 0 2em rgba(0, 0, 0, 0.5));
+}
+
+.navMenu.darkMode > div {
+  filter: invert(0.9);
+}
+
+/* ---------------------------------- TOP MENU ------------------------------ */
+
+#topMenu {
+  top: 0;
+}
+
+@media only screen and (max-width: 80vh) {
+
+  #topMenu > .icon {
+    width: calc(var(--footer-height) * 0.6);
+  }
+
+  #bookInfo > #bookTitle {
+    text-align: left;
+    width: 50vw;
+    font-size: 110%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+}
+
+#topMenu.hidden {
+  transform: translateY(calc(var(--footer-height) * -2));
+  transition-duration: 2s;
+}
+
+#bookInfo {
+  display: grid;
+  grid-auto-flow: row;
+  justify-items: start;
+}
+
+#bookInfo > #bookTitle {
+  font-weight: 900;
+  text-shadow: 1px 0 black, 0 1px black;
+  margin: 0;
+  margin-bottom: -0.2em;
+}
+
+#bookInfo > #bookChapter {
+  font-weight: normal;
+  font-size: 90%;
+  margin: 0;
+}
+
+#configButton {
+  background-image: url("../img/icon/settings.png");
+}
+
+#fullScreenButton {
+  background-image: url("../img/icon/enterFS.png");
+  background-size: 40%;
+}
+
+#fullScreenButton.enabled {
+  background-image: url("../img/icon/exitFS.png");
+  background-size: 40%;
+}
+
+
+/* -------------------------------- BOTTOM MENU ----------------------------- */
+
+
+#bottomMenu {
+  bottom: 0;
+  grid-template-areas: "leftChapterButton chapterSelection rightChapterButton sliderContainer";
+}
+
+@media only screen and (max-width: 80vh) {
+
+  #bottomMenu {
+    bottom: 0;
+    grid-template-areas: "leftChapterButton sliderContainer rightChapterButton";
+    grid-template-columns: 10vw 1fr 10vw;
+    height: calc(var(--footer-height) * 0.6) !important;
+  }
+
+  body.continuousScrolling #bottomMenu {
+    grid-template-areas: "leftChapterButton chapterSelection rightChapterButton";
+  }
+
+  #bottomMenu > div {
+    height: calc(var(--footer-height) * 0.6) !important;
+  }
+
+  body:not(.continuousScrolling) #chapterSelectionContainer {
+    display: none !important;
+  }
+
+  #sliderContainer {
+    padding: 0 !important;
+    width: 100%;
+  }
+
+  #sliderContainer > #pageSlider {
+    width: 100%;
+  }
+
+  #leftChapterButton,
+  #rightChapterButton {
+    padding: 0 !important;
+  }
+
+  #leftChapterButton,
+  #rightChapterButton {
+    background-size: 20% !important;
+  }
+
+}
+
+#bottomMenu.hidden {
+  transform: translateY(calc(var(--footer-height) * 2));
+  transition-duration: 2s;
+}
+
+#leftChapterButton {
+  grid-area: leftChapterButton;
+  background-image: url("../img/icon/leftChapter.png");
+  background-size: 45%;
+}
+
+#rightChapterButton {
+  grid-area: rightChapterButton;
+  background-image: url("../img/icon/rightChapter.png");
+  background-size: 45%;
+}
+
+#leftChapterButton,
+#rightChapterButton {
+  background-size: 35%;
+}
+
+#chapterSelectionContainer {
+  grid-area: chapterSelection;
+}
+
+#chapterSelection {
+  border: none;
+  padding-right: 0.5em;
+  background: none !important;
+}
+
+#sliderContainer {
+  grid-area: sliderContainer;
+}
+
+#sliderContainer > #pageSliderLeft {
+  padding-right: 1em;
+}
+
+#sliderContainer > #pageSliderRight {
+  padding-left: 1em;
+}
