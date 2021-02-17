@@ -105,7 +105,7 @@ function changePage(newTitle, newChapter, newPage) {
     // first page on current chapter.
     if (newChapter > 1) {
       newChapter--;
-      newPage = getChapterNumPage(newChapter);
+      newPage = getChapterNumPage(newChapter) + newPage;
     } else {
        newPage = 1;
     }
@@ -127,6 +127,9 @@ function changePage(newTitle, newChapter, newPage) {
 
     } else {
 
+      newPage = getChapterNumPage();
+
+      /*
       // If we are currently on the second last page of the book and in double
       // page mode, the last page is also shown. No need to change pages.
       if (PAGE == getChapterNumPage() - 1 && doublePage) {
@@ -134,6 +137,7 @@ function changePage(newTitle, newChapter, newPage) {
       } else {
         newPage = getChapterNumPage();
       }
+      */
     }
   }
 
@@ -189,13 +193,21 @@ function refreshDipslayPages() {
 
     // If the CONFIG file asked for the fist page to be single, doublePage should
     // only be enable for pages other than the first one
-    doublePage = doublePage && (PAGE != 1 || !CONFIG.fistPageSingle);
+    doublePage = doublePage && !(CONFIG.fistPageSingle && PAGE == 1 && CHAPTER == 1);
 
     // Lastly double page should be disable if the last page is left alone.
     doublePage = doublePage && (PAGE + 1 <= getChapterNumPage() || CHAPTER < getNumChapters());
 
-    // If the first page is set to be single, the page number should be event
-    if (doublePage && (CONFIG.fistPageSingle && PAGE % 2 == 1)) PAGE--;
+    /*
+    // If the first page is set to be single, the page number should be even
+    if (doublePage && (CONFIG.fistPageSingle && PAGE % 2 == 1)) {
+      // PAGE 1 is a special case because you may want to show page 1 and the
+      // last page from the previous chapter
+      if (PAGE > 1) {
+        changePage(TITLE, CHAPTER, PAGE - 1);
+      }
+    }
+    */
 
     if (doublePage) {
       imgPageRight.style.display = null;
@@ -207,23 +219,42 @@ function refreshDipslayPages() {
 
     /* Load the current page*/
     {
-      getImage(infoToImageURL(TITLE, CHAPTER, PAGE)).then(function(successUrl) {
-        imgPageLeft.src = infoToImageURL(TITLE, CHAPTER, PAGE);
-      });
+
+      let leftPageURL = infoToImageURL(TITLE, CHAPTER, PAGE);
 
       if (doublePage) {
-        if (PAGE < getChapterNumPage()) {
-          getImage(infoToImageURL(TITLE, CHAPTER, PAGE + 1)).then(function(successUrl) {
-            imgPageRight.src = infoToImageURL(TITLE, CHAPTER, PAGE + 1);
-          });
-        } else {
-          getImage(infoToImageURL(TITLE, CHAPTER + 1, 1)).then(function(successUrl) {
-            imgPageRight.src = infoToImageURL(TITLE, CHAPTER + 1, 1);
-          });
+
+        let rightPageURL = infoToImageURL(TITLE, CHAPTER, PAGE + 1);
+
+        // If the current page is the first of a chapter that isn't the first
+        // one, then we should show the last page of the previous chapter
+        if (CONFIG.fistPageSingle && PAGE % 2 == 1) {
+          if (PAGE == 1) {
+            leftPageURL = infoToImageURL(TITLE, CHAPTER - 1, getChapterNumPage(CHAPTER - 1));
+          } else {
+            leftPageURL = infoToImageURL(TITLE, CHAPTER, PAGE - 1);
+          }
+          rightPageURL = infoToImageURL(TITLE, CHAPTER, PAGE);
         }
 
+        // If the current page is the last of a chapter that isn't the last chapter
+        // then we should show the first page and the next chapter
+        if (PAGE == getChapterNumPage() && CHAPTER < getNumChapters()) {
+          rightPageURL = infoToImageURL(TITLE, CHAPTER + 1, 1);
+        }
+
+        getImage(rightPageURL).then(function(successUrl) {
+          imgPageRight.src = rightPageURL;
+        });
+
       }
+
+      getImage(leftPageURL).then(function(successUrl) {
+        imgPageLeft.src = leftPageURL;
+      });
+
     }
+
 
 
     /* Show or hide buttons */
@@ -302,7 +333,7 @@ function refreshDipslayPages() {
       document.getElementById("lightingButton").style.display = null;
     }
 
-    if (doublePage) {
+    if (useDoublePage) {
       document.getElementById("bookFoldButton").style.display = null;
       document.getElementById("sidePagesButton").style.display = null;
     } else {
