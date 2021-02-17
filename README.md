@@ -14,6 +14,7 @@ The design is entirely cilent-side, the server simply host the images.
 - Single and double-page display with the ability to display the cover page as a single page.
 - Suppoprt for vertical continuous scrolling (webtoons).
 - Config files per book.
+- Light-weight: about 250KB with all filters and textures.
 
 ## Interface
 ![](https://r-entries.com/etuliens/img/Reader/1.jpg)
