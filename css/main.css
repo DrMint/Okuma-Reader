@@ -1,23 +1,47 @@
 @import url('https://fonts.googleapis.com/css?family=Quicksand&display=swap');
 
 body {
-  font-family: Quicksand;
+  --next-previous-page-width: 30%; /* Must be between 0% and 50% */
+  --footer-height: 4em;
+  --slider-height: 1em;
   padding: 0;
   margin: 0;
-  --image-nav-width: 30%; /* Must be between 0% and 50% */
-  --footer-height: 4em;
-  --background-color: rgb(50, 50, 50);
-  --slider-height: 1em;
-  background-color: var(--background-color);
+  /*
+  background: var(--background-gradient), var(--background-image);
+  background-blend-mode: multiply;
+  background-position: center;
+  */
+  background: var(--background-gradient);
   overflow: hidden;
   display: grid;
   place-content: center;
   height: 100vh;
 }
 
+body.darkTheme {
+  --background-image: url("../img/background-imperfections.webp");
+  --background-gradient: linear-gradient(0deg, rgb(31 31 31) 0%, rgb(74 74 74) 100%);
+  --menu-background-color: rgb(30, 30, 30);
+  --menu-text-color: white;
+}
+
+body.lightTheme {
+  --background-image: url("../img/background-imperfections.webp");
+  --background-gradient: linear-gradient(0deg, rgb(197 197 197) 0%, rgb(245 245 245) 100%);
+  --menu-background-color: rgb(220, 220, 220);
+  --menu-text-color: black;
+}
+
 body.continuousScrolling {
   height: unset;
   overflow-y: visible;
+}
+
+body, select, option {
+  font-family: Quicksand;
+  color: var(--menu-text-color);
+  font-family: Quicksand;
+  font-weight: bold;
 }
 
 #eyeFilter.enabled {
@@ -38,7 +62,6 @@ body.continuousScrolling {
   display: none;
 }
 
-
 .slider {
   -webkit-appearance: none;
   height: calc(var(--slider-height) / 2);
@@ -53,7 +76,7 @@ body.continuousScrolling {
   width: var(--slider-height);
   height: var(--slider-height);
   border-radius: 50%;
-  background: black;
+  background: var(--menu-text-color);
   cursor: pointer;
 }
 
@@ -61,6 +84,17 @@ body.continuousScrolling {
   width: var(--slider-height);
   height: var(--slider-height);
   border-radius: 50%;
-  background: black;
+  background: var(--menu-text-color);
   cursor: pointer;
+}
+
+select {
+  border: none;
+  padding-right: .5em;
+  background: none !important;
+}
+
+select > option {
+    background-color: var(--menu-background-color);
+    font-size: 100% !important;
 }

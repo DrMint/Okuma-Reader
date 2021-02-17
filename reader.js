@@ -301,7 +301,7 @@ function refreshDipslayPages() {
       document.getElementById("sidePagesButton").style.display = null;
       document.getElementById("lightingButton").style.display = null;
     }
-    
+
     if (doublePage) {
       document.getElementById("bookFoldButton").style.display = null;
       document.getElementById("sidePagesButton").style.display = null;
@@ -475,8 +475,14 @@ function setHandlers() {
     document.activeElement.blur(); // Remove focus
   }
 
-  chapterSelection.onselect = function() {
-    alert("salut");
+  themeSelection.onchange = function() {
+    body.classList.remove("lightTheme");
+    body.classList.remove("darkTheme");
+    switch (themeSelection.selectedIndex) {
+      case 0: body.classList.add("darkTheme"); break;
+      case 1: body.classList.add("lightTheme"); break;
+    }
+    document.activeElement.blur(); // Remove focus
   }
 
   doublePageButton.onclick = function() {
@@ -565,12 +571,14 @@ const navImage = document.getElementById("navImage");
 const bookTitle = document.getElementById("bookTitle");
 const bookChapter = document.getElementById("bookChapter");
 const middlePageButton = document.getElementById("middlePageButton");
+const body = document.getElementsByTagName("body")[0];
 
 const fullScreenButton = document.getElementById("fullScreenButton");
 const doublePageButton = document.getElementById("doublePageButton");
 var previousChapterButton = document.getElementById("previousChapter");
 var nextChapterButton = document.getElementById("nextChapter");
 
+const themeSelection = document.getElementById("themeSelection");
 const chapterSelection = document.getElementById("chapterSelection");
 const pageSlider = document.getElementById("pageSlider");
 var pageSliderCurrent;
@@ -658,7 +666,8 @@ fetch(IMAGES_URL + TITLE + '/' + 'config.json')
       }
     }
 
-    document.getElementsByTagName("body")[0].classList.add(CONFIG.bookType);
+    body.classList.add(CONFIG.bookType);
+    body.classList.add("darkTheme");
 
     // Default values for the filters
     {

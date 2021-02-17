@@ -51,17 +51,29 @@ body.book #navImage > #filters > #paperTexture.enabled {
 }
 
 #navImage.bookShadow {
-  box-shadow: 0 0 0.5vmin rgba(0,0,0,0.3), 0 1vmin 1vmin rgba(0,0,0,0.4), 0 2vmin 2vmin rgba(0,0,0,0.6), 0 6vmin 6vmin rgba(0,0,0,0.5);
+  box-shadow: 0 0 0.5em rgba(0,0,0,0.3), 0 1em 1em rgba(0,0,0,0.4), 0 2em 2em rgba(0,0,0,0.6), 0 6em 6em rgba(0,0,0,0.5);
 }
 
 #navImage.doublePage.bookShadow {
-    box-shadow: 0 0 0.5vmin rgba(0,0,0,0.3), 0 1vmin 1vmin rgba(0,0,0,0.4), 0 2vmin 2vmin rgba(0,0,0,0.6), 0 12vmin 12vmin rgba(0,0,0,0.8);
+    box-shadow: 0 0 0.5em rgba(0,0,0,0.3), 0 1em 1em rgba(0,0,0,0.4), 0 2em 2em rgba(0,0,0,0.6), 0 12em 12em rgba(0,0,0,0.8);
+}
+
+body.lightTheme > #navImage.bookShadow {
+  box-shadow: 0 0.25em 0.5em rgb(0 0 0 / 60%), 0 1em 1em rgb(0 0 0 / 25%), 0 2em 2em rgb(0 0 0 / 27%), 0 12em 12em rgb(0 0 0 / 57%);
+}
+
+body.lightTheme > #navImage.doublePage.bookShadow {
+  box-shadow: 0 0.25em 0.5em rgb(0 0 0 / 70%), 0 1em 1em rgb(0 0 0 / 30%), 0 2em 2em rgb(0 0 0 / 27%), 0 12em 12em rgb(0 0 0 / 57%)
 }
 
 #navImage.doublePage > #filters > #bookFold.enabled {
   background-image: url("../img/bookFold.webp");
   background-size: 100% 100%;
   mix-blend-mode: multiply;
+}
+
+body.lightTheme > #navImage.doublePage > #filters > #bookFold.enabled {
+  opacity: 0.5;
 }
 
 #navImage > #filters > #lighting.enabled {
@@ -72,6 +84,10 @@ body.book #navImage > #filters > #paperTexture.enabled {
 
 #navImage.doublePage > #filters > #lighting.enabled {
   background-image: url("../img/lightingDoublePage.webp");
+}
+
+body.lightTheme > #navImage > #filters > #lighting {
+  display: none !important;
 }
 
 #navImage > #filters > #specular.enabled {
@@ -105,10 +121,13 @@ body.book #navImage > #filters > #specular.enabled {
   position: absolute;
   top: 0;
   height: 100%;
-  width: var(--image-nav-width);
+  width: var(--next-previous-page-width);
   cursor: pointer;
   z-index: 5;
 }
+
+#navImage > #leftPageButton {left: 0;}
+#navImage > #rightPageButton {right: 0;}
 
 #navImage > #middlePageButton {
   position: absolute;
@@ -117,6 +136,3 @@ body.book #navImage > #filters > #specular.enabled {
   right: 0;
   bottom: 0;
 }
-
-#navImage > #leftPageButton {left: 0;}
-#navImage > #rightPageButton {right: 0;}
