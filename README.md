@@ -106,7 +106,8 @@ A config file must be provided for each book. Here's an example:
 
 ```
 
-numPages is the number of pages for each chapter. In this example, this book has 4 chapters
+numPages is the number of pages for each chapter. In this example, this book has 4 chapters.
+The currently available types are "book", "manga", and "webtoons".
 
 ## Things I want to add/change/improve
 - Better support for vertical screen and more polished interface
