@@ -4,14 +4,16 @@ The design is entirely cilent-side, the server simply host the images.
 
 ## Features
 
-- Page turn with arrow keys or by clicking on the edge of a page
+- Page turn with arrow keys or by clicking on the edge of a page.
 - Support for books with multiple chapters
 - Support for Japanese page ordering.
-- Support for various screen ratio
+- Support for various screen ratio.
+- Optional filters that simulate the visual experience of reading a real book (see Interface for images).
 - Next/previous chapter buttons and chapter selection drop-down menu.
-- Asynchronous pre-caching of the next pages (or next chapter first pages when at the end of a chapter)
+- Asynchronous pre-caching of the next pages (or next chapter first pages when at the end of a chapter).
 - Single and double-page display with the ability to display the cover page as a single page.
-- Config files per book
+- Suppoprt for vertical continuous scrolling (webtoons).
+- Config files per book.
 
 ## Interface
 ![](https://r-entries.com/etuliens/img/Reader/1.jpg)
@@ -52,13 +54,16 @@ A config file must be provided for each book. Here's an example:
 
 ```
 {
+  "title": "My book's title",
   "numPages": [38, 24, 40, 30],
   "fileExtension": ".jpg",
+  "bookType": "manga",
   "japaneseOrder": true,
   "fistPageSingle": true,
   "preferDoublePage": true,
   "allowDoublePage": true
 }
+
 ```
 
 numPages is the number of pages for each chapter. In this example, this book has 4 chapters
@@ -70,7 +75,6 @@ numPages is the number of pages for each chapter. In this example, this book has
 - Not having to write the number of pages in the config.json
 - More plexibility per chapter
 - Ability to give a name to each chapter
-- In double-page mode, when a chapter cut in between two pages (one chapter ends on the left and another starts on the right), show both pages even though they are from two different chapters.
 - Page turning animation?!
 - A main page to showcase all available books
 - A Download page/chapter/book buttons? That would also open-up the idea of making it an offline Progressive Web App
