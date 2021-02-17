@@ -212,12 +212,10 @@
   grid-area: sliderContainer;
 }
 
-#sliderContainer > #pageSliderLeft {
-  padding-right: 1em;
-}
-
+#sliderContainer > #pageSliderLeft,
 #sliderContainer > #pageSliderRight {
-  padding-left: 1em;
+  width: 3em;
+  text-align: center;
 }
 
 #sliderContainer > #pageSlider {

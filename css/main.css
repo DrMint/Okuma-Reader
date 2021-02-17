@@ -3,7 +3,6 @@
 body {
   --next-previous-page-width: 30%; /* Must be between 0% and 50% */
   --footer-height: 4em;
-  --slider-height: 1em;
   padding: 0;
   margin: 0;
   /*
@@ -64,28 +63,57 @@ body, select, option {
 
 .slider {
   -webkit-appearance: none;
-  height: calc(var(--slider-height) / 2);
+  height: 0.5em;
   border-radius: 1em;
   background: lightgray;
   outline: none;
+  --slider-thumb-size: 1;
+
+}
+
+.slider.inUse {
+  --slider-thumb-size: 1.2;
 }
 
 .slider::-webkit-slider-thumb {
+  transform: scale(var(--slider-thumb-size));
+  transition: 0.15s transform;
   -webkit-appearance: none;
   appearance: none;
-  width: var(--slider-height);
-  height: var(--slider-height);
+  width: 1em;
+  height: 1em;
   border-radius: 50%;
   background: var(--menu-text-color);
   cursor: pointer;
+  border: none;
+
+}
+
+body.darkTheme .slider::-webkit-slider-thumb {
+  filter: drop-shadow(0 0 .7em black);
+}
+
+body.darkTheme .slider::-moz-range-thumb {
+  filter: drop-shadow(0 0 .7em black);
 }
 
 .slider::-moz-range-thumb {
-  width: var(--slider-height);
-  height: var(--slider-height);
+  transform: scale(var(--slider-thumb-size));
+  transition: 0.15s transform;
+  width: 1em;
+  height: 1em;
   border-radius: 50%;
   background: var(--menu-text-color);
   cursor: pointer;
+  border: none;
+}
+
+img, #bookChapter, #configMenu, #bottomMenu {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 
 select {

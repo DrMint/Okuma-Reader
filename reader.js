@@ -198,17 +198,6 @@ function refreshDipslayPages() {
     // Lastly double page should be disable if the last page is left alone.
     doublePage = doublePage && (PAGE + 1 <= getChapterNumPage() || CHAPTER < getNumChapters());
 
-    /*
-    // If the first page is set to be single, the page number should be even
-    if (doublePage && (CONFIG.fistPageSingle && PAGE % 2 == 1)) {
-      // PAGE 1 is a special case because you may want to show page 1 and the
-      // last page from the previous chapter
-      if (PAGE > 1) {
-        changePage(TITLE, CHAPTER, PAGE - 1);
-      }
-    }
-    */
-
     if (doublePage) {
       imgPageRight.style.display = null;
       navImage.classList.add("doublePage");
@@ -255,8 +244,6 @@ function refreshDipslayPages() {
 
     }
 
-
-
     /* Show or hide buttons */
     {
       // Showing or hiding the previous page button
@@ -301,9 +288,6 @@ function refreshDipslayPages() {
           document.getElementById("bookFold").style.backgroundSize = "calc(100% + " + (viewedPagesWidth).toString() + " - " + (toBeViewedPagesWidth).toString() + ") 100%";
         }
 
-
-
-
       } else {
 
         navImage.style.paddingLeft = "unset";
@@ -314,7 +298,6 @@ function refreshDipslayPages() {
 
       }
     }
-
 
   }
 
@@ -342,8 +325,6 @@ function refreshDipslayPages() {
     }
 
   }
-
-
 
 
   /*  Replace the current URL without reloading the page.
@@ -385,8 +366,6 @@ function refreshDipslayPages() {
     }
   }
 
-
-
   // Move the paper texture arround so it doesn't always looks the same between pages
   document.getElementById("paperTexture").style.backgroundPosition = Math.floor((Math.random() * 100) + 1).toString() + "%" + Math.floor((Math.random() * 100) + 1).toString() + "%";
 
@@ -399,6 +378,12 @@ function refreshDipslayPages() {
     document.getElementById("chapterSelectionContainer").style.display = "none";
   } else {
     document.getElementById("chapterSelectionContainer").style.display = null;
+  }
+
+  // Update the slider background gradient
+  {
+    let currentPosition = pageSlider.value / pageSlider.max * 100;
+    pageSlider.style.background = "linear-gradient(90deg, var(--menu-text-color) 0%, var(--menu-text-color) " + currentPosition.toString() + "%, gray " + currentPosition.toString() + "%, gray 100%)";
   }
 
 
@@ -431,8 +416,13 @@ function setHandlers() {
     changePage(TITLE, CHAPTER, parseInt(pageSlider.value));
   }
 
+  pageSlider.onmousedown = function() {
+    pageSlider.classList.add("inUse");
+  }
+
   pageSlider.onmouseup = function() {
     document.activeElement.blur(); // Remove focus
+    pageSlider.classList.remove("inUse");
   }
 
   previousPageButton.onclick = function() {
@@ -699,6 +689,8 @@ fetch(IMAGES_URL + TITLE + '/' + 'config.json')
 
     body.classList.add(CONFIG.bookType);
     body.classList.add("darkTheme");
+
+
 
     // Default values for the filters
     {
