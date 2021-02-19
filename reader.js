@@ -95,62 +95,80 @@ function getImage(url) {
   })
 }
 
-function changePage(newTitle, newChapter, newPage) {
+function goNextPage() {
+  if (doublePage) {
+    changePage(CHAPTER, PAGE + 2);
+  } else {
+    changePage(CHAPTER, PAGE + 1);
+  }
+}
 
-  /* Sanitize the parameters before actually changing the actual values */
-  if (newChapter < 1) newChapter = 1;
+function goPreviousPage() {
+  if (doublePage) {
+    changePage(CHAPTER, PAGE - 2);
+  } else {
+    changePage(CHAPTER, PAGE - 1);
+  }
+}
 
-  if (newChapter > getNumChapters()) newChapter = getNumChapters();
+function changePage(newChapter = null, newPage = null) {
 
-  if (newPage < 1) {
-    // Go the previous chapter last page if tring to go previous page on the
-    // first page on current chapter.
-    if (newChapter > 1) {
-      newChapter--;
-      newPage = getChapterNumPage(newChapter) + newPage;
-    } else {
-       newPage = 1;
-    }
+  // When launch for the first time
+  if (newChapter == null || newPage == null) {
+    newPage = parseInt(findGetParameter('page'));
+    newChapter = parseInt(findGetParameter('chapter'));
+    if (Number.isNaN(newPage)) newPage = 1;
+    if (Number.isNaN(newChapter)) newChapter = 1;
 
-  } else if (newPage > getChapterNumPage()) {
-    // Go the next chapter first page if tring to go next page on the
-    // last page on previous chapter.
-    if (newChapter < getNumChapters()) {
 
-      // If you currently are on the last page of a chapter and in double page
-      // mode, the first page of the next chapter is already shown
-      // thus go to the second page of the new chapter.
-      if (PAGE == getChapterNumPage() && doublePage) {
-        newPage = 2;
+  } else {
+
+    /* Sanitize the parameters before actually changing the actual values */
+    if (newChapter < 1) newChapter = 1;
+
+    if (newChapter > getNumChapters()) newChapter = getNumChapters();
+
+    if (newPage < 1) {
+      // Go the previous chapter last page if tring to go previous page on the
+      // first page on current chapter.
+      if (newChapter > 1) {
+        newChapter--;
+        newPage = getChapterNumPage(newChapter) + newPage;
       } else {
-        newPage = 1;
+         newPage = 1;
       }
-      newChapter++;
 
-    } else {
+    } else if (newPage > getChapterNumPage()) {
+      // Go the next chapter first page if tring to go next page on the
+      // last page on previous chapter.
+      if (newChapter < getNumChapters()) {
 
-      newPage = getChapterNumPage();
+        // If you currently are on the last page of a chapter and in double page
+        // mode, the first page of the next chapter is already shown
+        // thus go to the second page of the new chapter.
+        if (PAGE == getChapterNumPage() && doublePage) {
+          newPage = 2;
+        } else {
+          newPage = 1;
+        }
+        newChapter++;
 
-      /*
-      // If we are currently on the second last page of the book and in double
-      // page mode, the last page is also shown. No need to change pages.
-      if (PAGE == getChapterNumPage() - 1 && doublePage) {
-        newPage = PAGE;
       } else {
+
         newPage = getChapterNumPage();
+
       }
-      */
     }
+
   }
 
-  let hasAnythingChanged = newTitle != TITLE || newChapter != CHAPTER || newPage != PAGE;
+  let hasPageChanged = newPage != PAGE;
   let hasChapterChanged = newChapter != CHAPTER;
 
-  TITLE = newTitle;
   CHAPTER = newChapter
   PAGE = newPage;
 
-  if (CONFIG.continuousScrolling) {
+  if (CONFIG.continuousScrolling && hasChapterChanged) {
     document.getElementById('continuousScrollingPages').innerHTML = "";
     for (var i = 1; i <= getChapterNumPage(); i++) {
       var img = document.createElement('img');
@@ -160,7 +178,7 @@ function changePage(newTitle, newChapter, newPage) {
     }
   }
 
-  if (hasAnythingChanged) {
+  if (hasPageChanged || hasChapterChanged) {
     refreshDipslayPages();
   }
 
@@ -172,19 +190,8 @@ function refreshDipslayPages() {
   if (CONFIG.continuousScrolling) {
 
     window.scrollTo(0, 0);
-    document.getElementsByTagName('body')[0].classList.add("continuousScrolling");
-    imgPageLeft.style.display = "none";
-    imgPageRight.style.display = "none";
-    sliderContainer.style.display = "none";
-
 
   } else {
-
-    document.getElementsByTagName('body')[0].classList.remove("continuousScrolling");
-    imgPageLeft.style.display = null;
-    imgPageRight.style.display = null;
-    sliderContainer.style.display = null;
-
 
     // To use double page, the user should have asked for double page
     doublePage = useDoublePage
@@ -271,8 +278,8 @@ function refreshDipslayPages() {
 
       } else {
 
-        navImage.style.paddingLeft = "unset";
-        navImage.style.paddingRight = "unset";
+        navImage.style.paddingLeft = null;
+        navImage.style.paddingRight = null;
         document.getElementById("lighting").style.backgroundSize = null;
         document.getElementById("specular").style.backgroundSize = null;
         document.getElementById("bookFold").style.backgroundSize = null;
@@ -378,8 +385,8 @@ function refreshDipslayPages() {
 function setHandlers() {
   /* EVENTS HANDLERS */
 
-  document.onkeydown = function() {
-    if (!CONFIG.continuousScrolling) {
+  if (!CONFIG.continuousScrolling) {
+    document.onkeydown = function() {
       if (CONFIG.japaneseOrder) {
         switch (window.event.keyCode) {
           case 39: goPreviousPage(); break;
@@ -391,138 +398,56 @@ function setHandlers() {
           case 39: goNextPage(); break;
         }
       }
-    }
-  };
+    };
 
-  pageSlider.oninput = function() {
-    changePage(TITLE, CHAPTER, parseInt(pageSlider.value));
-  }
 
-  pageSlider.onmousedown = function() {
-    pageSlider.classList.add("inUse");
-  }
-
-  pageSlider.onmouseup = function() {
-    document.activeElement.blur(); // Remove focus
-    pageSlider.classList.remove("inUse");
-  }
-
-  imgPageLeft.onload = imgFinishedLoading();
-
-  previousChapterButton.onclick = function() {
-    changePage(TITLE, CHAPTER - 1, 1);
-  }
-
-  nextChapterButton.onclick = function() {
-    changePage(TITLE, CHAPTER + 1, 1);
-  }
-
-  let isFullScreen = false;
-  fullScreenButton.onclick = function() {
-    if (isFullScreen) {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) { /* Safari */
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) { /* IE11 */
-        document.msExitFullscreen();
-      }
-      fullScreenButton.classList.remove("enabled");
-
-    } else {
-
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen();
-      } else if (document.documentElement.webkitRequestFullscreen) { /* Safari */
-        document.documentElement.webkitRequestFullscreen();
-      } else if (document.documentElement.msRequestFullscreen) { /* IE11 */
-        document.documentElement.msRequestFullscreen();
-      }
-      fullScreenButton.classList.add("enabled");
+    pageSlider.oninput = function() {
+      changePage(CHAPTER, parseInt(pageSlider.value));
     }
 
-    isFullScreen = !isFullScreen;
-  }
-
-  chapterSelection.onchange = function() {
-    changePage(TITLE, chapterSelection.selectedIndex + 1, 1);
-    document.activeElement.blur(); // Remove focus
-  }
-
-  themeSelection.onchange = function() {
-    body.classList.remove("lightTheme");
-    body.classList.remove("darkTheme");
-    switch (themeSelection.selectedIndex) {
-      case 0: body.classList.add("darkTheme"); break;
-      case 1: body.classList.add("lightTheme"); break;
+    pageSlider.onmousedown = function() {
+      pageSlider.classList.add("inUse");
     }
-    document.activeElement.blur(); // Remove focus
-  }
 
-  doublePageButton.onclick = function() {
-      useDoublePage = !useDoublePage;
-      if (useDoublePage) {
-        doublePageButton.classList.add("enabled");
+    pageSlider.onmouseup = function() {
+      document.activeElement.blur(); // Remove focus
+      pageSlider.classList.remove("inUse");
+    }
+
+    doublePageButton.onclick = function() {
+        useDoublePage = !useDoublePage;
+        if (useDoublePage) {
+          doublePageButton.classList.add("enabled");
+        } else {
+          doublePageButton.classList.remove("enabled");
+        }
+        refreshDipslayPages();
+    }
+
+    toggleElement("bookFoldButton", false, ["bookFoldButton", "bookFold"]);
+    toggleElement("lightingButton", false, ["lightingButton", "lighting", "specular"]);
+
+    document.getElementById("navigationGesturesButton").onclick = function() {
+      navigationGestures = !navigationGestures;
+      if (navigationGestures) {
+        document.getElementById("navigationGesturesButton").classList.add("enabled");
       } else {
-        doublePageButton.classList.remove("enabled");
+        document.getElementById("navigationGesturesButton").classList.remove("enabled");
+      }
+    };
+
+    document.getElementById("sidePagesButton").onclick = function() {
+      sidePages = !sidePages;
+      if (sidePages) {
+        document.getElementById("sidePagesButton").classList.add("enabled");
+      } else {
+        document.getElementById("sidePagesButton").classList.remove("enabled");
       }
       refreshDipslayPages();
-  }
+    };
 
-  toggleElement("configButton", false, ["configMenu"]);
-  toggleElement("paperTextureButton", false, ["paperTextureButton", "paperTexture"]);
-  toggleElement("bookFoldButton", false, ["bookFoldButton", "bookFold"]);
-  toggleElement("lightingButton", false, ["lightingButton", "lighting", "specular"]);
-
-  document.getElementById("navigationGesturesButton").onclick = function() {
-    navigationGestures = !navigationGestures;
-    if (navigationGestures) {
-      document.getElementById("navigationGesturesButton").classList.add("enabled");
-    } else {
-      document.getElementById("navigationGesturesButton").classList.remove("enabled");
-    }
-  };
-
-  document.getElementById("sidePagesButton").onclick = function() {
-    sidePages = !sidePages;
-    if (sidePages) {
-      document.getElementById("sidePagesButton").classList.add("enabled");
-    } else {
-      document.getElementById("sidePagesButton").classList.remove("enabled");
-    }
-    refreshDipslayPages();
-  };
-
-  let bookShadow = false;
-  document.getElementById("bookShadowButton").onclick = function() {
-    bookShadow = !bookShadow;
-    if (bookShadow) {
-      document.getElementById("bookShadowButton").classList.add("enabled");
-      navImage.classList.add("bookShadow");
-    } else {
-      document.getElementById("bookShadowButton").classList.remove("enabled");
-      navImage.classList.remove("bookShadow");
-    }
-  };
-
-
-
-  document.getElementById("closeMenu").onclick = function() {
-    document.getElementById("configButton").click();
-  };
-
-  document.getElementById("pageWidthSlider").oninput = function() {
-    document.getElementById("continuousScrollingPages").style.width = document.getElementById("pageWidthSlider").value + "vw";
-  }
-
-  document.getElementById("pageWidthSlider").onmouseup = function() {
-    document.activeElement.blur(); // Remove focus
-  }
-
-  if (!CONFIG.continuousScrolling) {
 
     swipedetect(document.getElementById('touchSurface'), function (value) {
-
       if (value != "none") {
         if ((value == 'left' || value == 'right') && !CONFIG.continuousScrolling) {
           if (navigationGestures) {
@@ -578,57 +503,121 @@ function setHandlers() {
       }
     })
 
-  // If continuousScrolling
+    imgPageLeft.onload = imgFinishedLoading();
+
   } else {
+
+    document.getElementById("pageWidthSlider").oninput = function() {
+      document.getElementById("continuousScrollingPages").style.width = document.getElementById("pageWidthSlider").value + "vw";
+    }
+
+    document.getElementById("pageWidthSlider").onmouseup = function() {
+      document.activeElement.blur(); // Remove focus
+    }
+
     document.getElementById('touchSurface').onclick = function() {toggleNavMenu();}
+
   }
 
-
-
-}
-
-function toggleNavMenu() {
-  if (isMenuVisible) {
-    document.getElementById("topMenu").classList.add("hidden");
-    document.getElementById("bottomMenu").classList.add("hidden");
-  } else {
-    document.getElementById("topMenu").classList.remove("hidden");
-    document.getElementById("bottomMenu").classList.remove("hidden");
+  previousChapterButton.onclick = function() {
+    changePage(CHAPTER - 1, 1);
   }
-  isMenuVisible = !isMenuVisible
-}
 
-function goNextPage() {
-  if (doublePage) {
-    changePage(TITLE, CHAPTER, PAGE + 2);
-  } else {
-    changePage(TITLE, CHAPTER, PAGE + 1);
+  nextChapterButton.onclick = function() {
+    changePage(CHAPTER + 1, 1);
   }
-}
 
-function goPreviousPage() {
-  if (doublePage) {
-    changePage(TITLE, CHAPTER, PAGE - 2);
-  } else {
-    changePage(TITLE, CHAPTER, PAGE - 1);
-  }
-}
-
-function toggleElement(button, varState, targets, className = "enabled") {
-  document.getElementById(button).onclick = function() {
-    varState = !varState;
-
-    targets.forEach((target) => {
-      if (varState) {
-        document.getElementById(target).classList.add(className);
-      } else {
-        document.getElementById(target).classList.remove(className);
+  let isFullScreen = false;
+  fullScreenButton.onclick = function() {
+    if (isFullScreen) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) { /* Safari */
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) { /* IE11 */
+        document.msExitFullscreen();
       }
-    });
+      fullScreenButton.classList.remove("enabled");
 
+    } else {
+
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      } else if (document.documentElement.webkitRequestFullscreen) { /* Safari */
+        document.documentElement.webkitRequestFullscreen();
+      } else if (document.documentElement.msRequestFullscreen) { /* IE11 */
+        document.documentElement.msRequestFullscreen();
+      }
+      fullScreenButton.classList.add("enabled");
+    }
+
+    isFullScreen = !isFullScreen;
+  }
+
+  chapterSelection.onchange = function() {
+    changePage(chapterSelection.selectedIndex + 1, 1);
+    document.activeElement.blur(); // Remove focus
+  }
+
+  themeSelection.onchange = function() {
+    body.classList.remove("lightTheme");
+    body.classList.remove("darkTheme");
+    switch (themeSelection.selectedIndex) {
+      case 0: body.classList.add("darkTheme"); break;
+      case 1: body.classList.add("lightTheme"); break;
+    }
+    document.activeElement.blur(); // Remove focus
+  }
+
+
+  toggleElement("configButton", false, ["configMenu"]);
+  toggleElement("paperTextureButton", false, ["paperTextureButton", "paperTexture"]);
+
+  document.getElementById("closeMenu").onclick = function() {
+    document.getElementById("configButton").click();
+  };
+
+  let bookShadow = false;
+  document.getElementById("bookShadowButton").onclick = function() {
+    bookShadow = !bookShadow;
+    if (bookShadow) {
+      document.getElementById("bookShadowButton").classList.add("enabled");
+      navImage.classList.add("bookShadow");
+    } else {
+      document.getElementById("bookShadowButton").classList.remove("enabled");
+      navImage.classList.remove("bookShadow");
+    }
+  };
+
+
+  function toggleNavMenu() {
+    if (isMenuVisible) {
+      document.getElementById("topMenu").classList.add("hidden");
+      document.getElementById("bottomMenu").classList.add("hidden");
+    } else {
+      document.getElementById("topMenu").classList.remove("hidden");
+      document.getElementById("bottomMenu").classList.remove("hidden");
+    }
+    isMenuVisible = !isMenuVisible
+  }
+
+
+  function toggleElement(button, varState, targets, className = "enabled") {
+    document.getElementById(button).onclick = function() {
+      varState = !varState;
+
+      targets.forEach((target) => {
+        if (varState) {
+          document.getElementById(target).classList.add(className);
+        } else {
+          document.getElementById(target).classList.remove(className);
+        }
+      });
+    }
   }
 
 }
+
 
 
 // -----------------------------------------------------------------------------
@@ -639,6 +628,10 @@ const IMAGES_URL =  "https://r-entries.com/reader/";
 
 var imgPageLeft;
 var imgPageRight;
+var previousChapterButton;
+var nextChapterButton;
+var pageSliderCurrent;
+var pageSliderTotal;
 
 const navImage = document.getElementById("navImage");
 const bookTitle = document.getElementById("bookTitle");
@@ -647,14 +640,10 @@ const body = document.getElementsByTagName("body")[0];
 
 const fullScreenButton = document.getElementById("fullScreenButton");
 const doublePageButton = document.getElementById("doublePageButton");
-var previousChapterButton = document.getElementById("previousChapter");
-var nextChapterButton = document.getElementById("nextChapter");
 
 const themeSelection = document.getElementById("themeSelection");
 const chapterSelection = document.getElementById("chapterSelection");
 const pageSlider = document.getElementById("pageSlider");
-var pageSliderCurrent;
-var pageSliderTotal;
 
 var useDoublePage = false;
 var doublePage = useDoublePage;
@@ -666,10 +655,8 @@ var isMenuVisible = true;
 
 // Loads values from the GET
 var TITLE = findGetParameter('title');
-var PAGE = parseInt(findGetParameter('page'));
-var CHAPTER = parseInt(findGetParameter('chapter'));
-if (Number.isNaN(PAGE)) PAGE = 1;
-if (Number.isNaN(CHAPTER)) CHAPTER = 1;
+var CHAPTER;
+var PAGE;
 
 // Load the CONFIG file from the specific gallery
 var CONFIG;
@@ -678,7 +665,10 @@ fetch(IMAGES_URL + TITLE + '/' + 'config.json')
   .then(data => {
     CONFIG = data;
 
+    body.classList.add(CONFIG.bookType);
+
     if (CONFIG.japaneseOrder) {
+
       imgPageLeft = document.getElementById("imgPageRight");
       imgPageRight = document.getElementById("imgPageLeft");
 
@@ -700,6 +690,7 @@ fetch(IMAGES_URL + TITLE + '/' + 'config.json')
 
       previousChapterButton = document.getElementById("leftChapterButton");
       nextChapterButton = document.getElementById("rightChapterButton");
+
     }
 
     /* Populate the chapterSelection menu with the chapter from this title */
@@ -709,38 +700,33 @@ fetch(IMAGES_URL + TITLE + '/' + 'config.json')
       chapterSelection.add(option);
     }
 
-    pageSlider.min = 1;
-
-    changePage(TITLE, CHAPTER, PAGE);
-    refreshDipslayPages();
-
+    changePage();
     setHandlers();
 
     if (!CONFIG.allowDoublePage) doublePageButton.style.display = "none";
+    if (CONFIG.preferDoublePage) doublePageButton.click();
 
-    if (CONFIG.preferDoublePage) {
-      doublePageButton.click();
-    }
-
-    // Set default value for the width of the continuous pages
+    // Set default value for continuous pages
     {
       if (CONFIG.continuousScrolling) {
-        if(window.innerHeight > window.innerWidth) {
-          document.getElementById("pageWidthSlider").value = "100"
+        document.getElementsByTagName('body')[0].classList.add("continuousScrolling");
+        imgPageLeft.style.display = "none";
+        imgPageRight.style.display = "none";
+        sliderContainer.style.display = "none";
+
+        if( window.innerHeight > window.innerWidth ) {
+          document.getElementById("pageWidthSlider").value = "100";
         } else {
-          document.getElementById("pageWidthSlider").value = "40"
+          document.getElementById("pageWidthSlider").value = "40";
         }
         document.getElementById("continuousScrollingPages").style.width = document.getElementById("pageWidthSlider").value + "vw";
       }
     }
 
-    body.classList.add(CONFIG.bookType);
-    body.classList.add("darkTheme");
-
-
-
-    // Default values for the options
+    // Default values
     {
+      body.classList.add("darkTheme");
+
       if (CONFIG.continuousScrolling) {
         document.getElementById("bookShadowButton").click();
       } else {
