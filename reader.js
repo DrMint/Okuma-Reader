@@ -519,62 +519,70 @@ function setHandlers() {
     document.activeElement.blur(); // Remove focus
   }
 
-  swipedetect(document.getElementById('touchSurface'), function (value) {
+  if (!CONFIG.continuousScrolling) {
 
-    if (value != "none") {
-      if ((value == 'left' || value == 'right') && !CONFIG.continuousScrolling) {
-        if (navigationGestures) {
-          if (value == 'left') {
-            if (CONFIG.japaneseOrder) {
-              goPreviousPage();
-            } else {
-              goNextPage()
-            }
-          } else if (value == 'right') {
-            if (CONFIG.japaneseOrder) {
-              goNextPage()
-            } else {
-              goPreviousPage();
+    swipedetect(document.getElementById('touchSurface'), function (value) {
+
+      if (value != "none") {
+        if ((value == 'left' || value == 'right') && !CONFIG.continuousScrolling) {
+          if (navigationGestures) {
+            if (value == 'left') {
+              if (CONFIG.japaneseOrder) {
+                goPreviousPage();
+              } else {
+                goNextPage()
+              }
+            } else if (value == 'right') {
+              if (CONFIG.japaneseOrder) {
+                goNextPage()
+              } else {
+                goPreviousPage();
+              }
             }
           }
-        }
 
-      } else {
+        } else {
 
-        if (!CONFIG.continuousScrolling) {
+          if (!CONFIG.continuousScrolling) {
 
-          let navPosition = navImage.getBoundingClientRect();
-          let navWidth = navPosition.right - navPosition.left;
-          let leftArea = navPosition.left + navWidth * 0.2;
-          let rightArea = navPosition.left + navWidth * 0.8;
+            let navPosition = navImage.getBoundingClientRect();
+            let navWidth = navPosition.right - navPosition.left;
+            let leftArea = navPosition.left + navWidth * 0.2;
+            let rightArea = navPosition.left + navWidth * 0.8;
 
-          if (value[0] < leftArea) {
+            if (value[0] < leftArea) {
 
-            if (CONFIG.japaneseOrder) {
-              goNextPage()
+              if (CONFIG.japaneseOrder) {
+                goNextPage()
+              } else {
+                goPreviousPage();
+              }
+
+            } else if (value[0] > rightArea) {
+
+              if (CONFIG.japaneseOrder) {
+                goPreviousPage();
+              } else {
+                goNextPage()
+              }
+
             } else {
-              goPreviousPage();
-            }
-
-          } else if (value[0] > rightArea) {
-
-            if (CONFIG.japaneseOrder) {
-              goPreviousPage();
-            } else {
-              goNextPage()
+              toggleNavMenu();
             }
 
           } else {
             toggleNavMenu();
           }
 
-        } else {
-          toggleNavMenu();
         }
-
       }
-    }
-  })
+    })
+
+  // If continuousScrolling
+  } else {
+    document.getElementById('touchSurface').onclick = function() {toggleNavMenu();}
+  }
+
 
 
 }
