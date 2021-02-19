@@ -4,17 +4,17 @@ The design is entirely cilent-side, the server simply host the images.
 
 ## Features
 
-- Page turn with arrow keys or by clicking on the edge of a page.
-- Support for books with multiple chapters
+- Page turn with arrow keys or by clicking on the edge of a page or with mouse/touch swipes.
+- Support for books with multiple chapters.
 - Support for Japanese page ordering.
 - Support for various screen ratio.
+- Support for vertical continuous scrolling (webtoons).
 - Optional filters that simulate the visual experience of reading a real book (see Interface for images).
 - Next/previous chapter buttons and chapter selection drop-down menu.
 - Asynchronous pre-caching of the next pages (or next chapter first pages when at the end of a chapter).
 - Single and double-page display with the ability to display the cover page as a single page.
-- Support for vertical continuous scrolling (webtoons).
 - Config files per book.
-- Light-weight: about 250KB with all filters and textures.
+- Light-weight: about 350KB with all filters and textures.
 
 ## Interface
 
@@ -109,13 +109,20 @@ A config file must be provided for each book. Here's an example:
 numPages is the number of pages for each chapter. In this example, this book has 4 chapters.
 The currently available types are "book", "manga", and "webtoons".
 
-## Things I want to add/change/improve
-- Better support for vertical screen and more polished interface
-- Give the user the ability to change things like the background color, blue-light filter
-- Being able to save the current page in a book, to easily resume next time a user wants to read
-- Not having to write the number of pages in the config.json
-- More plexibility per chapter
-- Ability to give a name to each chapter
+## Things I want to add/change/improve (more or less in order of priority)
+- Add a message/info pop-up when visiting the page for the first time with explanation on how to use it.
+- Add a book info pop-up where you can read the synopsis, learn about the author(s), status, date of release...
+- Add the ability to zoom on a page, especially on smartphones.
+- Ability to give a name to each chapter.
+- Automatically save the current page/chapter for the next time the user visits the book.
+- Automatically save the settings (per book or globally).
+- Give the user the ability to choose a custom color for the background.
+- Add "reading mode" which is basically a blue-light filter. Later, add customizable filter layer.
+- Not having to write the number of pages in the config.json.
+- More flexibility per chapter.
 - Page turning animation?!
-- A main page to showcase all available books
-- A Download page/chapter/book buttons? That would also open-up the idea of making it an offline Progressive Web App
+- A main page to showcase all available books.
+- Being able to embed this reader in someone else webpage (using iframe I guess?).
+- A Download page/chapter/book buttons? That would also open-up the idea of making it an offline Progressive Web App.
+- The ability to use archives (zip, tar.gz...) instead of folders.
+- The ability to display archives from the client's computer (without uploading it).
