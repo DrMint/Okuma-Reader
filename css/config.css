@@ -52,10 +52,15 @@
   -webkit-mask-size: 1em !important;
 }
 
+#configMenu > #pageWidthContainer {
+  grid-auto-flow: row;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  grid-gap: 1em;
+}
+
 #configMenu > #pageWidthContainer > p {
   margin: 0;
-  margin-bottom: 0.4em;
-  text-align: center;
 }
 
 #doublePageButton > .icon {

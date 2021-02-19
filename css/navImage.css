@@ -17,6 +17,16 @@ body.book #navImage {
   background-size: 11vmin 100%;
 }
 
+
+
+#navImage > #touchSurface {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
 #navImage > #continuousScrollingPages {
   display: grid;
 }
@@ -114,25 +124,4 @@ body.book #navImage > #filters > #specular.enabled {
   height: 100%;
   width: min-content;
   position: relative;
-}
-
-#navImage > #leftPageButton,
-#navImage > #rightPageButton {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  width: var(--next-previous-page-width);
-  cursor: pointer;
-  z-index: 5;
-}
-
-#navImage > #leftPageButton {left: 0;}
-#navImage > #rightPageButton {right: 0;}
-
-#navImage > #middlePageButton {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
 }
