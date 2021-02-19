@@ -1,6 +1,6 @@
 # Okuma-Reader
 Online book reader written in JS with some key features like Japanese page order, double-page view and pre-caching on next pages.
-The design is entirely cilent-side, the server simply host the images.
+The design is entirely cilent-side, the server simply hosts the images.
 
 ## Features
 
@@ -23,7 +23,7 @@ The design is entirely cilent-side, the server simply host the images.
 At the top, there is information about the current book, the current chapter, a button to enter/exit fullscreen mode, and a button to open the settings menu. At the bottom, you will find the current page, a slider you can use to quickly skim through the book, and the total number of pages.
 
 ![](https://r-entries.com/etuliens/img/Reader/12.JPG)
-When a book/manga has multiple chapters, a chapter selection menu is also present with arrows to go to the previous or next chapter. Please note that in japanese ordering mode, the current page number is at the right, the total number of pages is at the left.
+When a book/manga has multiple chapters, a chapter selection menu is also present with arrows to go to the previous or next chapter. Please note that in Japanese ordering mode, the current page number is at the right, the total number of pages is at the left.
 
 ### Interface on mobile
 ![](https://r-entries.com/etuliens/img/Reader/3.JPG)
@@ -45,7 +45,7 @@ Here what each filter does:
  - Paper texture: adds some grain to the paper. The amount and type of grain depends on the book type (see the Config files section).
  - Book fold: adds a self-shadowed area in the middle of the book.
  - Realistic lighting: adds specularity to the paper.
- - Side pages: accuratly simulates the fact that the previous and next pages are visible on the side of the book. (see the Side pages section).
+ - Side pages: accurately simulates the fact that the previous and next pages are visible on the side of the book. (see the Side pages section).
  - Book shadow: adds a shadow to the bottom and side of the book to make it seems as if the book is laying on the surface.
 
 ### Side pages
@@ -111,6 +111,7 @@ The currently available types are "book", "manga", and "webtoons".
 
 ## Things I want to add/change/improve (more or less in order of priority)
 - Add a message/info pop-up when visiting the page for the first time with explanation on how to use it.
+- When launching it for the first time, ask what "reading experience" the user wants: realistic (with the book filters) or simple (just the plain images)
 - Add a book info pop-up where you can read the synopsis, learn about the author(s), status, date of release...
 - Add the ability to zoom on a page, especially on smartphones.
 - Ability to give a name to each chapter.
