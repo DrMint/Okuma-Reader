@@ -109,6 +109,9 @@ A config file must be provided for each book. Here's an example:
 numPages is the number of pages for each chapter. In this example, this book has 4 chapters.
 The currently available types are "book", "manga", and "webtoons".
 
+## License and attribution
+This project uses [ironexdev](https://github.com/ironexdev)/[zoom](https://github.com/ironexdev/zoom) for handling pinch-zoom, pan, double-tap, zoom using the mouse wheel. It has been modified to allow single clicks (on the sides to go to the next/previous page and in the middle to toggle the top and bottom menus).
+
 ## Things I want to add/change/improve (more or less in order of priority)
 - Add a message/info pop-up when visiting the page for the first time with explanation on how to use it.
 - When launching it for the first time, ask what "reading experience" the user wants: realistic (with the book filters) or simple (just the plain images)
