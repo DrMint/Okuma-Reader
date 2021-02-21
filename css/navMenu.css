@@ -6,6 +6,7 @@
   right: 0;
   z-index: 10;
   transition: .2s transform;
+  pointer-events: none;
 }
 
 .navMenu > .navContainer {
@@ -16,6 +17,7 @@
   place-content: center;
   place-items: center;
   box-shadow: 0 0 2em rgba(0, 0, 0, 0.5);
+  pointer-events: all;
 }
 
 .navMenu .icon {

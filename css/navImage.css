@@ -68,11 +68,11 @@ body.book #navImage > #filters > #paperTexture.enabled {
     box-shadow: 0 0 0.5em rgba(0,0,0,0.3), 0 1em 1em rgba(0,0,0,0.4), 0 2em 2em rgba(0,0,0,0.6), 0 12em 12em rgba(0,0,0,0.8);
 }
 
-body.lightTheme > #navImage.bookShadow {
+body.lightTheme #navImage.bookShadow {
   box-shadow: 0 0.25em 0.5em rgb(0 0 0 / 60%), 0 1em 1em rgb(0 0 0 / 25%), 0 2em 2em rgb(0 0 0 / 27%), 0 12em 12em rgb(0 0 0 / 57%);
 }
 
-body.lightTheme > #navImage.doublePage.bookShadow {
+body.lightTheme #navImage.doublePage.bookShadow {
   box-shadow: 0 0.25em 0.5em rgb(0 0 0 / 70%), 0 1em 1em rgb(0 0 0 / 30%), 0 2em 2em rgb(0 0 0 / 27%), 0 12em 12em rgb(0 0 0 / 57%)
 }
 
@@ -82,7 +82,7 @@ body.lightTheme > #navImage.doublePage.bookShadow {
   mix-blend-mode: multiply;
 }
 
-body.lightTheme > #navImage.doublePage > #filters > #bookFold.enabled {
+body.lightTheme #navImage.doublePage > #filters > #bookFold.enabled {
   opacity: 0.5;
 }
 
@@ -96,7 +96,7 @@ body.lightTheme > #navImage.doublePage > #filters > #bookFold.enabled {
   background-image: url("../img/lightingDoublePage.webp");
 }
 
-body.lightTheme > #navImage > #filters > #lighting {
+body.lightTheme #navImage > #filters > #lighting {
   display: none !important;
 }
 

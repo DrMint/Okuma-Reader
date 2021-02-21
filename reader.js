@@ -1,4 +1,5 @@
 import { swipedetect } from './swipe-touch.js';
+import { zoom } from './directive.js';
 
 /* Returns the value of a given GET parameter name */
 function findGetParameter(parameterName) {
@@ -119,7 +120,6 @@ function changePage(newChapter = null, newPage = null) {
     newChapter = parseInt(findGetParameter('chapter'));
     if (Number.isNaN(newPage)) newPage = 1;
     if (Number.isNaN(newChapter)) newChapter = 1;
-
 
   } else {
 
@@ -294,13 +294,11 @@ function refreshDipslayPages() {
   {
     if (CONFIG.continuousScrolling) {
       document.getElementById("pageWidthContainer").style.display = null;
-      document.getElementById("navigationGesturesButton").style.display = "none";
       document.getElementById("bookFoldButton").style.display = "none";
       document.getElementById("sidePagesButton").style.display = "none";
       document.getElementById("lightingButton").style.display = "none";
     } else {
       document.getElementById("pageWidthContainer").style.display = "none";
-      document.getElementById("navigationGesturesButton").style.display = null;
       document.getElementById("bookFoldButton").style.display = null;
       document.getElementById("sidePagesButton").style.display = null;
       document.getElementById("lightingButton").style.display = null;
@@ -427,15 +425,6 @@ function setHandlers() {
     toggleElement("bookFoldButton", false, ["bookFoldButton", "bookFold"]);
     toggleElement("lightingButton", false, ["lightingButton", "lighting", "specular"]);
 
-    document.getElementById("navigationGesturesButton").onclick = function() {
-      navigationGestures = !navigationGestures;
-      if (navigationGestures) {
-        document.getElementById("navigationGesturesButton").classList.add("enabled");
-      } else {
-        document.getElementById("navigationGesturesButton").classList.remove("enabled");
-      }
-    };
-
     document.getElementById("sidePagesButton").onclick = function() {
       sidePages = !sidePages;
       if (sidePages) {
@@ -446,62 +435,33 @@ function setHandlers() {
       refreshDipslayPages();
     };
 
-
-    swipedetect(document.getElementById('touchSurface'), function (value) {
-      if (value != "none") {
-        if ((value == 'left' || value == 'right') && !CONFIG.continuousScrolling) {
-          if (navigationGestures) {
-            if (value == 'left') {
-              if (CONFIG.japaneseOrder) {
-                goPreviousPage();
-              } else {
-                goNextPage()
-              }
-            } else if (value == 'right') {
-              if (CONFIG.japaneseOrder) {
-                goNextPage()
-              } else {
-                goPreviousPage();
-              }
-            }
-          }
+    zoom(undefined, undefined, function (actionType) {
+        if (actionType == "clickMiddle") {
+          toggleNavMenu();
 
         } else {
 
           if (!CONFIG.continuousScrolling) {
 
-            let navPosition = navImage.getBoundingClientRect();
-            let navWidth = navPosition.right - navPosition.left;
-            let leftArea = navPosition.left + navWidth * 0.2;
-            let rightArea = navPosition.left + navWidth * 0.8;
-
-            if (value[0] < leftArea) {
-
+            if (actionType == "clickLeft") {
               if (CONFIG.japaneseOrder) {
                 goNextPage()
               } else {
                 goPreviousPage();
               }
 
-            } else if (value[0] > rightArea) {
+            } else if (actionType == "clickRight") {
 
               if (CONFIG.japaneseOrder) {
                 goPreviousPage();
               } else {
                 goNextPage()
               }
-
-            } else {
-              toggleNavMenu();
             }
 
-          } else {
-            toggleNavMenu();
           }
-
         }
-      }
-    })
+    });
 
     imgPageLeft.onload = imgFinishedLoading();
 
@@ -515,7 +475,9 @@ function setHandlers() {
       document.activeElement.blur(); // Remove focus
     }
 
-    document.getElementById('touchSurface').onclick = function() {toggleNavMenu();}
+    navImage.onclick = function() {
+      toggleNavMenu();
+    }
 
   }
 
@@ -527,32 +489,21 @@ function setHandlers() {
     changePage(CHAPTER + 1, 1);
   }
 
-  let isFullScreen = false;
   fullScreenButton.onclick = function() {
-    if (isFullScreen) {
-      if (document.exitFullscreen) {
+    if (document.fullscreenElement) {
         document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) { /* Safari */
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) { /* IE11 */
-        document.msExitFullscreen();
-      }
-      fullScreenButton.classList.remove("enabled");
-
-    } else {
-
-      if (document.documentElement.requestFullscreen) {
+    } else if (document.fullscreenEnabled) {
         document.documentElement.requestFullscreen();
-      } else if (document.documentElement.webkitRequestFullscreen) { /* Safari */
-        document.documentElement.webkitRequestFullscreen();
-      } else if (document.documentElement.msRequestFullscreen) { /* IE11 */
-        document.documentElement.msRequestFullscreen();
-      }
-      fullScreenButton.classList.add("enabled");
     }
-
-    isFullScreen = !isFullScreen;
   }
+
+  document.onfullscreenchange = function ( event ) {
+    if (document.fullscreenElement) {
+      fullScreenButton.classList.add("enabled");
+    } else {
+      fullScreenButton.classList.remove("enabled");
+    }
+  };
 
   chapterSelection.onchange = function() {
     changePage(chapterSelection.selectedIndex + 1, 1);
@@ -623,8 +574,8 @@ function setHandlers() {
 // -----------------------------------------------------------------------------
 
 /* CONFIGURATION */
-const READER_URL =  "https://r-entries.com/reader/index.html";
-const IMAGES_URL =  "https://r-entries.com/reader/";
+const READER_URL =  "https://okuma.r-entries.com/";
+const IMAGES_URL =  "https://okuma.r-entries.com/books/";
 
 var imgPageLeft;
 var imgPageRight;
@@ -648,7 +599,6 @@ const pageSlider = document.getElementById("pageSlider");
 var useDoublePage = false;
 var doublePage = useDoublePage;
 var sidePages = false;
-var navigationGestures = false;
 var isMenuVisible = true;
 
 /* END CONFIGURATION */
@@ -658,87 +608,89 @@ var TITLE = findGetParameter('title');
 var CHAPTER;
 var PAGE;
 
-// Load the CONFIG file from the specific gallery
-var CONFIG;
-fetch(IMAGES_URL + TITLE + '/' + 'config.json')
-  .then(response => response.json())
-  .then(data => {
-    CONFIG = data;
+if (TITLE) {
+  // Load the CONFIG file from the specific gallery
+  var CONFIG;
+  fetch(IMAGES_URL + TITLE + '/' + 'config.json')
+    .then(response => response.json())
+    .then(data => {
+      CONFIG = data;
 
-    body.classList.add(CONFIG.bookType);
+      body.classList.add(CONFIG.bookType);
 
-    if (CONFIG.japaneseOrder) {
+      if (CONFIG.japaneseOrder) {
 
-      imgPageLeft = document.getElementById("imgPageRight");
-      imgPageRight = document.getElementById("imgPageLeft");
+        imgPageLeft = document.getElementById("imgPageRight");
+        imgPageRight = document.getElementById("imgPageLeft");
 
-      pageSliderCurrent = document.getElementById("pageSliderRight");
-      pageSliderTotal = document.getElementById("pageSliderLeft");
+        pageSliderCurrent = document.getElementById("pageSliderRight");
+        pageSliderTotal = document.getElementById("pageSliderLeft");
 
-      previousChapterButton = document.getElementById("rightChapterButton");
-      nextChapterButton = document.getElementById("leftChapterButton");
+        previousChapterButton = document.getElementById("rightChapterButton");
+        nextChapterButton = document.getElementById("leftChapterButton");
 
-      pageSlider.style.transform = "rotateZ(180deg)";
+        pageSlider.style.transform = "rotateZ(180deg)";
 
-    } else {
-
-      imgPageLeft = document.getElementById("imgPageLeft");
-      imgPageRight = document.getElementById("imgPageRight");
-
-      pageSliderCurrent = document.getElementById("pageSliderLeft");
-      pageSliderTotal = document.getElementById("pageSliderRight");
-
-      previousChapterButton = document.getElementById("leftChapterButton");
-      nextChapterButton = document.getElementById("rightChapterButton");
-
-    }
-
-    /* Populate the chapterSelection menu with the chapter from this title */
-    for (var i = 0; i < getNumChapters(); i++) {
-      var option = document.createElement("option");
-      option.text = "Chapter " + (i + 1).toString();
-      chapterSelection.add(option);
-    }
-
-    changePage();
-    setHandlers();
-
-    if (!CONFIG.allowDoublePage) doublePageButton.style.display = "none";
-    if (CONFIG.preferDoublePage) doublePageButton.click();
-
-    // Set default value for continuous pages
-    {
-      if (CONFIG.continuousScrolling) {
-        document.getElementsByTagName('body')[0].classList.add("continuousScrolling");
-        imgPageLeft.style.display = "none";
-        imgPageRight.style.display = "none";
-        sliderContainer.style.display = "none";
-
-        if( window.innerHeight > window.innerWidth ) {
-          document.getElementById("pageWidthSlider").value = "100";
-        } else {
-          document.getElementById("pageWidthSlider").value = "40";
-        }
-        document.getElementById("continuousScrollingPages").style.width = document.getElementById("pageWidthSlider").value + "vw";
-      }
-    }
-
-    // Default values
-    {
-      body.classList.add("darkTheme");
-
-      if (CONFIG.continuousScrolling) {
-        document.getElementById("bookShadowButton").click();
       } else {
-        document.getElementById("navigationGesturesButton").click();
-        document.getElementById("paperTextureButton").click();
-        document.getElementById("bookFoldButton").click();
-        document.getElementById("lightingButton").click();
-        document.getElementById("sidePagesButton").click();
-        document.getElementById("bookShadowButton").click();
+
+        imgPageLeft = document.getElementById("imgPageLeft");
+        imgPageRight = document.getElementById("imgPageRight");
+
+        pageSliderCurrent = document.getElementById("pageSliderLeft");
+        pageSliderTotal = document.getElementById("pageSliderRight");
+
+        previousChapterButton = document.getElementById("leftChapterButton");
+        nextChapterButton = document.getElementById("rightChapterButton");
+
       }
 
-    }
+      /* Populate the chapterSelection menu with the chapter from this title */
+      for (var i = 0; i < getNumChapters(); i++) {
+        var option = document.createElement("option");
+        option.text = "Chapter " + (i + 1).toString();
+        chapterSelection.add(option);
+      }
 
+      changePage();
+      setHandlers();
 
-  });
+      if (!CONFIG.allowDoublePage) doublePageButton.style.display = "none";
+      if (CONFIG.preferDoublePage && window.innerHeight < window.innerWidth) doublePageButton.click();
+
+      // Set default value for continuous pages
+      {
+        if (CONFIG.continuousScrolling) {
+          document.getElementsByTagName('body')[0].classList.add("continuousScrolling");
+          imgPageLeft.style.display = "none";
+          imgPageRight.style.display = "none";
+          sliderContainer.style.display = "none";
+
+          if( window.innerHeight > window.innerWidth ) {
+            document.getElementById("pageWidthSlider").value = "100";
+          } else {
+            document.getElementById("pageWidthSlider").value = "40";
+          }
+          document.getElementById("continuousScrollingPages").style.width = document.getElementById("pageWidthSlider").value + "vw";
+        }
+      }
+
+      // Default values
+      {
+        body.classList.add("darkTheme");
+
+        if (CONFIG.continuousScrolling) {
+          document.getElementById("bookShadowButton").click();
+        } else {
+          // If screen is in landscape mode
+          if (window.innerHeight < window.innerWidth) {
+            document.getElementById("paperTextureButton").click();
+            document.getElementById("lightingButton").click();
+          }
+          document.getElementById("bookFoldButton").click();
+          document.getElementById("sidePagesButton").click();
+          document.getElementById("bookShadowButton").click();
+        }
+
+      }
+    });
+}

@@ -1,0 +1,16 @@
+{
+  "short_name": "OKUMA",
+  "name": "OKUMA Reader",
+  "icons": [
+    {
+      "src": "img/icon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/?source=pwa",
+  "background_color": "#000",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#000"
+}
