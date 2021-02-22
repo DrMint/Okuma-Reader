@@ -2,9 +2,13 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="viewport-fit=cover, initial-scale=1">
+	<meta name="theme-color" content="#000">
+	<link rel="shortcut icon" type="image/png" href="./img/icon-small.png"/>
+	<link rel="apple-touch-icon" href="./img/icon.png"/>
 	<title>Manga Reader</title>
+	<link rel="manifest" href="./js/manifest.json">
 	<link type="text/css" rel="stylesheet" href="./css/main.css"/>
 	<link type="text/css" rel="stylesheet" href="./css/navImage.css"/>
 	<link type="text/css" rel="stylesheet" href="./css/navMenu.css"/>
@@ -21,18 +25,19 @@
 		</div>
 	</div>
 
-  <div id="navImage">
-		<img id="imgPageLeft">
-		<img id="imgPageRight">
-		<div id="continuousScrollingPages"></div>
-		<div id="filters">
-			<div id="paperTexture"></div>
-			<div id="bookFold"></div>
-			<div id="lighting"></div>
-			<div id="specular"></div>
-		</div>
-		<div id="touchSurface"></div>
- </div>
+	<div class="zoom">
+		<div id="navImage">
+			<img id="imgPageLeft">
+			<img id="imgPageRight">
+			<div id="continuousScrollingPages"></div>
+			<div id="filters">
+				<div id="paperTexture"></div>
+				<div id="bookFold"></div>
+				<div id="lighting"></div>
+				<div id="specular"></div>
+			</div>
+	 </div>
+	</div>
 
 	<div id="bottomMenu" class="navMenu">
 		<div class="navContainer">
@@ -56,7 +61,6 @@
 			<input id="pageWidthSlider" type="range" min="10" max="100" class="slider">
 		</div>
 		<div id="doublePageButton" class="button"><div class="icon"></div>Display mode</div>
-		<div id="navigationGesturesButton" class="button"><div class="icon"></div>Navigation gestures</div>
 		<div id="paperTextureButton" class="button"><div class="icon"></div>Paper texture</div>
 		<div id="bookFoldButton" class="button"><div class="icon"></div>Book fold</div>
 		<div id="lightingButton" class="button"><div class="icon"></div>Realistic lighting</div>
@@ -74,6 +78,23 @@
 
 </body>
 
-<script type="module" src="reader.js"></script>
+<script type="module" src="./js/okuma.js"></script>
+
+<!--
+<script type="text/javascript">
+
+	if ('serviceWorker' in navigator) {
+	window.addEventListener('load', function() {
+		navigator.serviceWorker.register('/sw.js').then(function(registration) {
+			// Registration was successful
+			console.log('ServiceWorker registration successful with scope: ', registration.scope);
+		}, function(err) {
+			// registration failed :(
+			console.log('ServiceWorker registration failed: ', err);
+		});
+	});
+	}
+</script>
+-->
 
 </html>
