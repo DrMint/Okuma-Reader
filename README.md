@@ -1,3 +1,9 @@
+
+<p align="center">
+  <img src="https://r-entries.com/etuliens/img/Reader/icon.png" width="20%">
+</p>
+
+
 # Okuma-Reader
 Online book reader written in JS with some key features like Japanese page order, double-page view and pre-caching on next pages.
 The design is entirely cilent-side, the server simply hosts the images.
@@ -26,7 +32,9 @@ At the top, there is information about the current book, the current chapter, a 
 When a book/manga has multiple chapters, a chapter selection menu is also present with arrows to go to the previous or next chapter. Please note that in Japanese ordering mode, the current page number is at the right, the total number of pages is at the left.
 
 ### Interface on mobile
-![](https://r-entries.com/etuliens/img/Reader/3.JPG)
+<p align="center">
+  <img src="https://r-entries.com/etuliens/img/Reader/3.JPG" width="50%">
+</p>
 On mobile, the interface is pretty much the same. The main difference is that the chapter selection menu will be absent to safe space.
 
 ### Options
