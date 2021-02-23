@@ -22,7 +22,7 @@ The design is entirely cilent-side, the server simply hosts the images.
 - Asynchronous pre-caching of the next pages (or next chapter first pages when at the end of a chapter).
 - Single and double-page display with the ability to display the cover page as a single page.
 - Config files per book.
-- Light-weight: about 350KB with all filters and textures.
+- Light-weight: under 200KB (including icons, filters, and textures).
 
 ## Interface
 
