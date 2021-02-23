@@ -8,6 +8,8 @@
 Online book reader written in JS with some key features like Japanese page order, double-page view and pre-caching on next pages.
 The design is entirely cilent-side, the server simply hosts the images.
 
+[Demo](https://okuma.r-entries.com/?title=yokoverse)
+
 ## Features
 
 - Page turn with arrow keys or by clicking on the edge of a page or with mouse/touch swipes.
