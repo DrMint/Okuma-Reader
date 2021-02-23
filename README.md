@@ -127,7 +127,6 @@ This project uses [ironexdev](https://github.com/ironexdev)/[zoom](https://githu
 - When launching it for the first time, ask what "reading experience" the user wants: realistic (with the book filters) or simple (just the plain images)
 - Add loading page animation or other visual confirmation that it's loading.
 - Add a book info pop-up where you can read the synopsis, learn about the author(s), status, date of release...
-- Add the ability to zoom on a page, especially on smartphones.
 - Ability to give a name to each chapter.
 - Automatically save the current page/chapter for the next time the user visits the book.
 - Automatically save the settings (per book or globally).
