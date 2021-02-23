@@ -127,12 +127,6 @@ select > option {
     font-size: 100% !important;
 }
 
-
 .transition{
   transition: transform ease 200ms;
-}
-
-
-.zoom {
-  touch-action: none;
 }

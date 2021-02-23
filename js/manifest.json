@@ -3,7 +3,7 @@
   "name": "OKUMA Reader",
   "icons": [
     {
-      "src": "img/icon.png",
+      "src": "/img/icon.png",
       "type": "image/png",
       "sizes": "512x512"
     }

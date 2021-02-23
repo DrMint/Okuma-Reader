@@ -10,6 +10,8 @@
   grid-auto-flow: column;
   background-image: url("../img/side.webp");
   background-size: contain;
+  pointer-events: none;
+  touch-actions: none;
 }
 
 body.book #navImage {

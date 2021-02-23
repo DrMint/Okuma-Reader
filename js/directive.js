@@ -174,7 +174,6 @@ export function zoom(classNames, settings, clickCallback) {
     /* @-<mouseDown *************************************************************/
     /****************************************************************************/
     function mouseDown(e) {
-        e.preventDefault();
 
         if (touchable === true || e.which !== 1) {
             return false;
@@ -314,7 +313,6 @@ export function zoom(classNames, settings, clickCallback) {
     /* @-<touchStart ************************************************************/
     /****************************************************************************/
     function touchStart(e) {
-        e.preventDefault();
 
         if (e.touches.length > 2) {
             return false;
@@ -417,7 +415,6 @@ export function zoom(classNames, settings, clickCallback) {
     /* @-<touchMove *************************************************************/
     /****************************************************************************/
     function touchMove(e) {
-        e.preventDefault();
 
         if (capture === false) {
             return false;
@@ -664,31 +661,8 @@ function minMax(value, min, max) {
 /* @-<moveScaleElement ********************************************************/
 /******************************************************************************/
 function moveScaleElement($element, targetOffsetX, targetOffsetY, targetScale) {
-
-
-
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //$element.style.cssText = "-moz-transform : translate(" + targetOffsetX + ", " + targetOffsetY + ") scale(" + targetScale + "); -ms-transform : translate(" + targetOffsetX + ", " + targetOffsetY + ") scale(" + targetScale + "); -o-transform : translate(" + targetOffsetX + ", " + targetOffsetY + ") scale(" + targetScale + "); -webkit-transform : translate(" + targetOffsetX + ", " + targetOffsetY + ") scale(" + targetScale + "); transform : translate3d(" + targetOffsetX + ", " + targetOffsetY + ", 0) scale3d(" + targetScale + ", " + targetScale + ", 1);";
     $element.style.transform = "translate(" + targetOffsetX + ", " + targetOffsetY + ") scale(" + targetScale + ")";
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
 }
-
-/* @-<preventDefault **********************************************************/
-/******************************************************************************/
-function preventDefault(e) {
-    e = e || window.event;
-
-    if (e.preventDefault) {
-        e.preventDefault();
-    }
-
-    e.returnValue = false;
-}
-
 
 /* @removeClass ***************************************************************/
 /******************************************************************************/

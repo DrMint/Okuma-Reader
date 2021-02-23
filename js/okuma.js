@@ -280,6 +280,7 @@ function refreshDipslayPages() {
 
       getImage(leftPageURL).then(function(successUrl) {
         imgPageLeft.src = leftPageURL;
+        imgFinishedLoading();
       });
 
     }
@@ -453,8 +454,6 @@ function setHandlers() {
         }
     });
 
-    imgPageLeft.onload = imgFinishedLoading();
-
   /* -------------------------- FOR CONTINUOUS SCROLLING MODE ONLY ------------------------------------*/
   } else {
 
@@ -466,10 +465,9 @@ function setHandlers() {
       document.activeElement.blur(); // Remove focus
     }
 
-    navImage.onclick = function() {
+    document.getElementById("navImageContainer").onclick = function() {
       toggleNavMenu();
     }
-
   }
 
   /* -------------------------- FOR BOTH BOOK AND SCROLLING MODE ------------------------------------*/
@@ -486,7 +484,7 @@ function setHandlers() {
     if (document.fullscreenElement) {
         document.exitFullscreen();
     } else if (document.fullscreenEnabled) {
-        document.documentElement.requestFullscreen();
+        document.documentElement.requestFullscreen({ navigationUI: "hide" });
     }
   }
 
