@@ -1,4 +1,5 @@
 import { zoom } from './directive.js';
+import { setCookie, getCookie } from './cookie.js';
 
 /* Returns the value of a given GET parameter name */
 function findGetParameter(parameterName) {
@@ -150,10 +151,27 @@ function changePage(newChapter = null, newPage = null) {
 
   // When launch for the first time
   if (newChapter == null || newPage == null) {
+
     newPage = parseInt(findGetParameter('page'));
     newChapter = parseInt(findGetParameter('chapter'));
-    if (Number.isNaN(newPage)) newPage = 1;
-    if (Number.isNaN(newChapter)) newChapter = 1;
+
+    // If no page/chapter is indicated in the GET
+    if (Number.isNaN(newPage)) {
+      // If a cookie is there to indicate the last visited page
+      if (getCookie('PAGE') != '') {
+        newPage = parseInt(getCookie('PAGE'));
+      } else {
+        newPage = 1;
+      }
+    }
+    if (Number.isNaN(newChapter)) {
+      // If a cookie is there to indicate the last visited chapter
+      if (getCookie('CHAPTER') != '') {
+        newChapter = parseInt(getCookie('CHAPTER'));
+      } else {
+        newChapter = 1;
+      }
+    }
 
   } else {
 
@@ -214,6 +232,8 @@ function changePage(newChapter = null, newPage = null) {
 
   if (hasPageChanged || hasChapterChanged) {
     refreshDipslayPages();
+    setCookie('PAGE', PAGE, 365);
+    setCookie('CHAPTER', CHAPTER, 365);
   }
 
 }
