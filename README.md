@@ -12,7 +12,7 @@ The design is entirely cilent-side, the server simply hosts the images.
 
 ## Features
 
-- Page turn with arrow keys or by clicking on the edge of a page or with mouse/touch swipes.
+- Page turn with arrow keys or by clicking/tapping on the edge of a page.
 - Support for books with multiple chapters.
 - Support for Japanese page ordering.
 - Support for various screen ratio.
