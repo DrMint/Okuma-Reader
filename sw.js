@@ -1,14 +1,14 @@
 var CACHE_NAME = 'my-site-cache-v1';
 var urlsToCache = [
   './',
-  '/index.html',
-  '/reader.js',
-  '/swipe-touch.js',
-  '/sw.js',
-  '/css/config.css',
-  '/css/main.css',
-  '/css/navImage.css',
-  '/css/navMenu.css'
+  './index.html',
+  './js/okuma.js',
+  './js/directive.js',
+  './sw.js',
+  './css/config.css',
+  './css/main.css',
+  './css/navImage.css',
+  './css/navMenu.css'
 ];
 
 self.addEventListener('install', function(event) {

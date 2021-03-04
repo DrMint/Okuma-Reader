@@ -117,16 +117,16 @@
 }
 
 #configButton {
-  -webkit-mask-image: url("../img/icon/settings.png");
+  -webkit-mask-image: url("../img/icon/settings.webp");
 }
 
 #fullScreenButton {
-  -webkit-mask-image: url("../img/icon/enterFS.png");
+  -webkit-mask-image: url("../img/icon/enterFS.webp");
   -webkit-mask-size: 40%;
 }
 
 #fullScreenButton.enabled {
-  -webkit-mask-image: url("../img/icon/exitFS.png");
+  -webkit-mask-image: url("../img/icon/exitFS.webp");
   -webkit-mask-size: 40%;
 }
 
@@ -193,17 +193,18 @@
 
 #leftChapterButton {
   grid-area: leftChapterButton;
-  -webkit-mask-image: url("../img/icon/leftChapter.png");
+
 }
 
 #rightChapterButton {
   grid-area: rightChapterButton;
-  -webkit-mask-image: url("../img/icon/rightChapter.png");
+  transform: rotate(180deg);
 }
 
 #leftChapterButton,
 #rightChapterButton {
   -webkit-mask-size: 30%;
+  -webkit-mask-image: url("../img/icon/leftChapter.webp");
 }
 
 #chapterSelectionContainer {

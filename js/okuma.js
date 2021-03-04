@@ -340,8 +340,7 @@ function refreshDipslayPages() {
     pageSliderTotal.innerHTML = getChapterNumPage();
   }
 
-
-  if (getNumChapters > 1) {
+  if (getNumChapters() > 1) {
     // Change currently selected chapter in chapterSelection
     chapterSelection.selectedIndex = CHAPTER - 1;
 

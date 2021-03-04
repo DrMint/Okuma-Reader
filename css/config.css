@@ -35,7 +35,7 @@
 #configMenu > div > .icon {
   width: var(--itemHeight);
   height: var(--itemHeight);
-  -webkit-mask-image: url("../img/icon/off.png");
+  -webkit-mask-image: url("../img/icon/off.webp");
   -webkit-mask-size: 100%;
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: center;
@@ -44,11 +44,11 @@
 }
 
 #configMenu > div.enabled > .icon {
-  -webkit-mask-image: url("../img/icon/on.png");
+  -webkit-mask-image: url("../img/icon/on.webp");
 }
 
 #closeMenu > .icon {
-  -webkit-mask-image: url("../img/icon/close.png") !important;
+  -webkit-mask-image: url("../img/icon/close.webp") !important;
   -webkit-mask-size: 1em !important;
 }
 
@@ -64,12 +64,12 @@
 }
 
 #doublePageButton > .icon {
-  -webkit-mask-image: url("../img/icon/singlePageMode.png") !important;
+  -webkit-mask-image: url("../img/icon/singlePageMode.webp") !important;
   -webkit-mask-size: 60%;
 }
 
 #doublePageButton.enabled > .icon {
-  -webkit-mask-image: url("../img/icon/doublePageMode.png") !important;
+  -webkit-mask-image: url("../img/icon/doublePageMode.webp") !important;
 }
 
 #configMenu > .button {
