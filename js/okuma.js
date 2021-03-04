@@ -15,6 +15,10 @@ function findGetParameter(parameterName) {
   return result;
 }
 
+function stringToBoolean(string) {
+  return string == 'true' || 'True';
+}
+
 function infoToImageURL(TITLE, CHAPTER, PAGE) {
   return IMAGES_URL + TITLE + '/' + CHAPTER + '/' + PAGE + CONFIG.fileExtension;
 }
@@ -253,6 +257,9 @@ function refreshDipslayPages() {
     // To use double page, the user should have asked for double page
     GLOBAL['doublePage'] = GLOBAL['useDoublePage']
 
+    // To use double page, CONFIG.allowDoublePage should be true
+    GLOBAL['doublePage'] = GLOBAL['doublePage'] && CONFIG.allowDoublePage;
+
     // If the CONFIG file asked for the fist page to be single, doublePage should
     // only be enable for pages other than the first one
     GLOBAL['doublePage'] = GLOBAL['doublePage'] && !(CONFIG.fistPageSingle && PAGE == 1 && CHAPTER == 1);
@@ -455,6 +462,8 @@ function setHandlers() {
     toggleHandlerElement("bookFoldButton", "bookFold", ["bookFoldButton", "bookFold"], ["enabled", "enabled"]);
     toggleHandlerElement("lightingButton", "lighting", ["lightingButton", "lighting", "specular"], ["enabled", "enabled", "enabled"]);
     toggleHandlerElement("sidePagesButton", "sidePages", ["sidePagesButton"], ["enabled"], true);
+    toggleHandlerElement("paperTextureButton", "paperTexture", ["paperTextureButton", "paperTexture"], ["enabled", "enabled"]);
+    toggleHandlerElement("bookShadowButton", "bookShadow", ["bookShadowButton", "navImage"], ["enabled", "bookShadow"]);
 
     zoom(undefined, undefined, function (actionType) {
         if (actionType == "clickMiddle") {
@@ -486,6 +495,9 @@ function setHandlers() {
 
   /* -------------------------- FOR CONTINUOUS SCROLLING MODE ONLY ------------------------------------*/
   } else {
+
+    toggleHandlerElement("paperTextureButton", "continuousScrolling_paperTexture", ["paperTextureButton", "paperTexture"], ["enabled", "enabled"]);
+    toggleHandlerElement("bookShadowButton", "continuousScrolling_bookShadow", ["bookShadowButton", "navImage"], ["enabled", "bookShadow"]);
 
     document.getElementById("pageWidthSlider").oninput = function() {
       document.getElementById("continuousScrollingPages").style.width = document.getElementById("pageWidthSlider").value + "vw";
@@ -548,8 +560,6 @@ function setHandlers() {
 
 
   toggleHandlerElement("configButton", "configOpened", ["configMenu"], ["enabled"]);
-  toggleHandlerElement("paperTextureButton", "paperTexture", ["paperTextureButton", "paperTexture"], ["enabled", "enabled"]);
-  toggleHandlerElement("bookShadowButton", "bookShadow", ["bookShadowButton", "navImage"], ["enabled", "bookShadow"]);
 
   document.getElementById("closeMenu").onclick = function() {
     document.getElementById("configButton").click();
@@ -690,44 +700,88 @@ if (TITLE) {
 
       }
 
+
       // If the user has already used Okuma, load their last settings
       if (getCookie('themeSelection') != '') {
 
         GLOBAL['useDoublePage'] = false;
-        if (getCookie('useDoublePage') == 'true' && CONFIG.allowDoublePage) {
-          doublePageButton.click();
+        if (getCookie('useDoublePage') == 'true') {
+          if (CONFIG.continuousScrolling || !CONFIG.allowDoublePage) {
+            GLOBAL['useDoublePage'] = true;
+          } else {
+            doublePageButton.click();
+          }
         }
 
         themeSelection.selectedIndex = parseInt(getCookie('themeSelection'));
         themeSelection.onchange();
 
-        GLOBAL['paperTexture'] = false;
-        if (getCookie('paperTexture') == 'true') paperTextureButton.click();
-        GLOBAL['bookFold'] = false;
-        if (getCookie('bookFold') == 'true') bookFoldButton.click();
-        GLOBAL['lighting'] = false;
-        if (getCookie('lighting') == 'true') lightingButton.click();
-        GLOBAL['sidePages'] = false;
-        if (getCookie('sidePages') == 'true') sidePagesButton.click();
-        GLOBAL['bookShadow'] = false;
-        if (getCookie('bookShadow') == 'true') bookShadowButton.click();
+        if (CONFIG.continuousScrolling) {
+
+          GLOBAL['bookFold'] = stringToBoolean(getCookie('bookFold'));
+          GLOBAL['lighting'] = stringToBoolean(getCookie('lighting'));
+          GLOBAL['sidePages'] = stringToBoolean(getCookie('sidePages'));
+          GLOBAL['paperTexture'] = stringToBoolean(getCookie('paperTexture'));
+          GLOBAL['bookShadow'] = stringToBoolean(getCookie('bookShadow'));
+
+          GLOBAL['continuousScrolling_paperTexture'] = false;
+          if (getCookie('continuousScrolling_paperTexture') == 'true') paperTextureButton.click();
+          GLOBAL['continuousScrolling_bookShadow'] = false;
+          if (getCookie('continuousScrolling_bookShadow') == 'true') bookShadowButton.click();
+
+        } else {
+
+          GLOBAL['continuousScrolling_paperTexture'] = stringToBoolean(getCookie('continuousScrolling_paperTexture'));
+          GLOBAL['continuousScrolling_bookShadow'] = stringToBoolean(getCookie('continuousScrolling_bookShadow'));
+
+          GLOBAL['bookFold'] = false;
+          if (getCookie('bookFold') == 'true') bookFoldButton.click();
+          GLOBAL['lighting'] = false;
+          if (getCookie('lighting') == 'true') lightingButton.click();
+          GLOBAL['sidePages'] = false;
+          if (getCookie('sidePages') == 'true') sidePagesButton.click();
+          GLOBAL['paperTexture'] = false;
+          if (getCookie('paperTexture') == 'true') paperTextureButton.click();
+          GLOBAL['bookShadow'] = false;
+          if (getCookie('bookShadow') == 'true') bookShadowButton.click();
+        }
+
+
 
       } else {
+
         // Default values
         {
+
+          GLOBAL['useDoublePage'] = window.innerHeight < window.innerWidth;
+          GLOBAL['bookFold'] = true;
+          GLOBAL['lighting'] = true;
+          GLOBAL['sidePages'] = true;
+          GLOBAL['paperTexture'] = true;
+          GLOBAL['bookShadow'] = true;
+          GLOBAL['continuousScrolling_bookShadow'] = true;
+          GLOBAL['continuousScrolling_paperTexture'] = false;
+
           themeSelection.selectedIndex = 0;
           themeSelection.onchange();
 
-          if (CONFIG.preferDoublePage && window.innerHeight < window.innerWidth) doublePageButton.click();
-
           if (CONFIG.continuousScrolling) {
+            GLOBAL['continuousScrolling_bookShadow'] = !GLOBAL['continuousScrolling_bookShadow'];
             bookShadowButton.click();
+
           } else {
             // If screen is in landscape mode
             if (window.innerHeight < window.innerWidth) {
+              GLOBAL['paperTexture'] = !GLOBAL['paperTexture'];
+              GLOBAL['lighting'] = !GLOBAL['lighting'];
+              GLOBAL['useDoublePage'] = !GLOBAL['useDoublePage'];
               paperTextureButton.click();
               lightingButton.click();
+              doublePageButton.click();
             }
+            GLOBAL['bookFold'] = !GLOBAL['bookFold'];
+            GLOBAL['sidePages'] = !GLOBAL['sidePages'];
+            GLOBAL['bookShadow'] = !GLOBAL['bookShadow'];
             bookFoldButton.click();
             sidePagesButton.click();
             bookShadowButton.click();
