@@ -21,7 +21,7 @@ The design is entirely cilent-side, the server simply hosts the images.
 - Next/previous chapter buttons and chapter selection drop-down menu.
 - Asynchronous pre-caching of the next pages (or next chapter first pages when at the end of a chapter).
 - Single and double-page display with the ability to display the cover page as a single page.
-- Automatically save the current page/chapter for the next time the user visits the book.
+- Automatically save the current page/chapter and selected options for when the user comes reading again.
 - Config files per book.
 - Light-weight: under 200KB (including icons, filters, and textures).
 
