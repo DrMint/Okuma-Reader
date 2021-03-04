@@ -97,29 +97,22 @@ function getImage(url) {
 }
 
 function toggleNavMenu() {
-  if (GLOBAL['isMenuVisible']) {
+  if (GLOBAL['isNavBarsVisible']) {
     document.getElementById("topMenu").classList.add("hidden");
     document.getElementById("bottomMenu").classList.add("hidden");
   } else {
     document.getElementById("topMenu").classList.remove("hidden");
     document.getElementById("bottomMenu").classList.remove("hidden");
   }
-  GLOBAL['isMenuVisible'] = !GLOBAL['isMenuVisible']
+  GLOBAL['isNavBarsVisible'] = !GLOBAL['isNavBarsVisible']
 }
 
 
-function toggleHandlerElement(button, varState, targets, className, varStateInGLOBAL = false, refreshPages = false) {
+function toggleHandlerElement(button, variableName, targets, className, refreshPages = false) {
   document.getElementById(button).onclick = function() {
-    let condition;
-    if (varStateInGLOBAL) {
-      GLOBAL[varState] = !GLOBAL[varState];
-       condition = GLOBAL[varState];
-    } else {
-      varState = !varState;
-      condition = varState;
-    }
+    GLOBAL[variableName] = !GLOBAL[variableName];
     for (var i = 0; i < targets.length; i++) {
-      if (condition) {
+      if (GLOBAL[variableName]) {
         document.getElementById(targets[i]).classList.add(className[i]);
       } else {
         document.getElementById(targets[i]).classList.remove(className[i]);
@@ -128,7 +121,16 @@ function toggleHandlerElement(button, varState, targets, className, varStateInGL
     if (refreshPages) {
       refreshDipslayPages();
     }
+    onOptionChanged()
   };
+}
+
+function onOptionChanged() {
+  for (let [key, value] of Object.entries(GLOBAL)) {
+    if (value != undefined) {
+      if (getCookie(key) != value.toString()) setCookie(key, value, 365);
+    }
+  }
 }
 
 function goNextPage() {
@@ -158,16 +160,16 @@ function changePage(newChapter = null, newPage = null) {
     // If no page/chapter is indicated in the GET
     if (Number.isNaN(newPage)) {
       // If a cookie is there to indicate the last visited page
-      if (getCookie('PAGE') != '') {
-        newPage = parseInt(getCookie('PAGE'));
+      if (getCookie(TITLE + '_PAGE') != '') {
+        newPage = parseInt(getCookie(TITLE + '_PAGE'));
       } else {
         newPage = 1;
       }
     }
     if (Number.isNaN(newChapter)) {
       // If a cookie is there to indicate the last visited chapter
-      if (getCookie('CHAPTER') != '') {
-        newChapter = parseInt(getCookie('CHAPTER'));
+      if (getCookie(TITLE + '_CHAPTER') != '') {
+        newChapter = parseInt(getCookie(TITLE + '_CHAPTER'));
       } else {
         newChapter = 1;
       }
@@ -232,8 +234,8 @@ function changePage(newChapter = null, newPage = null) {
 
   if (hasPageChanged || hasChapterChanged) {
     refreshDipslayPages();
-    setCookie('PAGE', PAGE, 365);
-    setCookie('CHAPTER', CHAPTER, 365);
+    setCookie(TITLE + '_PAGE', PAGE, 365);
+    setCookie(TITLE + '_CHAPTER', CHAPTER, 365);
   }
 
 }
@@ -335,6 +337,15 @@ function refreshDipslayPages() {
 
       }
     }
+
+    if (GLOBAL['useDoublePage']) {
+      document.getElementById("bookFoldButton").style.display = null;
+      document.getElementById("sidePagesButton").style.display = null;
+    } else {
+      document.getElementById("bookFoldButton").style.display = "none";
+      document.getElementById("sidePagesButton").style.display = "none";
+    }
+
 
   }
 
@@ -440,10 +451,10 @@ function setHandlers() {
       pageSlider.classList.remove("inUse");
     }
 
-    toggleHandlerElement("doublePageButton", "useDoublePage", ["doublePageButton"], ["enabled"], true, true);
-    toggleHandlerElement("bookFoldButton", false, ["bookFoldButton", "bookFold"], ["enabled", "enabled"]);
-    toggleHandlerElement("lightingButton", false, ["lightingButton", "lighting", "specular"], ["enabled", "enabled", "enabled"]);
-    toggleHandlerElement("sidePagesButton", "sidePages", ["sidePagesButton"], ["enabled"], true, true);
+    toggleHandlerElement("doublePageButton", "useDoublePage", ["doublePageButton"], ["enabled"], true);
+    toggleHandlerElement("bookFoldButton", "bookFold", ["bookFoldButton", "bookFold"], ["enabled", "enabled"]);
+    toggleHandlerElement("lightingButton", "lighting", ["lightingButton", "lighting", "specular"], ["enabled", "enabled", "enabled"]);
+    toggleHandlerElement("sidePagesButton", "sidePages", ["sidePagesButton"], ["enabled"], true);
 
     zoom(undefined, undefined, function (actionType) {
         if (actionType == "clickMiddle") {
@@ -521,6 +532,11 @@ function setHandlers() {
   }
 
   themeSelection.onchange = function() {
+
+    // Save value to cookie
+    GLOBAL['themeSelection'] = themeSelection.selectedIndex;
+    onOptionChanged();
+
     body.classList.remove("lightTheme");
     body.classList.remove("darkTheme");
     switch (themeSelection.selectedIndex) {
@@ -531,9 +547,9 @@ function setHandlers() {
   }
 
 
-  toggleHandlerElement("configButton", false, ["configMenu"], ["enabled"]);
-  toggleHandlerElement("paperTextureButton", false, ["paperTextureButton", "paperTexture"], ["enabled", "enabled"]);
-  toggleHandlerElement("bookShadowButton", false, ["bookShadowButton", "navImage"], ["enabled", "bookShadow"]);
+  toggleHandlerElement("configButton", "configOpened", ["configMenu"], ["enabled"]);
+  toggleHandlerElement("paperTextureButton", "paperTexture", ["paperTextureButton", "paperTexture"], ["enabled", "enabled"]);
+  toggleHandlerElement("bookShadowButton", "bookShadow", ["bookShadowButton", "navImage"], ["enabled", "bookShadow"]);
 
   document.getElementById("closeMenu").onclick = function() {
     document.getElementById("configButton").click();
@@ -568,12 +584,7 @@ const themeSelection = document.getElementById("themeSelection");
 const chapterSelection = document.getElementById("chapterSelection");
 const pageSlider = document.getElementById("pageSlider");
 
-var GLOBAL = {
-  useDoublePage: false,
-  doublePage: false,
-  sidePages: false,
-  isMenuVisible: true
-}
+var GLOBAL = {}
 
 /* END CONFIGURATION */
 
@@ -629,7 +640,6 @@ if (TITLE) {
       setHandlers();
 
       if (!CONFIG.allowDoublePage) doublePageButton.style.display = "none";
-      if (CONFIG.preferDoublePage && window.innerHeight < window.innerWidth) doublePageButton.click();
 
       // Set default value for continuous pages
       {
@@ -678,33 +688,57 @@ if (TITLE) {
           document.getElementById("lightingButton").style.display = null;
         }
 
-        if (GLOBAL['useDoublePage']) {
-          document.getElementById("bookFoldButton").style.display = null;
-          document.getElementById("sidePagesButton").style.display = null;
-        } else {
-          document.getElementById("bookFoldButton").style.display = "none";
-          document.getElementById("sidePagesButton").style.display = "none";
-        }
-
       }
 
-      // Default values
-      {
-        body.classList.add("darkTheme");
+      // If the user has already used Okuma, load their last settings
+      if (getCookie('themeSelection') != '') {
 
-        if (CONFIG.continuousScrolling) {
-          document.getElementById("bookShadowButton").click();
-        } else {
-          // If screen is in landscape mode
-          if (window.innerHeight < window.innerWidth) {
-            document.getElementById("paperTextureButton").click();
-            document.getElementById("lightingButton").click();
+        GLOBAL['useDoublePage'] = false;
+        if (getCookie('useDoublePage') == 'true' && CONFIG.allowDoublePage) {
+          doublePageButton.click();
+        }
+
+        themeSelection.selectedIndex = parseInt(getCookie('themeSelection'));
+        themeSelection.onchange();
+
+        GLOBAL['paperTexture'] = false;
+        if (getCookie('paperTexture') == 'true') paperTextureButton.click();
+        GLOBAL['bookFold'] = false;
+        if (getCookie('bookFold') == 'true') bookFoldButton.click();
+        GLOBAL['lighting'] = false;
+        if (getCookie('lighting') == 'true') lightingButton.click();
+        GLOBAL['sidePages'] = false;
+        if (getCookie('sidePages') == 'true') sidePagesButton.click();
+        GLOBAL['bookShadow'] = false;
+        if (getCookie('bookShadow') == 'true') bookShadowButton.click();
+
+      } else {
+        // Default values
+        {
+          themeSelection.selectedIndex = 0;
+          themeSelection.onchange();
+
+          if (CONFIG.preferDoublePage && window.innerHeight < window.innerWidth) doublePageButton.click();
+
+          if (CONFIG.continuousScrolling) {
+            bookShadowButton.click();
+          } else {
+            // If screen is in landscape mode
+            if (window.innerHeight < window.innerWidth) {
+              paperTextureButton.click();
+              lightingButton.click();
+            }
+            bookFoldButton.click();
+            sidePagesButton.click();
+            bookShadowButton.click();
           }
-          document.getElementById("bookFoldButton").click();
-          document.getElementById("sidePagesButton").click();
-          document.getElementById("bookShadowButton").click();
-        }
 
+        }
       }
+
+
+
+
+
     });
 }
