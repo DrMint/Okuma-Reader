@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css?family=Quicksand&display=swap');
+
+body, select, option {
+  font-family: Quicksand;
+  color: var(--menu-text-color);
+  font-family: Quicksand;
+  font-weight: bold;
+}
+
+body.darkTheme {
+  --background-image: url("../img/background-imperfections.webp");
+  --background-gradient: linear-gradient(0deg, rgb(31 31 31) 0%, rgb(74 74 74) 100%);
+  --menu-background-color: rgb(30, 30, 30);
+  --menu-text-color: white;
+}
+
+body.lightTheme {
+  --background-image: url("../img/background-imperfections.webp");
+  --background-gradient: linear-gradient(0deg, rgb(197 197 197) 0%, rgb(245 245 245) 100%);
+  --menu-background-color: rgb(220, 220, 220);
+  --menu-text-color: black;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  background: var(--background-gradient);
+  background-size: cover;
+}

@@ -1,0 +1,45 @@
+#container {
+    padding: 3vmin;
+}
+
+#container > h2 {
+  font-size: 250%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  margin-top: 0;
+}
+
+#books {
+  display: grid;
+  --bookImage: auto-fit, minmax(250px, 1fr);
+  grid-template-columns: repeat(var(--bookImage));
+  grid-gap: 3vmin;
+}
+
+#books > a {
+  text-decoration: none;
+  color: var(--menu-text-color);
+  display: grid;
+  grid-template-rows: 2em 1fr;
+  transition: .2s transform;
+}
+
+#books > a:hover {
+  transform: scale(1.02);
+}
+
+#books > a > p {
+  margin: 0;
+  margin-bottom: 1em;
+}
+
+#books > a > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  box-shadow: 0 0 2vmin black;
+}
+
+body {
+  min-height: 100vh;
+}

@@ -1,5 +1,6 @@
 import { zoom } from './directive.js';
 import { setCookie, getCookie } from './cookie.js';
+import * as CONSTANTS from './constants.js';
 
 /* Returns the value of a given GET parameter name */
 function findGetParameter(parameterName) {
@@ -20,7 +21,7 @@ function stringToBoolean(string) {
 }
 
 function infoToImageURL(TITLE, VOLUME, CHAPTER, PAGE) {
-  return IMAGES_URL + TITLE + '/' + VOLUME + '/' + CHAPTER + '/' + PAGE + VCONFIG.fileExtension;
+  return CONSTANTS.booksURL() + TITLE + '/' + VOLUME + '/' + CHAPTER + '/' + PAGE + TCONFIG.fileExtension;
 }
 
 function getChapterNumPage(chapter = CHAPTER) {
@@ -364,7 +365,7 @@ function refreshDipslayPages() {
   {
     if (window.history.replaceState) {
       //prevents browser from storing history with each change:
-      let newURL = READER_URL + '?title=' + TITLE + '&volume=' + VOLUME + '&chapter=' + CHAPTER + '&page=' + PAGE;
+      let newURL = CONSTANTS.readerURL() + '?title=' + TITLE + '&volume=' + VOLUME + '&chapter=' + CHAPTER + '&page=' + PAGE;
       window.history.replaceState(null, '', newURL);
     }
   }
@@ -570,13 +571,6 @@ function setHandlers() {
 
 
 // -----------------------------------------------------------------------------
-
-/* CONFIGURATION */
-const HOME_URL  =  "https://okuma.r-entries.com";
-const READER_URL =  "https://okuma.r-entries.com/read.html";
-const IMAGES_URL =  "https://okuma.r-entries.com/books/";
-const WEBSITE_NAME = "OKUMA";
-
 var imgPageLeft;
 var imgPageRight;
 var previousChapterButton;
@@ -608,7 +602,7 @@ var OCONFIG; // Okuma JSON config File
 var TCONFIG; // Title JSON config File
 var VCONFIG; // Volume JSON config File
 
-fetch(IMAGES_URL + 'config.json')
+fetch(CONSTANTS.booksURL() + 'config.json')
   .then(response => response.json())
   .then(data => {
     OCONFIG = data;
@@ -618,13 +612,13 @@ fetch(IMAGES_URL + 'config.json')
     // If the title isn't valid, go back to home page
     TITLE = findGetParameter('title');
     if (OCONFIG.titles.indexOf(TITLE) == -1) {
-      window.location.href = HOME_URL;
+      window.location.href = CONSTANTS.homeURL();
     }
 
 
     if (TITLE) {
       // Load the TCONFIG file from the specific gallery
-      fetch(IMAGES_URL + TITLE + '/' + 'config.json')
+      fetch(CONSTANTS.booksURL() + TITLE + '/' + 'config.json')
         .then(response => response.json())
         .then(data => {
           TCONFIG = data;
@@ -658,7 +652,7 @@ fetch(IMAGES_URL + 'config.json')
           }
 
           // Change the title of the webpage
-          document.title = WEBSITE_NAME + ' - ' + TCONFIG.title;
+          document.title = CONSTANTS.websiteName() + ' - ' + TCONFIG.title;
 
 
 
@@ -667,7 +661,7 @@ fetch(IMAGES_URL + 'config.json')
           VOLUME = parseInt(findGetParameter('volume'));
           if (Number.isNaN(VOLUME)) VOLUME = 1;
 
-          fetch(IMAGES_URL + TITLE + '/' + VOLUME + '/' + 'config.json')
+          fetch(CONSTANTS.booksURL() + TITLE + '/' + VOLUME + '/' + 'config.json')
             .then(response => response.json())
             .then(data => {
               VCONFIG = data;
