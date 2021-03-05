@@ -1,100 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Okuma Reader</title>
+  </head>
+  <body>
 
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="viewport-fit=cover, initial-scale=1">
-	<meta name="theme-color" content="#000">
-	<link rel="shortcut icon" type="image/webp" href="./img/icon-small.webp"/>
-	<link rel="apple-touch-icon" href="./img/icon.webp"/>
-	<title>Manga Reader</title>
-	<link rel="manifest" href="./js/manifest.json">
-	<link type="text/css" rel="stylesheet" href="./css/main.css"/>
-	<link type="text/css" rel="stylesheet" href="./css/navImage.css"/>
-	<link type="text/css" rel="stylesheet" href="./css/navMenu.css"/>
-	<link type="text/css" rel="stylesheet" href="./css/config.css"/>
-</head>
-
-<body>
-
-	<div id=topMenu class="navMenu">
-		<div class="navContainer">
-			<div id="bookInfo"><h2 id="bookTitle"></h2><h3 id="bookChapter"></h3></div>
-			<div id="fullScreenButton" class="button icon"></div>
-			<div id="configButton" class="button icon"></div>
-		</div>
-	</div>
-
-	<div id="navImageContainer" class="zoom">
-		<div id="navImage">
-			<img id="imgPageLeft">
-			<img id="imgPageRight">
-			<div id="continuousScrollingPages"></div>
-			<div id="filters">
-				<div id="paperTexture"></div>
-				<div id="bookFold"></div>
-				<div id="lighting"></div>
-				<div id="specular"></div>
-			</div>
-	 </div>
-	</div>
-
-	<div id="bottomMenu" class="navMenu">
-		<div class="navContainer">
-			<div id="leftChapterButton" class="button icon"></div>
-			<div id="chapterSelectionContainer">
-				<select id="chapterSelection"></select>
-			</div>
-			<div id="rightChapterButton" class="button icon"></div>
-			<div id="sliderContainer">
-				<p id="pageSliderLeft"></p>
-				<input id="pageSlider" type="range" min="1" class="slider">
-				<p id="pageSliderRight"></p>
-			</div>
-		</div>
-	</div>
-
-	<div id="configMenu" class="darkMode">
-		<div id="closeMenu" class="button"><div class="icon"></div></div>
-		<div id="pageWidthContainer">
-			<p>Page width</p>
-			<input id="pageWidthSlider" type="range" min="10" max="100" class="slider">
-		</div>
-		<div id="doublePageButton" class="button"><div class="icon"></div>Display mode</div>
-		<div id="paperTextureButton" class="button"><div class="icon"></div>Paper texture</div>
-		<div id="bookFoldButton" class="button"><div class="icon"></div>Book fold</div>
-		<div id="lightingButton" class="button"><div class="icon"></div>Realistic lighting</div>
-		<div id="sidePagesButton" class="button"><div class="icon"></div>Side pages</div>
-		<div id="bookShadowButton" class="button"><div class="icon"></div>Book shadow</div>
-		<div id="themeSelectionContainer">
-			<select id="themeSelection">
-				<option value="darkTheme">Dark Theme</option>
-				<option value="lightTheme">Light Theme</option>
-			</select>
-		</div>
-	</div>
-
-	<div id="eyeFilter"></div>
-
-</body>
-
-<script type="module" src="./js/okuma.js"></script>
-
-<!--
-<script type="text/javascript">
-
-	if ('serviceWorker' in navigator) {
-	window.addEventListener('load', function() {
-		navigator.serviceWorker.register('/sw.js').then(function(registration) {
-			// Registration was successful
-			console.log('ServiceWorker registration successful with scope: ', registration.scope);
-		}, function(err) {
-			// registration failed :(
-			console.log('ServiceWorker registration failed: ', err);
-		});
-	});
-	}
-</script>
--->
-
+  </body>
 </html>
