@@ -106,25 +106,35 @@ A few rules and constraints:
 - If possible, all pages should have the same size (or at least the same ratio)
 - A image should correspond to one page, images that have been combined as a double-page should be split
 
-## Config files
-A config file must be provided for each book. Here's an example:
+## Config files for titles and volumes
+A config file must be provided for each title (series). Here's an example:
 
 ```
 {
   "title": "My book's title",
-  "numPages": [38, 24, 40, 30],
-  "fileExtension": ".jpg",
   "bookType": "manga",
-  "japaneseOrder": true,
-  "fistPageSingle": true,
-  "preferDoublePage": true,
-  "allowDoublePage": true
+  "numVolumes": 1,
+  "japaneseOrder": true
 }
 
 ```
 
 numPages is the number of pages for each chapter. In this example, this book has 4 chapters.
 The currently available types are "book", "manga", and "webtoons".
+
+A config file for each volume must also be provided:
+
+```
+{
+  "numPages": [38, 24, 40, 30],
+  "fileExtension": ".jpg",
+  "fistPageSingle": true,
+  "preferDoublePage": true,
+  "allowDoublePage": true
+}
+
+```
+fistPageSingle, preferDoublePage, and allowDoublePage doesn't work if the bookType is "webtoons"
 
 ## License and attribution
 This project uses [ironexdev](https://github.com/ironexdev)/[zoom](https://github.com/ironexdev/zoom) for handling pinch-zoom, pan, double-tap, zoom using the mouse wheel. It has been modified to allow single clicks (on the sides to go to the next/previous page and in the middle to toggle the top and bottom menus).
