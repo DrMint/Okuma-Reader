@@ -17,6 +17,7 @@ The design is entirely cilent-side, the server simply hosts the images.
 - Support for various screen ratio.
 - Support for vertical continuous scrolling (such as webtoons).
 - Optional filters that simulate the visual experience of reading a real book (see Interface for images).
+- A main page to showcase all available books.
 - Page turn with arrow keys or by clicking/tapping on the edge of a page.
 - Next/previous chapter buttons and chapter selection drop-down menu.
 - Asynchronous pre-caching of the next pages (or next chapter first pages when at the end of a chapter).
@@ -151,7 +152,6 @@ This project uses [ironexdev](https://github.com/ironexdev)/[zoom](https://githu
 - Not having to write the number of pages in the config.json.
 - More flexibility per chapter.
 - Page turning animation?!
-- A main page to showcase all available books.
 - Being able to embed this reader in someone else webpage (using iframe I guess?).
 - A Download page/chapter/book buttons? That would also open-up the idea of making it an offline Progressive Web App.
 - The ability to use archives (zip, tar.gz...) instead of folders.
