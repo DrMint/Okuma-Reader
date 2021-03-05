@@ -12,17 +12,17 @@ The design is entirely cilent-side, the server simply hosts the images.
 
 ## Features
 
-- Page turn with arrow keys or by clicking/tapping on the edge of a page.
-- Support for books with multiple chapters.
+- Support for series with multiple chapters and volumes.
 - Support for Japanese page ordering.
 - Support for various screen ratio.
-- Support for vertical continuous scrolling (webtoons).
+- Support for vertical continuous scrolling (such as webtoons).
 - Optional filters that simulate the visual experience of reading a real book (see Interface for images).
+- Page turn with arrow keys or by clicking/tapping on the edge of a page.
 - Next/previous chapter buttons and chapter selection drop-down menu.
 - Asynchronous pre-caching of the next pages (or next chapter first pages when at the end of a chapter).
 - Single and double-page display with the ability to display the cover page as a single page.
 - Automatically save the current page/chapter and selected options for when the user comes reading again.
-- Config files per book.
+- Config files per title and per volume.
 - Light-weight: under 200KB (including icons, filters, and textures).
 
 ## Interface
@@ -73,21 +73,27 @@ With each page turned, the number of side pages on the left side will gradually 
 ## Directory structure
 - a-example-book/
 	- 1/
-		- 1.jpg
-		- 2.jpg
+		- 1/
+			- 1.jpg
+			- 2.jpg
+			- ...
+		- 2/
+			- 1.jpg
+			- 2.jpg
+			- ...
+		- 3/
+			- 1.jpg
+			- ...
 		- ...
+		- config.json
 	- 2/
-		- 1.jpg
-		- 2.jpg
 		- ...
-	- 3/
-		- 1.jpg
-		- ...
-	- ...
+		- config.json
 	- config.json
 - another-one/
 	- 1/
-	- 2/
+		- ... 
+		- config.json
 	- config.json
 - index.html
 - reader.css
@@ -129,7 +135,7 @@ This project uses [ironexdev](https://github.com/ironexdev)/[zoom](https://githu
 - Add loading page animation or other visual confirmation that it's loading.
 - Add a book info pop-up where you can read the synopsis, learn about the author(s), status, date of release...
 - Ability to give a name to each chapter.
-- Automatically save the settings (per book or globally).
+- Save the settings per book or globally.
 - Give the user the ability to choose a custom color for the background.
 - Add "reading mode" which is basically a blue-light filter. Later, add customizable filter layer.
 - Not having to write the number of pages in the config.json.
