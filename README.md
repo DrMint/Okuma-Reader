@@ -115,6 +115,7 @@ A config file must be provided for each title (series). Here's an example:
   "title": "My book's title",
   "bookType": "manga",
   "numVolumes": 1,
+  "fileExtension": ".jpg",
   "japaneseOrder": true
 }
 
@@ -128,7 +129,6 @@ A config file for each volume must also be provided:
 ```
 {
   "numPages": [38, 24, 40, 30],
-  "fileExtension": ".jpg",
   "fistPageSingle": true,
   "preferDoublePage": true,
   "allowDoublePage": true
