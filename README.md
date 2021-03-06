@@ -25,6 +25,7 @@ The design is entirely cilent-side, the server simply hosts the images.
 - Automatically save the current page/chapter and selected options for when the user comes reading again.
 - Config files per title and per volume.
 - Light-weight: under 200KB (including icons, filters, and textures).
+- One line integration in your website using iframe (see Installation for more detail)!
 
 ## Interface
 
@@ -152,7 +153,6 @@ This project uses [ironexdev](https://github.com/ironexdev)/[zoom](https://githu
 - Not having to write the number of pages in the config.json.
 - More flexibility per chapter.
 - Page turning animation?!
-- Being able to embed this reader in someone else webpage (using iframe I guess?).
 - A Download page/chapter/book buttons? That would also open-up the idea of making it an offline Progressive Web App.
 - The ability to use archives (zip, tar.gz...) instead of folders.
 - The ability to display archives from the client's computer (without uploading it).
