@@ -1,17 +1,61 @@
+@media screen and (max-width: 90vh)  {
+  body {
+    font-size: 150%;
+  }
+
+}
+
 #container {
   --paddingWidth: 3vw;
   --gridGapWidth: 1.5vw;
   padding: var(--paddingWidth);
 }
 
-#container > h2 {
+#bookInfo {
+  display: grid;
+}
+
+#bookInfo > h2 {
   font-size: 250%;
   font-weight: bolder;
   text-transform: uppercase;
   margin-top: 0;
+  margin-bottom: 0;
 }
 
-#books {
+#bookInfo > #status {
+  margin-top: 0;
+}
+
+#bookInfo > #genres {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+#bookInfo > #genres > p {
+  background-color: var(--menu-text-color);
+  color: var(--menu-background-color);
+  padding: 0.5em 1em 0.5em 1em;
+  border-radius: 10em;
+  display: inline-block;
+  margin: 0 .5em .5em 0;
+}
+
+#bookInfo > #authors {
+  margin-bottom: 0;
+}
+
+#bookInfo > #serialization {
+  margin-top: 0;
+}
+
+#bookInfo > #synopsis {
+  margin-top: 2em;
+  margin-bottom: 5em;
+  font-weight: normal;
+}
+
+#volumes {
   --numberBook: 6;
   display: grid;
   grid-template-columns: repeat(var(--numberBook), 1fr);
@@ -19,7 +63,7 @@
   grid-gap: var(--gridGapWidth);
 }
 
-#books > a {
+#volumes > a {
   margin-bottom: 2em;
   text-decoration: none;
   color: var(--menu-text-color);
@@ -29,12 +73,12 @@
   filter: drop-shadow(0 0 0.7vmin rgba(0, 0, 0, 0.5));
 }
 
-#books > a:hover {
+#volumes > a:hover {
   transform: scale(1.02);
   filter: drop-shadow(0 0 1.5vmin rgba(0, 0, 0, 0.8));
 }
 
-#books > a > p {
+#volumes > a > p {
   margin: 0;
   margin-bottom: 1em;
   white-space: nowrap;
@@ -43,7 +87,7 @@
   height: 2em;
 }
 
-#books > a > img {
+#volumes > a > img {
   width: 100%;
   height: 100%;
   object-fit: cover;

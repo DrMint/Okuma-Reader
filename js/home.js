@@ -24,7 +24,7 @@ fetch(LIBRARY + 'config.json')
             var p = document.createElement("p");
             var cover = document.createElement("img");
 
-            link.href = CONSTANTS.readerURL() + '?library=' + LIBRARY + '&title=' + title;
+            link.href = './title.html' + '?library=' + LIBRARY + '&title=' + title;
             p.innerHTML = TCONFIG.title;
             cover.src = LIBRARY + title + '/1/1/1' + TCONFIG.fileExtension;
 
