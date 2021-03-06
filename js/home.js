@@ -1,9 +1,14 @@
+"use strict";
 import * as CONSTANTS from './constants.js';
+import {findGetParameter} from './tools.js';
 
 var OCONFIG;
 var TCONFIG;
 
-fetch(CONSTANTS.booksURL() + 'config.json')
+var LIBRARY = findGetParameter('library');
+if (LIBRARY == null) LIBRARY = CONSTANTS.booksURL();
+
+fetch(LIBRARY + 'config.json')
   .then(response => response.json())
   .then(data => {
     OCONFIG = data;
@@ -11,7 +16,7 @@ fetch(CONSTANTS.booksURL() + 'config.json')
     OCONFIG.titles.forEach((title, index) => {
 
 
-      fetch(CONSTANTS.booksURL() + title + '/'+ 'config.json')
+      fetch(LIBRARY + title + '/'+ 'config.json')
         .then(response => response.json())
         .then(data => {
           TCONFIG = data;
@@ -19,9 +24,9 @@ fetch(CONSTANTS.booksURL() + 'config.json')
             var p = document.createElement("p");
             var cover = document.createElement("img");
 
-            link.href = CONSTANTS.readerURL() + '?title=' + title;
+            link.href = CONSTANTS.readerURL() + '?library=' + LIBRARY + '&title=' + title;
             p.innerHTML = TCONFIG.title;
-            cover.src = CONSTANTS.booksURL() + title + '/1/1/1' + TCONFIG.fileExtension;
+            cover.src = LIBRARY + title + '/1/1/1' + TCONFIG.fileExtension;
 
             link.appendChild(p);
             link.appendChild(cover);

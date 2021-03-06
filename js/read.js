@@ -1,27 +1,11 @@
+"use strict";
 import { zoom } from './directive.js';
 import { setCookie, getCookie } from './cookie.js';
 import * as CONSTANTS from './constants.js';
-
-/* Returns the value of a given GET parameter name */
-function findGetParameter(parameterName) {
-  let result = null,
-      tmp = [];
-  location.search
-      .substr(1)
-      .split("&")
-      .forEach(function (item) {
-        tmp = item.split("=");
-        if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
-      });
-  return result;
-}
-
-function stringToBoolean(string) {
-  return string == 'true' || 'True';
-}
+import { findGetParameter, stringToBoolean } from './tools.js';
 
 function infoToImageURL(TITLE, VOLUME, CHAPTER, PAGE) {
-  return CONSTANTS.booksURL() + TITLE + '/' + VOLUME + '/' + CHAPTER + '/' + PAGE + TCONFIG.fileExtension;
+  return LIBRARY + TITLE + '/' + VOLUME + '/' + CHAPTER + '/' + PAGE + TCONFIG.fileExtension;
 }
 
 function getChapterNumPage(chapter = CHAPTER) {
@@ -131,6 +115,7 @@ function toggleHandlerElement(button, variableName, targets, className, refreshP
 }
 
 function onOptionChanged() {
+  // Save in cookies the current GLOBAL state
   for (let [key, value] of Object.entries(GLOBAL)) {
     if (value != undefined) {
       if (getCookie(key) != value.toString()) setCookie(key, value, 365);
@@ -365,7 +350,7 @@ function refreshDipslayPages() {
   {
     if (window.history.replaceState) {
       //prevents browser from storing history with each change:
-      let newURL = CONSTANTS.readerURL() + '?title=' + TITLE + '&volume=' + VOLUME + '&chapter=' + CHAPTER + '&page=' + PAGE;
+      let newURL = CONSTANTS.readerURL() + '?library=' + LIBRARY + '&title=' + TITLE + '&volume=' + VOLUME + '&chapter=' + CHAPTER + '&page=' + PAGE;
       window.history.replaceState(null, '', newURL);
     }
   }
@@ -590,7 +575,9 @@ const themeSelection = document.getElementById("themeSelection");
 const chapterSelection = document.getElementById("chapterSelection");
 const pageSlider = document.getElementById("pageSlider");
 
-/* END CONFIGURATION */
+
+var LIBRARY = findGetParameter('library');
+if (LIBRARY == null) LIBRARY = CONSTANTS.booksURL();
 
 var TITLE;
 var VOLUME;
@@ -602,7 +589,9 @@ var OCONFIG; // Okuma JSON config File
 var TCONFIG; // Title JSON config File
 var VCONFIG; // Volume JSON config File
 
-fetch(CONSTANTS.booksURL() + 'config.json')
+
+
+fetch(LIBRARY + 'config.json')
   .then(response => response.json())
   .then(data => {
     OCONFIG = data;
@@ -618,7 +607,7 @@ fetch(CONSTANTS.booksURL() + 'config.json')
 
     if (TITLE) {
       // Load the TCONFIG file from the specific gallery
-      fetch(CONSTANTS.booksURL() + TITLE + '/' + 'config.json')
+      fetch(LIBRARY + TITLE + '/' + 'config.json')
         .then(response => response.json())
         .then(data => {
           TCONFIG = data;
@@ -661,7 +650,7 @@ fetch(CONSTANTS.booksURL() + 'config.json')
           VOLUME = parseInt(findGetParameter('volume'));
           if (Number.isNaN(VOLUME)) VOLUME = 1;
 
-          fetch(CONSTANTS.booksURL() + TITLE + '/' + VOLUME + '/' + 'config.json')
+          fetch(LIBRARY + TITLE + '/' + VOLUME + '/' + 'config.json')
             .then(response => response.json())
             .then(data => {
               VCONFIG = data;

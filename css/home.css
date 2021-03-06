@@ -1,5 +1,7 @@
 #container {
-    padding: 3vmin;
+  --paddingWidth: 3vw;
+  --gridGapWidth: 1.5vw;
+  padding: var(--paddingWidth);
 }
 
 #container > h2 {
@@ -10,36 +12,49 @@
 }
 
 #books {
+  --numberBook: 6;
   display: grid;
-  --bookImage: auto-fit, minmax(250px, 1fr);
-  grid-template-columns: repeat(var(--bookImage));
-  grid-gap: 3vmin;
+  grid-template-columns: repeat(var(--numberBook), 1fr);
+  grid-auto-rows: calc((100vw - var(--paddingWidth) - var(--gridGapWidth) * (var(--numberBook) - 1)) / var(--numberBook) * 1.45);
+  grid-gap: var(--gridGapWidth);
 }
 
 #books > a {
+  margin-bottom: 2em;
   text-decoration: none;
   color: var(--menu-text-color);
   display: grid;
   grid-template-rows: 2em 1fr;
-  transition: .2s transform;
+  transition: .2s transform, .2s filter;
+  filter: drop-shadow(0 0 0.7vmin rgba(0, 0, 0, 0.5));
 }
 
 #books > a:hover {
   transform: scale(1.02);
+  filter: drop-shadow(0 0 1.5vmin rgba(0, 0, 0, 0.8));
 }
 
 #books > a > p {
   margin: 0;
   margin-bottom: 1em;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  height: 2em;
 }
 
 #books > a > img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  box-shadow: 0 0 2vmin black;
 }
 
 body {
   min-height: 100vh;
 }
+
+@media screen and (max-width: 160vh) {#books {--numberBook: 5;}}
+@media screen and (max-width: 140vh) {#books {--numberBook: 4;}}
+@media screen and (max-width: 120vh) {#books {--numberBook: 3;}}
+@media screen and (max-width: 90vh)  {#books {--numberBook: 2;}}
+@media screen and (max-width: 70vh)  {#books {--numberBook: 1;}}
