@@ -11,22 +11,11 @@
   background-image: url("../img/side.webp");
   background-size: contain;
   pointer-events: none;
-  touch-actions: none;
 }
 
 body.book #navImage {
   background-image: url("../img/side-book.webp");
   background-size: 11vmin 100%;
-}
-
-
-
-#navImage > #touchSurface {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
 }
 
 #navImage > #continuousScrollingPages {

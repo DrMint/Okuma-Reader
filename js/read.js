@@ -707,11 +707,13 @@ fetch(LIBRARY + 'config.json')
                   document.getElementById("bookFoldButton").style.display = "none";
                   document.getElementById("sidePagesButton").style.display = "none";
                   document.getElementById("lightingButton").style.display = "none";
+                  document.getElementsByTagName("body")[0].style.touchAction = "pan-y";
                 } else {
                   document.getElementById("pageWidthContainer").style.display = "none";
                   document.getElementById("bookFoldButton").style.display = null;
                   document.getElementById("sidePagesButton").style.display = null;
                   document.getElementById("lightingButton").style.display = null;
+                  document.getElementsByTagName("body")[0].style.touchAction = "none";
                 }
 
               }
