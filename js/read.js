@@ -272,7 +272,7 @@ function refreshDipslayPages() {
 
         // If the current page is the first of a chapter that isn't the first
         // one, then we should show the last page of the previous chapter
-        if (VCONFIG.fistPageSingle && PAGE % 2 == 1) {
+        if (VCONFIG.fistPageSingle && getNumPagesBefore() % 2 == 1) {
           if (PAGE == 1) {
             leftPageURL = infoToImageURL(TITLE, VOLUME, CHAPTER - 1, getChapterNumPage(CHAPTER - 1));
           } else {
