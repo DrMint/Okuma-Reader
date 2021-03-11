@@ -25,6 +25,7 @@ The design is entirely cilent-side, the server simply hosts the images.
 - Automatically save the current page/chapter and selected options for when the user comes reading again.
 - Config files per title and per volume.
 - Animation when loading a page
+- Multilingual support (open the lang folder for the list of available languages)
 - Light-weight: under 200KB (including icons, filters, and textures).
 - One line integration in your website using iframe (see Installation for more detail)!
 
