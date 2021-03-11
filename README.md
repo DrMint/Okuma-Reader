@@ -73,34 +73,33 @@ At the beginning of the book, there is a lot of side pages on the right side. Th
 ![](https://r-entries.com/etuliens/img/Reader/6.JPG)
 With each page turned, the number of side pages on the left side will gradually increase and the opposite will occours on the right side.
 
-## Directory structure
-- a-example-book/
-	- 1/
+## Library structure
+- books/
+	- a-example-book/
 		- 1/
-			- 1.jpg
-			- 2.jpg
+			- 1/
+				- 1.jpg
+				- 2.jpg
+				- ...
+			- 2/
+				- 1.jpg
+				- 2.jpg
+				- ...
+			- 3/
+				- 1.jpg
+				- ...
 			- ...
+			- config.json
 		- 2/
-			- 1.jpg
-			- 2.jpg
 			- ...
-		- 3/
-			- 1.jpg
-			- ...
-		- ...
+			- config.json
 		- config.json
-	- 2/
-		- ...
+	- another-one/
+		- 1/
+			- ... 
+			- config.json
 		- config.json
 	- config.json
-- another-one/
-	- 1/
-		- ... 
-		- config.json
-	- config.json
-- index.html
-- reader.css
-- reader.js
 
 A few rules and constraints:
 - All images in a book must have the same extension
@@ -144,10 +143,18 @@ This project uses [ironexdev](https://github.com/ironexdev)/[zoom](https://githu
 
 ## Installation
 
-git clone https://github.com/DrMint/Okuma-Reader.git
+`git clone https://github.com/DrMint/Okuma-Reader.git`
+
 Create library folder
-git update-index --skip-worktree js/constants.js
-Modify the js/constants.js with actual URLs
+
+`git update-index --skip-worktree js/constants.js`
+
+Modify the `js/constants.js` with actual URLs
+
+
+## Prepare books
+
+`gs -dNOPAUSE -sDEVICE=png16m -r600 -dDownScaleFactor=5 -sOutputFile=export/%d.png name_of_my_book.pdf`
 
 
 ## Things I want to add/change/improve (more or less in order of priority)
@@ -155,6 +162,8 @@ Modify the js/constants.js with actual URLs
 - When launching it for the first time, ask what "reading experience" the user wants: realistic (with the book filters) or simple (just the plain images)
 - Add a book info pop-up where you can read the synopsis, learn about the author(s), status, date of release...
 - Ability to give a name to each chapter.
+- Ability to create bookmarks (especially for books)
+- Ability for the user to create custom bookmarks
 - Save the settings per book or globally.
 - Give the user the ability to choose a custom color for the background.
 - Add "reading mode" which is basically a blue-light filter. Later, add customizable filter layer.
