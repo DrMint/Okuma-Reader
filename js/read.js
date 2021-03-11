@@ -86,14 +86,14 @@ function getImage(url) {
 }
 
 function toggleNavMenu() {
-  if (GLOBAL.isNavBarsVisible || GLOBAL.isNavBarsVisible == undefined) {
+  if (IS_BAR_VISIBLE) {
     document.getElementById("topMenu").classList.add("hidden");
     document.getElementById("bottomMenu").classList.add("hidden");
   } else {
     document.getElementById("topMenu").classList.remove("hidden");
     document.getElementById("bottomMenu").classList.remove("hidden");
   }
-  GLOBAL.isNavBarsVisible = !GLOBAL.isNavBarsVisible
+  IS_BAR_VISIBLE = !IS_BAR_VISIBLE
 }
 
 
@@ -231,6 +231,24 @@ function changePage(newChapter = null, newPage = null) {
 }
 
 
+function addLoading() {
+  ELEM_LOADING++;
+  refreshLoading();
+}
+
+function removeLoading() {
+  ELEM_LOADING--;
+  refreshLoading();
+}
+
+function refreshLoading() {
+  if (ELEM_LOADING > 0) {
+    document.getElementById('loader').classList.add('enabled');
+  } else {
+    document.getElementById('loader').classList.remove('enabled');
+  }
+}
+
 function refreshDipslayPages() {
 
   if (TCONFIG.bookType == 'webtoon') {
@@ -287,15 +305,19 @@ function refreshDipslayPages() {
           rightPageURL = infoToImageURL(TITLE, VOLUME, CHAPTER + 1, 1);
         }
 
+        addLoading();
         getImage(rightPageURL).then(function(successUrl) {
           imgPageRight.src = rightPageURL;
+          removeLoading();
         });
 
       }
 
+      addLoading();
       getImage(leftPageURL).then(function(successUrl) {
         imgPageLeft.src = leftPageURL;
         imgFinishedLoading();
+        removeLoading();
       });
 
     }
@@ -590,6 +612,8 @@ var OCONFIG; // Okuma JSON config File
 var TCONFIG; // Title JSON config File
 var VCONFIG; // Volume JSON config File
 
+var IS_BAR_VISIBLE = true;
+var ELEM_LOADING = 0;
 
 
 fetch(LIBRARY + 'config.json')

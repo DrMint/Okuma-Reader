@@ -101,6 +101,81 @@ select > option {
     font-size: 100% !important;
 }
 
-.transition{
+.transition {
   transition: transform ease 200ms;
+}
+
+#loaderContainer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: grid;
+  place-content: center;
+  pointer-events: none;
+  touch-action: none;
+  z-index: 25;
+}
+
+#loaderContainer > #loader {
+  animation: rotate 2s linear infinite;
+  transform-origin: center center;
+  filter: drop-shadow(0 0 3vmin rgba(0, 0, 0, 0.5));
+  width: 0;
+  height: 0;
+  transition: .5s width, .5s height;
+}
+
+#loaderContainer > #loader > .path {
+  stroke-dasharray: 1, 200;
+  stroke-dashoffset: 0;
+  animation: dash 1.5s ease-in-out infinite;
+  stroke: white;
+  stroke-linecap: round;
+  stroke-width: 0;
+  transition: .5s stroke-width;
+}
+
+#loaderContainer > #loader.enabled > .path {
+  stroke-width: 0.7vmin;
+}
+
+#loaderContainer > #loader.enabled {
+  width: 15vmin;
+  height: 15vmin;
+}
+
+@media screen and (max-width: 90vh) {
+
+  #loaderContainer > #loader.enabled {
+    width: 30vmin;
+    height: 30vmin;
+  }
+
+  #loaderContainer > #loader.enabled > .path {
+    stroke-width: 1vmin;
+  }
+}
+
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px;
+  }
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px;
+  }
 }
