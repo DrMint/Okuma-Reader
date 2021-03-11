@@ -24,6 +24,7 @@ The design is entirely cilent-side, the server simply hosts the images.
 - Single and double-page display with the ability to display the cover page as a single page.
 - Automatically save the current page/chapter and selected options for when the user comes reading again.
 - Config files per title and per volume.
+- Animation when loading a page
 - Light-weight: under 200KB (including icons, filters, and textures).
 - One line integration in your website using iframe (see Installation for more detail)!
 
@@ -144,7 +145,6 @@ This project uses [ironexdev](https://github.com/ironexdev)/[zoom](https://githu
 ## Things I want to add/change/improve (more or less in order of priority)
 - Add a message/info pop-up when visiting the page for the first time with explanation on how to use it.
 - When launching it for the first time, ask what "reading experience" the user wants: realistic (with the book filters) or simple (just the plain images)
-- Add loading page animation or other visual confirmation that it's loading.
 - Add a book info pop-up where you can read the synopsis, learn about the author(s), status, date of release...
 - Ability to give a name to each chapter.
 - Save the settings per book or globally.
