@@ -86,7 +86,7 @@ function getImage(url) {
 }
 
 function toggleNavMenu() {
-  if (GLOBAL.isNavBarsVisible) {
+  if (GLOBAL.isNavBarsVisible || GLOBAL.isNavBarsVisible == undefined) {
     document.getElementById("topMenu").classList.add("hidden");
     document.getElementById("bottomMenu").classList.add("hidden");
   } else {
@@ -478,6 +478,7 @@ function setHandlers() {
           }
         }
     });
+    document.getElementsByClassName("zoom")[0].click();
 
   /* -------------------------- FOR CONTINUOUS SCROLLING MODE ONLY ------------------------------------*/
   } else {

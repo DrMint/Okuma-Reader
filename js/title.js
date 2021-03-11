@@ -52,6 +52,11 @@ fetch(LIBRARY + 'config.json')
             });
             bookInfoDiv.appendChild(genres);
 
+            var status = document.createElement("p");
+            status.innerHTML = "Language: " + TINFO.language;
+            status.id = "status";
+            bookInfoDiv.appendChild(status);
+
             var authors = document.createElement("div");
             authors.id = "authors";
             TINFO.authors.forEach((author, index) => {
