@@ -142,6 +142,14 @@ fistPageSingle, preferDoublePage, and allowDoublePage doesn't work if the bookTy
 ## License and attribution
 This project uses [ironexdev](https://github.com/ironexdev)/[zoom](https://github.com/ironexdev/zoom) for handling pinch-zoom, pan, double-tap, zoom using the mouse wheel. It has been modified to allow single clicks (on the sides to go to the next/previous page and in the middle to toggle the top and bottom menus).
 
+## Installation
+
+git clone https://github.com/DrMint/Okuma-Reader.git
+Create library folder
+git update-index --skip-worktree js/constants.js
+Modify the js/constants.js with actual URLs
+
+
 ## Things I want to add/change/improve (more or less in order of priority)
 - Add a message/info pop-up when visiting the page for the first time with explanation on how to use it.
 - When launching it for the first time, ask what "reading experience" the user wants: realistic (with the book filters) or simple (just the plain images)
