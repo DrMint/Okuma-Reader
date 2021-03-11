@@ -152,6 +152,11 @@ Create library folder
 Modify the `js/constants.js` with actual URLs
 
 
+## Prepare books
+
+`gs -dNOPAUSE -sDEVICE=png16m -r600 -dDownScaleFactor=5 -sOutputFile=export/%d.png name_of_my_book.pdf`
+
+
 ## Things I want to add/change/improve (more or less in order of priority)
 - Add a message/info pop-up when visiting the page for the first time with explanation on how to use it.
 - When launching it for the first time, ask what "reading experience" the user wants: realistic (with the book filters) or simple (just the plain images)
