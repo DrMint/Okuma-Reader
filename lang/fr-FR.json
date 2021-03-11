@@ -1,0 +1,50 @@
+{
+
+  "ps": " ",
+
+  "homePage":
+  {
+    "home": "Accueil",
+    "availableBooks": "Livres disponibles"
+  },
+
+  "titlePage":
+  {
+    "status":
+    {
+      "completed": "Terminée",
+      "ongoing": "En cours",
+      "cancelled": "Annulée"
+    },
+    "authors":
+    {
+      "story": "Ecriture",
+      "illustation": "Illustation"
+    },
+    "language": "Langue",
+    "volume": "Volume",
+    "publication": "Publication"
+  },
+
+  "readPage":
+  {
+    "chapter": "Chapitre",
+    "configMenu":
+    {
+      "pageWidthContainer": "Largeur de page",
+      "doublePageButton": "Mode d'affichage",
+      "paperTextureButton": "Texture de papier",
+      "bookFoldButton": "Pli du livre",
+      "lightingButton": "Effet de lumière",
+      "sidePagesButton": "Pages latérales",
+      "bookShadowButton": "Ombre du livre",
+      "themeSelection":
+      {
+        "darkTheme": "Thème sombre",
+        "lightTheme": "Thème lumineux"
+      }
+    }
+
+  }
+
+}

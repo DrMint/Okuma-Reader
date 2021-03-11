@@ -1,0 +1,50 @@
+{
+
+  "ps": "",
+
+  "homePage":
+  {
+    "home": "Home",
+    "availableBooks": "Available Books"
+  },
+
+  "titlePage":
+  {
+    "status":
+    {
+      "completed": "Completed",
+      "ongoing": "Ongoing",
+      "cancelled": "Cancelled"
+    },
+    "authors":
+    {
+      "story": "Story",
+      "illustation": "Illustation"
+    },
+    "language": "Language",
+    "volume": "Volume",
+    "publication": "Publication"
+  },
+
+  "readPage":
+  {
+    "chapter": "Chapter",
+    "configMenu":
+    {
+      "pageWidthContainer": "Page width",
+      "doublePageButton": "Display mode",
+      "paperTextureButton": "Paper texture",
+      "bookFoldButton": "Book fold",
+      "lightingButton": "Realistic lighting",
+      "sidePagesButton": "Side pages",
+      "bookShadowButton": "Book shadow",
+      "themeSelection":
+      {
+        "darkTheme": "Dark theme",
+        "lightTheme": "Light theme"
+      }
+    }
+
+  }
+
+}
