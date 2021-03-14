@@ -50,7 +50,8 @@ export function assertsTitleExists(titles, title) {
 
 export function applyTheme() {
   const body = document.getElementsByTagName("body")[0];
-  const themeSelection = parseInt(getCookie('themeSelection'));
+  var themeSelection = parseInt(getCookie('themeSelection'));
+  if (isNaN(themeSelection)) themeSelection = 0;
   const themeNames = ['darkTheme', 'lightTheme'];
   for (var i = 0; i < themeNames.length; i++) {
     body.classList.remove(themeNames[i]);
