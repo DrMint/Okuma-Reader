@@ -144,14 +144,15 @@ This project uses [ironexdev](https://github.com/ironexdev)/[zoom](https://githu
 
 ## Installation
 
-`git clone https://github.com/DrMint/Okuma-Reader.git`
+1. Clone the git: `git clone https://github.com/DrMint/Okuma-Reader.git`
+2. Create library folder
+3. Modify the js/constants.js with your website URLs
 
-Create library folder
-
-`git update-index --skip-worktree js/constants.js`
-
-Modify the `js/constants.js` with actual URLs
-
+To update:
+1. Copy your modified js/constants.js: `cp js/constants.js ~constants.js`
+2. Undo changes to js/constants.js: `git checkout js/constants.js`
+3. Update: `git pull`
+4. Restore your modified js/constants.js: `cp ~constants.js js/constants.js`
 
 ## Prepare books
 
