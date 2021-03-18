@@ -1,6 +1,6 @@
 "use strict";
 import * as CONSTANTS from './constants.js';
-import { findGetParameter, getCookie, applyTheme, chooseAndFetchLanguage, fetchBook, fetchLibrary } from './tools.js';
+import { findGetParameter, applyTheme, chooseAndFetchLanguage, fetchBook, fetchLibrary } from './tools.js';
 
 var LIBRARY = findGetParameter('library');
 if (LIBRARY == null) LIBRARY = CONSTANTS.booksURL();

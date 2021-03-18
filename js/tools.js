@@ -1,5 +1,6 @@
 "use strict";
 import * as CONSTANTS from './constants.js';
+import { getCookie } from './cookie.js';
 
 /* Returns the value of a given GET parameter name */
 export function findGetParameter(parameterName) {
@@ -17,28 +18,6 @@ export function findGetParameter(parameterName) {
 
 export function stringToBoolean(string) {
   return string == 'true' || 'True';
-}
-
-export function setCookie(cname, cvalue, exdays) {
-  var d = new Date();
-  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-  var expires = "expires="+d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + "; path=/; SameSite=None; Secure";
-}
-
-export function getCookie(cname) {
-  var name = cname + "=";
-  var ca = document.cookie.split(';');
-  for(var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
 }
 
 // If the title isn't valid, go back to home page

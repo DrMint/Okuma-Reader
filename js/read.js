@@ -1,7 +1,8 @@
 "use strict";
 import { zoom } from './directive.js';
 import * as CONSTANTS from './constants.js';
-import { findGetParameter, stringToBoolean, setCookie, getCookie, fetchLanguages, assertsTitleExists, chooseLanguage, fetchLanguage, fetchLibrary, fetchBook, fetchVolume } from './tools.js';
+import { findGetParameter, stringToBoolean, fetchLanguages, assertsTitleExists, chooseLanguage, fetchLanguage, fetchLibrary, fetchBook, fetchVolume } from './tools.js';
+import { setCookie, getCookie, getPosCookie, setPosCookie } from './cookie.js';
 
 function infoToImageURL(TITLE, VOLUME, CHAPTER, PAGE) {
   return LIBRARY + TITLE + '/' + VOLUME + '/' + CHAPTER + '/' + PAGE + TCONFIG.fileExtension;
@@ -143,25 +144,22 @@ function changePage(newChapter = null, newPage = null) {
   // When launch for the first time
   if (newChapter == null || newPage == null) {
 
-    newPage = parseInt(findGetParameter('page'));
-    newChapter = parseInt(findGetParameter('chapter'));
+    var paramPage = parseInt(findGetParameter('page'));
+    var paramChapter = parseInt(findGetParameter('chapter'));
+    var pos = getPosCookie(TITLE)[VOLUME];
 
-    // If no page/chapter is indicated in the GET
-    if (Number.isNaN(newPage)) {
-      // If a cookie is there to indicate the last visited page
-      if (getCookie(TITLE + '_PAGE') != '') {
-        newPage = parseInt(getCookie(TITLE + '_PAGE'));
-      } else {
-        newPage = 1;
-      }
-    }
-    if (Number.isNaN(newChapter)) {
-      // If a cookie is there to indicate the last visited chapter
-      if (getCookie(TITLE + '_CHAPTER') != '') {
-        newChapter = parseInt(getCookie(TITLE + '_CHAPTER'));
-      } else {
-        newChapter = 1;
-      }
+    // If a page/chapter is indicated in the GET
+    if (!(Number.isNaN(paramPage) || Number.isNaN(paramChapter))) {
+      newPage = paramPage;
+      newChapter = paramChapter;
+    // If a page/chapter has been saved in the cookie
+    } else if (pos != undefined) {
+      newPage = pos.page;
+      newChapter = pos.chapter;
+    // Else open the first page/chapter
+    } else {
+      newPage = 1;
+      newChapter = 1;
     }
 
   } else {
@@ -223,8 +221,11 @@ function changePage(newChapter = null, newPage = null) {
 
   if (hasPageChanged || hasChapterChanged) {
     refreshDipslayPages();
-    setCookie(TITLE + '_PAGE', PAGE, 365);
-    setCookie(TITLE + '_CHAPTER', CHAPTER, 365);
+
+    // Save current position in the volume in cookies
+    var pos = getPosCookie(TITLE, true);
+    pos[VOLUME] = {"chapter": CHAPTER, "page": PAGE};
+    setPosCookie(pos, TITLE);
   }
 
 }
