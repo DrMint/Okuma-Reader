@@ -146,16 +146,16 @@ function changePage(newChapter = null, newPage = null) {
 
     var paramPage = parseInt(findGetParameter('page'));
     var paramChapter = parseInt(findGetParameter('chapter'));
-    var pos = getPosCookie(TITLE)[VOLUME];
+    var pos = getPosCookie(TITLE);
 
     // If a page/chapter is indicated in the GET
     if (!(Number.isNaN(paramPage) || Number.isNaN(paramChapter))) {
       newPage = paramPage;
       newChapter = paramChapter;
     // If a page/chapter has been saved in the cookie
-    } else if (pos != undefined) {
-      newPage = pos.page;
-      newChapter = pos.chapter;
+    } else if (pos != undefined && pos[VOLUME] != undefined) {
+      newPage = pos[VOLUME].page;
+      newChapter = pos[VOLUME].chapter;
     // Else open the first page/chapter
     } else {
       newPage = 1;
