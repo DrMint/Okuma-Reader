@@ -6,4 +6,4 @@ export function homeURL() {return           "https://domain.com/"}
 export function readerURL() {return         "https://domain.com/read.html"}
 export function booksURL() {return          "https://domain.com/books/"}
 export function websiteName() {return       "WEBSITE TITLE"}
-export function defaultLanguage() {return   "en-US"}
+export function defaultLanguage() {return   "en"}
