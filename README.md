@@ -149,10 +149,24 @@ This project uses [ironexdev](https://github.com/ironexdev)/[zoom](https://githu
 3. Modify the js/constants.js with your website URLs
 
 To update:
+Simply use `git pull`.
+
+If it fails with this kind of error:
+```
+error: Your local changes to the following files would be overwritten by merge:
+        js/constants.js
+Please commit your changes or stash them before you merge.
+Aborting
+```
+It means that a new update changed constants.js. You will have to merge the differences yourself.
+To do that:
+
 1. Copy your modified js/constants.js: `cp js/constants.js ~constants.js`
 2. Undo changes to js/constants.js: `git checkout js/constants.js`
 3. Update: `git pull`
-4. Restore your modified js/constants.js: `cp ~constants.js js/constants.js`
+4. Verify what's difference between js/constants.js and your copy at ~constants.js
+5. If there is a new line in js/constants.js, add it to your ~constants.js
+6. Restore your modified js/constants.js: `cp ~constants.js js/constants.js`
 
 ## Prepare books
 
