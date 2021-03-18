@@ -166,9 +166,13 @@ To do that:
 6. Restore your modified js/constants.js: `cp ~constants.js js/constants.js`
 
 ## Prepare books
+
 Convert PDFs into PNG images.
+
 `-r600` means that the internal resolution is 600dpi
+
 `-dDownScaleFactor=5` will downsampled the high resolution image into a more reasonable resolution.
+
 `gs -dNOPAUSE -sDEVICE=png16m -r600 -dDownScaleFactor=5 -sOutputFile=export/%d.png name_of_my_book.pdf`
 
 Then you can use a batch convertion tool to convert the images into JPGs, or even better, WebP.
