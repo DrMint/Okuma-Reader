@@ -139,9 +139,6 @@ A config file for each volume must also be provided:
 ```
 fistPageSingle, preferDoublePage, and allowDoublePage doesn't work if the bookType is "webtoons"
 
-## License and attribution
-This project uses [ironexdev](https://github.com/ironexdev)/[zoom](https://github.com/ironexdev/zoom) for handling pinch-zoom, pan, double-tap, zoom using the mouse wheel. It has been modified to allow single clicks (on the sides to go to the next/previous page and in the middle to toggle the top and bottom menus).
-
 ## Installation
 
 1. Clone the git: `git clone https://github.com/DrMint/Okuma-Reader.git`
@@ -192,3 +189,6 @@ Then you can use a batch convertion tool to convert the images into JPGs, or eve
 - A Download page/chapter/book buttons? That would also open-up the idea of making it an offline Progressive Web App.
 - The ability to use archives (zip, tar.gz...) instead of folders.
 - The ability to display archives from the client's computer (without uploading it).
+
+## License and attribution
+This project uses [ironexdev](https://github.com/ironexdev)/[zoom](https://github.com/ironexdev/zoom) for handling pinch-zoom, pan, double-tap, zoom using the mouse wheel. It has been modified to allow single clicks (on the sides to go to the next/previous page and in the middle to toggle the top and bottom menus).
