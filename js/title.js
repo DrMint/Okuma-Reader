@@ -1,6 +1,6 @@
 "use strict";
 import * as CONSTANTS from './constants.js';
-import { findGetParameter, applyTheme, writeBookInfo, fetchBookInfo, assertsTitleExists, chooseAndFetchLanguage, fetchLibrary, fetchBook } from './tools.js';
+import { findGetParameter, applyTheme, infoToImageURL, infoToPageURL, writeBookInfo, fetchBookInfo, assertsTitleExists, chooseAndFetchLanguage, fetchLibrary, fetchBook } from './tools.js';
 
 function displayBookData(bookData) {
   // Change the title of the webpage
@@ -19,9 +19,9 @@ function displayBookData(bookData) {
     var p = document.createElement("p");
     var cover = document.createElement("img");
 
-    link.href = './read.html' + '?library=' + LIBRARY + '&title=' + TITLE + '&volume=' + i;
+    link.href = infoToPageURL(LIBRARY, TITLE, i);
     if (bookData.numVolumes > 1) p.innerHTML = 'Volume ' + i;
-    cover.src = LIBRARY + TITLE + '/' + i + '/1/1' + bookData.fileExtension;
+    cover.src = infoToImageURL(LIBRARY, TITLE, i, 1, 1, bookData.fileExtension);
 
     link.appendChild(p);
     link.appendChild(cover);

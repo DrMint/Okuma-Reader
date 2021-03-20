@@ -1,12 +1,8 @@
 "use strict";
 import { zoom } from './directive.js';
 import * as CONSTANTS from './constants.js';
-import { findGetParameter, stringToBoolean, fetchLanguages, assertsTitleExists, chooseLanguage, fetchLanguage, fetchLibrary, fetchBook, fetchVolume } from './tools.js';
+import { findGetParameter, stringToBoolean, fetchLanguages, infoToImageURL, assertsTitleExists, chooseLanguage, fetchLanguage, fetchLibrary, fetchBook, fetchVolume } from './tools.js';
 import { setCookie, getCookie, getPosCookie, setPosCookie } from './cookie.js';
-
-function infoToImageURL(TITLE, VOLUME, CHAPTER, PAGE) {
-  return LIBRARY + TITLE + '/' + VOLUME + '/' + CHAPTER + '/' + PAGE + TCONFIG.fileExtension;
-}
 
 function getChapterNumPage(chapter = CHAPTER) {
   return VCONFIG.numPages[chapter - 1];
@@ -45,16 +41,16 @@ function imgFinishedLoading() {
     var pagesToCache = [];
     for (var i = 1; i < numOfNextPagesToCache + 1; i++) {
       if (PAGE + i <= getChapterNumPage()) {
-        pagesToCache.push(infoToImageURL(TITLE, VOLUME, CHAPTER, PAGE + i));
+        pagesToCache.push(infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER, PAGE + i, TCONFIG.fileExtension));
       } else if (CHAPTER < getNumChapters()) {
-        pagesToCache.push(infoToImageURL(TITLE, VOLUME, CHAPTER + 1, PAGE + i - getChapterNumPage()));
+        pagesToCache.push(infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER + 1, PAGE + i - getChapterNumPage(), TCONFIG.fileExtension));
       }
     }
     for (var i = 1; i < numOfPreviousPagesToCache + 1; i++) {
       if (PAGE - i > 0) {
-        pagesToCache.push(infoToImageURL(TITLE, VOLUME, CHAPTER, PAGE - i));
+        pagesToCache.push(infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER, PAGE - i, TCONFIG.fileExtension));
       } else if (CHAPTER > 1) {
-        pagesToCache.push(infoToImageURL(TITLE, VOLUME, CHAPTER - 1, getChapterNumPage(CHAPTER - 1) - (i - 1)));
+        pagesToCache.push(infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER - 1, getChapterNumPage(CHAPTER - 1) - (i - 1), TCONFIG.fileExtension));
       }
     }
 
@@ -201,7 +197,7 @@ function changePage(newChapter = null, newPage = null) {
     document.getElementById('continuousScrollingPages').innerHTML = "";
     for (var i = 1; i <= getChapterNumPage(); i++) {
       var img = document.createElement('img');
-      img.src = infoToImageURL(TITLE, VOLUME, CHAPTER, i);
+      img.src = infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER, i, TCONFIG.fileExtension);
       img.loading = "lazy";
       document.getElementById('continuousScrollingPages').appendChild(img);
     }
@@ -265,27 +261,27 @@ function refreshDipslayPages() {
     /* Load the current page*/
     {
 
-      let leftPageURL = infoToImageURL(TITLE, VOLUME, CHAPTER, PAGE);
+      let leftPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER, PAGE, TCONFIG.fileExtension);
 
       if (UCONFIG.doublePage) {
 
-        let rightPageURL = infoToImageURL(TITLE, VOLUME, CHAPTER, PAGE + 1);
+        let rightPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER, PAGE + 1, TCONFIG.fileExtension);
 
         // If the current page is the first of a chapter that isn't the first
         // one, then we should show the last page of the previous chapter
         if (VCONFIG.fistPageSingle && getNumPagesBefore() % 2 == 1) {
           if (PAGE == 1) {
-            leftPageURL = infoToImageURL(TITLE, VOLUME, CHAPTER - 1, getChapterNumPage(CHAPTER - 1));
+            leftPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER - 1, getChapterNumPage(CHAPTER - 1), TCONFIG.fileExtension);
           } else {
-            leftPageURL = infoToImageURL(TITLE, VOLUME, CHAPTER, PAGE - 1);
+            leftPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER, PAGE - 1, TCONFIG.fileExtension);
           }
-          rightPageURL = infoToImageURL(TITLE, VOLUME, CHAPTER, PAGE);
+          rightPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER, PAGE, TCONFIG.fileExtension);
         }
 
         // If the current page is the last of a chapter that isn't the last chapter
         // then we should show the first page and the next chapter
         if (PAGE == getChapterNumPage() && CHAPTER < getNumChapters()) {
-          rightPageURL = infoToImageURL(TITLE, VOLUME, CHAPTER + 1, 1);
+          rightPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER + 1, 1, TCONFIG.fileExtension);
         }
 
         addLoading();

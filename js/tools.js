@@ -16,6 +16,23 @@ export function findGetParameter(parameterName) {
   return result;
 }
 
+export function infoToPageURL(library, title, volume = null, chapter = null, page = null) {
+  // If just the library and title are given
+  if (library && title && !volume && !chapter && !page) {
+    return CONSTANTS.homeURL() + 'title.html' + '?library=' + library + '&title=' + title;
+  } else {
+    var result = CONSTANTS.readerURL() + '?library=' + library + '&title=' + title;
+    if (volume) result += '&volume=' + volume;
+    if (chapter) result += '&chapter=' + chapter;
+    if (page) result += '&page=' + page;
+    return result;
+  }
+}
+
+export function infoToImageURL(library, title, volume, chapter, page, extension) {
+  return library + title + '/' + volume + '/' + chapter + '/' + page + extension;
+}
+
 export function stringToBoolean(string) {
   if (!string) return undefined;
   return string == 'true' || string == 'True';

@@ -1,6 +1,6 @@
 "use strict";
 import * as CONSTANTS from './constants.js';
-import { findGetParameter, applyTheme, chooseAndFetchLanguage, fetchBook, fetchLibrary } from './tools.js';
+import { findGetParameter, applyTheme, infoToPageURL, infoToImageURL, chooseAndFetchLanguage, fetchBook, fetchLibrary } from './tools.js';
 
 var LIBRARY = findGetParameter('library');
 if (LIBRARY == null) LIBRARY = CONSTANTS.booksURL();
@@ -17,9 +17,9 @@ function displayBook(bookData, title) {
   var p = document.createElement("p");
   var cover = document.createElement("img");
 
-  link.href = './title.html' + '?library=' + LIBRARY + '&title=' + title;
+  link.href = infoToPageURL(LIBRARY, title);
   p.innerHTML = bookData.title;
-  cover.src = LIBRARY + title + '/1/1/1' + bookData.fileExtension;
+  cover.src = infoToImageURL(LIBRARY, title, 1, 1, 1, bookData.fileExtension);
 
   link.appendChild(p);
   link.appendChild(cover);
