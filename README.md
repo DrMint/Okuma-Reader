@@ -8,13 +8,14 @@
 Online book reader written in JS with some key features like Japanese page order, double-page view and pre-caching on next pages.
 The design is entirely cilent-side, the server simply hosts the images.
 
-[Demo](https://okuma.r-entries.com/read.html?title=yokoverse)
+[Demo](https://okuma.r-entries.com/)
 
 ## Features
 
 - Support for series with multiple chapters and volumes.
 - Support for Japanese page ordering.
 - Support for various screen ratio.
+- Support for non-book materials (such as image sets)
 - Support for vertical continuous scrolling (such as webtoons).
 - Optional filters that simulate the visual experience of reading a real book (see Interface for images).
 - A main page to showcase all available books.
@@ -186,11 +187,9 @@ Then you can use a batch convertion tool to convert the images into JPGs, or eve
 - Save the settings per book or globally.
 - Give the user the ability to choose a custom color for the background.
 - Add "reading mode" which is basically a blue-light filter. Later, add customizable filter layer.
-- Not having to write the number of pages in the config.json.
 - More flexibility per chapter.
 - Page turning animation?!
 - A Download page/chapter/book buttons? That would also open-up the idea of making it an offline Progressive Web App.
-- The ability to use archives (zip, tar.gz...) instead of folders.
 - The ability to display archives from the client's computer (without uploading it).
 
 ## License and attribution
