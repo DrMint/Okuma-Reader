@@ -17,7 +17,8 @@ export function findGetParameter(parameterName) {
 }
 
 export function stringToBoolean(string) {
-  return string == 'true' || 'True';
+  if (!string) return undefined;
+  return string == 'true' || string == 'True';
 }
 
 // If the title isn't valid, go back to home page
