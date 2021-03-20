@@ -8,9 +8,12 @@
 #navImage {
   display: grid;
   grid-auto-flow: column;
-  background-image: url("../img/side.webp");
   background-size: contain;
   pointer-events: none;
+}
+
+body.manga #navImage {
+  background-image: url("../img/side.webp");
 }
 
 body.book #navImage {
