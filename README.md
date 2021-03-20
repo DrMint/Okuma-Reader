@@ -27,7 +27,6 @@ The design is entirely cilent-side, the server simply hosts the images.
 - Animation when loading a page
 - Multilingual support (open the lang folder for the list of available languages)
 - Light-weight: under 200KB (including icons, filters, and textures).
-- One line integration in your website using iframe (see Installation for more detail)!
 
 ## Interface
 
