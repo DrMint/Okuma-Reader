@@ -107,20 +107,8 @@ function toggleHandlerElement(button, variableName, targets, className, refreshP
         document.getElementById(targets[i]).classList.remove(className[i]);
       }
     }
-    if (refreshPages) {
-      refreshDipslayPages();
-    }
-    onOptionChanged()
+    if (refreshPages) refreshDipslayPages();
   };
-}
-
-function onOptionChanged() {
-  // Save in cookies the current GLOBAL state
-  for (let [key, value] of Object.entries(GLOBAL)) {
-    if (value != undefined) {
-      if (getCookie(key) != value.toString()) setCookie(key, value, 365);
-    }
-  }
 }
 
 function goNextPage() {
@@ -221,11 +209,6 @@ function changePage(newChapter = null, newPage = null) {
 
   if (hasPageChanged || hasChapterChanged) {
     refreshDipslayPages();
-
-    // Save current position in the volume in cookies
-    var pos = getPosCookie(TITLE, true);
-    pos[VOLUME] = {"chapter": CHAPTER, "page": PAGE};
-    setPosCookie(pos, TITLE);
   }
 
 }
@@ -556,7 +539,6 @@ function setHandlers() {
 
     // Save value to cookie
     GLOBAL.themeSelection = themeSelection.selectedIndex;
-    onOptionChanged();
 
     // Remove all other theme
     for (var themeName in LCONFIG.readPage.configMenu.themeSelection) {
@@ -571,7 +553,6 @@ function setHandlers() {
   languageSelection.onchange = function() {
     // Save value to cookie
     GLOBAL.lang = languageSelection.options[languageSelection.selectedIndex].value;
-    onOptionChanged();
     location.reload();
   }
 
@@ -660,6 +641,21 @@ function setHandlers() {
 
   // Apply type of book on the body
   body.classList.add(TCONFIG.bookType);
+
+  // Event when the user leave/close the page
+  window.onbeforeunload = function(){
+    // Save the current GLOBAL state as cookie
+    for (let [key, value] of Object.entries(GLOBAL)) {
+      if (value != undefined) {
+        if (getCookie(key) != value.toString()) setCookie(key, value, 365);
+      }
+    }
+
+    // Save current position in the volume in cookies
+    var pos = getPosCookie(TITLE, true);
+    pos[VOLUME] = {"chapter": CHAPTER, "page": PAGE};
+    setPosCookie(pos, TITLE);
+  };
 
 }
 
