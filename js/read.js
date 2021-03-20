@@ -13,7 +13,7 @@ function getChapterNumPage(chapter = CHAPTER) {
 }
 
 function getNumChapters() {
-  return VCONFIG.numPages.length;
+  return VCONFIG.numPages.length || 1;
 }
 
 function getNumPagesBefore() {
@@ -99,9 +99,9 @@ function toggleNavMenu() {
 
 function toggleHandlerElement(button, variableName, targets, className, refreshPages = false) {
   document.getElementById(button).onclick = function() {
-    GLOBAL[variableName] = !GLOBAL[variableName];
+    UCONFIG[variableName] = !UCONFIG[variableName];
     for (var i = 0; i < targets.length; i++) {
-      if (GLOBAL[variableName]) {
+      if (UCONFIG[variableName]) {
         document.getElementById(targets[i]).classList.add(className[i]);
       } else {
         document.getElementById(targets[i]).classList.remove(className[i]);
@@ -112,7 +112,7 @@ function toggleHandlerElement(button, variableName, targets, className, refreshP
 }
 
 function goNextPage() {
-  if (GLOBAL.doublePage) {
+  if (UCONFIG.doublePage) {
     changePage(CHAPTER, PAGE + 2);
   } else {
     changePage(CHAPTER, PAGE + 1);
@@ -120,7 +120,7 @@ function goNextPage() {
 }
 
 function goPreviousPage() {
-  if (GLOBAL.doublePage) {
+  if (UCONFIG.doublePage) {
     changePage(CHAPTER, PAGE - 2);
   } else {
     changePage(CHAPTER, PAGE - 1);
@@ -175,7 +175,7 @@ function changePage(newChapter = null, newPage = null) {
         // If you currently are on the last page of a chapter and in double page
         // mode, the first page of the next chapter is already shown
         // thus go to the second page of the new chapter.
-        if (PAGE == getChapterNumPage() && GLOBAL.doublePage) {
+        if (PAGE == getChapterNumPage() && UCONFIG.doublePage) {
           newPage = 2;
         } else {
           newPage = 1;
@@ -242,19 +242,19 @@ function refreshDipslayPages() {
   } else {
 
     // To use double page, the user should have asked for double page
-    GLOBAL.doublePage = GLOBAL.useDoublePage;
+    UCONFIG.doublePage = UCONFIG.useDoublePage;
 
     // To use double page, VCONFIG.allowDoublePage should be true
-    GLOBAL.doublePage = GLOBAL.doublePage && VCONFIG.allowDoublePage;
+    UCONFIG.doublePage = UCONFIG.doublePage && VCONFIG.allowDoublePage;
 
     // If the VCONFIG file asked for the fist page to be single, doublePage should
     // only be enable for pages other than the first one
-    GLOBAL.doublePage = GLOBAL.doublePage && !(VCONFIG.fistPageSingle && PAGE == 1 && CHAPTER == 1);
+    UCONFIG.doublePage = UCONFIG.doublePage && !(VCONFIG.fistPageSingle && PAGE == 1 && CHAPTER == 1);
 
     // Lastly double page should be disable if the last page is left alone.
-    GLOBAL.doublePage = GLOBAL.doublePage && (PAGE + 1 <= getChapterNumPage() || CHAPTER < getNumChapters());
+    UCONFIG.doublePage = UCONFIG.doublePage && (PAGE + 1 <= getChapterNumPage() || CHAPTER < getNumChapters());
 
-    if (GLOBAL.doublePage) {
+    if (UCONFIG.doublePage) {
       imgPageRight.style.display = null;
       navImage.classList.add("doublePage");
     } else {
@@ -267,7 +267,7 @@ function refreshDipslayPages() {
 
       let leftPageURL = infoToImageURL(TITLE, VOLUME, CHAPTER, PAGE);
 
-      if (GLOBAL.doublePage) {
+      if (UCONFIG.doublePage) {
 
         let rightPageURL = infoToImageURL(TITLE, VOLUME, CHAPTER, PAGE + 1);
 
@@ -308,7 +308,7 @@ function refreshDipslayPages() {
 
     /* Move the side page to simulate the fact that you place the next page on the side */
     {
-      if (GLOBAL.sidePages && GLOBAL.doublePage) {
+      if (UCONFIG.sidePages && UCONFIG.doublePage) {
         let sidePageMaxValue = Math.min(getTotalPages() / 150 * 4, 6);
         let progress = getNumPagesBefore() / getTotalPages();
         let viewedPagesWidth = (progress * sidePageMaxValue).toString() + "vmin";
@@ -336,7 +336,7 @@ function refreshDipslayPages() {
       }
     }
 
-    if (GLOBAL.useDoublePage) {
+    if (UCONFIG.useDoublePage) {
       document.getElementById("bookFoldButton").style.display = null;
       document.getElementById("sidePagesButton").style.display = null;
     } else {
@@ -538,7 +538,7 @@ function setHandlers() {
   themeSelection.onchange = function() {
 
     // Save value to cookie
-    GLOBAL.themeSelection = themeSelection.selectedIndex;
+    UCONFIG.themeSelection = themeSelection.selectedIndex;
 
     // Remove all other theme
     for (var themeName in LCONFIG.readPage.configMenu.themeSelection) {
@@ -546,13 +546,13 @@ function setHandlers() {
     }
 
     // Add the new theme
-    body.classList.add(themeSelection.options[GLOBAL.themeSelection].value);
+    body.classList.add(themeSelection.options[UCONFIG.themeSelection].value);
     document.activeElement.blur(); // Remove focus
   }
 
   languageSelection.onchange = function() {
     // Save value to cookie
-    GLOBAL.lang = languageSelection.options[languageSelection.selectedIndex].value;
+    UCONFIG.lang = languageSelection.options[languageSelection.selectedIndex].value;
     location.reload();
   }
 
@@ -572,7 +572,7 @@ function setHandlers() {
 
   const keys = Object.keys(LANGUAGES);
   for (var i in keys) {
-    if (keys[i] == GLOBAL.lang) {
+    if (keys[i] == UCONFIG.lang) {
       languageSelection.selectedIndex = parseInt(i);
     }
   }
@@ -620,21 +620,13 @@ function setHandlers() {
   }
 
   // Hide config options when not suited
-  {
-    if (TCONFIG.bookType == 'webtoon') {
-      document.getElementById("pageWidthContainer").style.display = null;
-      document.getElementById("bookFoldButton").style.display = "none";
-      document.getElementById("sidePagesButton").style.display = "none";
-      document.getElementById("lightingButton").style.display = "none";
-      document.getElementsByTagName("body")[0].style.touchAction = "pan-y";
-    } else {
-      document.getElementById("pageWidthContainer").style.display = "none";
-      document.getElementById("bookFoldButton").style.display = null;
-      document.getElementById("sidePagesButton").style.display = null;
-      document.getElementById("lightingButton").style.display = null;
-      document.getElementsByTagName("body")[0].style.touchAction = "none";
-    }
-  }
+  if (!BOOKTYPE.bookFoldButton)     document.getElementById("bookFoldButton").style.display     = "none";
+  if (!BOOKTYPE.sidePagesButton)    document.getElementById("sidePagesButton").style.display    = "none";
+  if (!BOOKTYPE.lightingButton)     document.getElementById("lightingButton").style.display     = "none";
+  if (!BOOKTYPE.paperTextureButton) document.getElementById("paperTextureButton").style.display = "none";
+  if (!BOOKTYPE.pageWidthContainer) document.getElementById("pageWidthContainer").style.display = "none";
+  if (!BOOKTYPE.bookShadowButton)   document.getElementById("bookShadow").style.display         = "none";
+  document.getElementsByTagName("body")[0].style.touchAction = BOOKTYPE.touchAction;
 
   // Change the title of the webpage
   document.title = CONSTANTS.websiteName() + ' - ' + TCONFIG.title;
@@ -644,8 +636,8 @@ function setHandlers() {
 
   // Event when the user leave/close the page
   window.onbeforeunload = function(){
-    // Save the current GLOBAL state as cookie
-    for (let [key, value] of Object.entries(GLOBAL)) {
+    // Save the current UCONFIG state as cookie
+    for (let [key, value] of Object.entries(UCONFIG)) {
       if (value != undefined) {
         if (getCookie(key) != value.toString()) setCookie(key, value, 365);
       }
@@ -677,90 +669,43 @@ function applyLanguage() {
 }
 
 function applyCookie() {
-  // If the user has already used Okuma, load their last settings
-  if (getCookie('themeSelection') != '') {
 
-    GLOBAL.useDoublePage = false;
-    if (getCookie('useDoublePage') == 'true') {
-      if (TCONFIG.bookType == 'webtoon' || !VCONFIG.allowDoublePage) {
-        GLOBAL.useDoublePage = true;
-      } else {
-        doublePageButton.click();
-      }
-    }
+  themeSelection.selectedIndex = parseInt(('themeSelection') || 0);
+  themeSelection.onchange();
 
-    themeSelection.selectedIndex = parseInt(getCookie('themeSelection'));
-    themeSelection.onchange();
+  // If screen is in landscape mode, realistic options are true by default
+  var defaultRealisticOption = window.innerHeight < window.innerWidth;
 
-    if (TCONFIG.bookType == 'webtoon') {
-
-      GLOBAL.bookFold = stringToBoolean(getCookie('bookFold'));
-      GLOBAL.lighting = stringToBoolean(getCookie('lighting'));
-      GLOBAL.sidePages = stringToBoolean(getCookie('sidePages'));
-      GLOBAL.paperTexture = stringToBoolean(getCookie('paperTexture'));
-      GLOBAL.bookShadow = stringToBoolean(getCookie('bookShadow'));
-
-      GLOBAL.continuousScrolling_paperTexture = false;
-      if (getCookie('continuousScrolling_paperTexture') == 'true') paperTextureButton.click();
-      GLOBAL.continuousScrolling_bookShadow = false;
-      if (getCookie('continuousScrolling_bookShadow') == 'true') bookShadowButton.click();
-
-    } else {
-
-      GLOBAL.continuousScrolling_paperTexture = stringToBoolean(getCookie('continuousScrolling_paperTexture'));
-      GLOBAL.continuousScrolling_bookShadow = stringToBoolean(getCookie('continuousScrolling_bookShadow'));
-
-      GLOBAL.bookFold = false;
-      if (getCookie('bookFold') == 'true') bookFoldButton.click();
-      GLOBAL.lighting = false;
-      if (getCookie('lighting') == 'true') lightingButton.click();
-      GLOBAL.sidePages = false;
-      if (getCookie('sidePages') == 'true') sidePagesButton.click();
-      GLOBAL.paperTexture = false;
-      if (getCookie('paperTexture') == 'true') paperTextureButton.click();
-      GLOBAL.bookShadow = false;
-      if (getCookie('bookShadow') == 'true') bookShadowButton.click();
-    }
-
-
-
-  } else {
-    // When there is no cookie, load default values
-
-    GLOBAL.useDoublePage = window.innerHeight < window.innerWidth;
-    GLOBAL.bookFold = true;
-    GLOBAL.lighting = true;
-    GLOBAL.sidePages = true;
-    GLOBAL.paperTexture = true;
-    GLOBAL.bookShadow = true;
-    GLOBAL.continuousScrolling_bookShadow = true;
-    GLOBAL.continuousScrolling_paperTexture = false;
-
-    themeSelection.selectedIndex = 0;
-    themeSelection.onchange();
-
-    if (TCONFIG.bookType == 'webtoon') {
-      GLOBAL.continuousScrolling_bookShadow = !GLOBAL.continuousScrolling_bookShadow;
-      bookShadowButton.click();
-
-    } else {
-      // If screen is in landscape mode
-      if (window.innerHeight < window.innerWidth) {
-        GLOBAL.paperTexture = !GLOBAL.paperTexture;
-        GLOBAL.lighting = !GLOBAL.lighting;
-        GLOBAL.useDoublePage = !GLOBAL.useDoublePage;
-        paperTextureButton.click();
-        lightingButton.click();
-        doublePageButton.click();
-      }
-      GLOBAL.bookFold = !GLOBAL.bookFold;
-      GLOBAL.sidePages = !GLOBAL.sidePages;
-      GLOBAL.bookShadow = !GLOBAL.bookShadow;
-      bookFoldButton.click();
-      sidePagesButton.click();
-      bookShadowButton.click();
-    }
+  if (BOOKTYPE.bookFoldButton) {
+    UCONFIG.bookFold = !(stringToBoolean(getCookie('bookFold')) || defaultRealisticOption);
+    bookFoldButton.click();
   }
+
+  if (BOOKTYPE.lightingButton) {
+    UCONFIG.lighting = !(stringToBoolean(getCookie('lighting')) || defaultRealisticOption);
+    lightingButton.click();
+  }
+
+  if (BOOKTYPE.paperTextureButton) {
+    UCONFIG.paperTexture = !(stringToBoolean(getCookie('paperTexture')) || defaultRealisticOption);
+    paperTextureButton.click();
+  }
+
+  if (BOOKTYPE.sidePagesButton) {
+    UCONFIG.sidePages = !(stringToBoolean(getCookie('sidePages')) || defaultRealisticOption);
+    sidePagesButton.click();
+  }
+
+  if (BOOKTYPE.bookShadowButton) {
+    UCONFIG.bookShadow = !(stringToBoolean(getCookie('bookShadow')) || defaultRealisticOption);
+    bookShadowButton.click();
+  }
+
+  if (BOOKTYPE.useDoublePage) {
+    UCONFIG.useDoublePage = !(stringToBoolean(getCookie('useDoublePage')) || defaultRealisticOption);
+    doublePageButton.click();
+  }
+
 }
 
 function getDOMElements() {
@@ -791,6 +736,38 @@ function getDOMElements() {
   }
 }
 
+function setBookTypeConfig() {
+  BOOKTYPE = {
+    "useDoublePage": false,
+    "bookFoldButton": false,
+    "sidePagesButton": false,
+    "lightingButton": false,
+    "paperTextureButton": false,
+    "pageWidthContainer": false,
+    "bookShadowButton": false,
+    "touchAction": "none"
+  }
+
+  switch (TCONFIG.bookType) {
+    case "imageset":
+      BOOKTYPE.bookShadowButton = true;
+      break;
+    case "webtoon":
+      BOOKTYPE.pageWidthContainer = true;
+      BOOKTYPE.bookShadowButton = true;
+      BOOKTYPE.touchAction = "pan-y"
+      break;
+    case "manga":
+    case "book":
+      BOOKTYPE.useDoublePage = true;
+      BOOKTYPE.bookFoldButton = true;
+      BOOKTYPE.sidePagesButton = true;
+      BOOKTYPE.lightingButton = true;
+      BOOKTYPE.paperTextureButton = true;
+      BOOKTYPE.bookShadowButton = true;
+      break;
+  }
+}
 
 // -----------------------------------------------------------------------------
 var imgPageLeft;
@@ -823,30 +800,33 @@ var TITLE = findGetParameter('title');
 var VOLUME = parseInt(findGetParameter('volume'));
 if (Number.isNaN(VOLUME)) VOLUME = 1;
 
-var CHAPTER;
-var PAGE;
+var CHAPTER;      // Stores the current chapter
+var PAGE;         // Stores the current page
 
-var GLOBAL = {}
-var LCONFIG; // Language JSON config File
-var TCONFIG; // Title JSON config File
-var VCONFIG; // Volume JSON config File
+var UCONFIG = {}  // User CONFIG that will be saved as cookies
+var LCONFIG;      // Language JSON config File
+var TCONFIG;      // Title JSON config File
+var VCONFIG;      // Volume JSON config File
 
-var IS_BAR_VISIBLE = true;
-var ELEM_LOADING = 0;
+var IS_BAR_VISIBLE = true;  // are the navbars visible
+var ELEM_LOADING = 0;       // The number of element currently loading
 
-var LANGUAGES;
+var LANGUAGES;  // Stores the list of available languages
+
+var BOOKTYPE; // Store the specific configuration for this type of document (book, manga, webtoon, imageset...)
 
 fetchLanguages()
   .then(languages => LANGUAGES = languages.languages)
   .then(chooseLanguage)
-  .then(language => GLOBAL.lang = language)
-  .then(() => fetchLanguage(GLOBAL.lang))
+  .then(language => UCONFIG.lang = language)
+  .then(() => fetchLanguage(UCONFIG.lang))
   .then(languageData => LCONFIG = languageData)
   .then(applyLanguage)
   .then(() => fetchLibrary(LIBRARY))
   .then(libraryData => assertsTitleExists(libraryData.titles, TITLE))
   .then(() => fetchBook(LIBRARY, TITLE))
   .then(bookData => TCONFIG = bookData)
+  .then(setBookTypeConfig)
   .then(getDOMElements)
   .then(() => fetchVolume(LIBRARY, TITLE, VOLUME))
   .then(volumeData => VCONFIG = volumeData)
