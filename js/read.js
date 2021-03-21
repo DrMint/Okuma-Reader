@@ -548,7 +548,9 @@ function setHandlers() {
   languageSelection.onchange = function() {
     // Save value to cookie
     UCONFIG.lang = languageSelection.options[languageSelection.selectedIndex].value;
-    location.reload();
+    fetchLanguage(UCONFIG.lang)
+    .then(languageData => LCONFIG = languageData)
+    .then(applyLanguage);
   }
 
   toggleHandlerElement("configButton", "configOpened", ["configMenu"], ["enabled"]);
@@ -570,13 +572,6 @@ function setHandlers() {
     if (keys[i] == UCONFIG.lang) {
       languageSelection.selectedIndex = parseInt(i);
     }
-  }
-
-  /* Populate the chapterSelection menu with the chapter from this title */
-  for (var i = 0; i < getNumChapters(); i++) {
-    var option = document.createElement("option");
-    option.text = LCONFIG.readPage.chapter + " " + (i + 1).toString();
-    chapterSelection.add(option);
   }
 
   if (!VCONFIG.allowDoublePage) doublePageButton.style.display = "none";
@@ -654,13 +649,29 @@ function applyLanguage() {
     }
   }
 
-  /* Populate the chapterSelection menu with the chapter from this title */
+  /* Populate the themeSelection menu with the themes from the language file */
+  var currentThemeSelection = themeSelection.selectedIndex;
+  themeSelection.innerHTML = "";
   for (var key in LCONFIG.readPage.configMenu.themeSelection) {
     var option = document.createElement("option");
     option.text = LCONFIG.readPage.configMenu.themeSelection[key];
     option.value = key;
     themeSelection.appendChild(option);
   }
+  themeSelection.selectedIndex = currentThemeSelection;
+
+  /* Populate the chapterSelection menu with the chapter from this title */
+  var currentChapterSelection = chapterSelection.selectedIndex;
+  chapterSelection.innerHTML = "";
+  for (var i = 0; i < getNumChapters(); i++) {
+    var option = document.createElement("option");
+    option.text = LCONFIG.readPage.chapter + " " + (i + 1).toString();
+    chapterSelection.add(option);
+  }
+  chapterSelection.selectedIndex = currentChapterSelection;
+
+  // Refresh the book info at the top
+  bookChapter.innerHTML = LCONFIG.readPage.chapter + " " + CHAPTER;
 }
 
 function applyCookie() {
@@ -816,7 +827,6 @@ fetchLanguages()
   .then(language => UCONFIG.lang = language)
   .then(() => fetchLanguage(UCONFIG.lang))
   .then(languageData => LCONFIG = languageData)
-  .then(applyLanguage)
   .then(() => fetchLibrary(LIBRARY))
   .then(libraryData => assertsTitleExists(libraryData.titles, TITLE))
   .then(() => fetchBook(LIBRARY, TITLE))
@@ -825,6 +835,7 @@ fetchLanguages()
   .then(getDOMElements)
   .then(() => fetchVolume(LIBRARY, TITLE, VOLUME))
   .then(volumeData => VCONFIG = volumeData)
+  .then(applyLanguage)
   .then(changePage)
   .then(setHandlers)
   .then(applyCookie);
