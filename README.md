@@ -190,7 +190,7 @@ If possible, all pages should have the same size (or at least the same ratio). A
 
 ## Installation
 
-### Full installation (recommended)
+### Full installation using Git (recommended)
 
 1. Clone the git: `git clone https://github.com/DrMint/Okuma-Reader.git`
 2. Create library folder
@@ -216,7 +216,7 @@ To do that:
 5. If there is a new line in js/constants.js, add it to your ~/constants.js
 6. Restore your modified js/constants.js: `cp ~/constants.js js/constants.js`
 
-### Using release packages
+### Full installation using release packages
 
 The [release packages](https://github.com/DrMint/Okuma-Reader/releases "release packages") are stable versions of Okuma. They are snapshot of the reposity. This method doesn't requiere Git to be installed of your computer.
 
@@ -226,7 +226,26 @@ The [release packages](https://github.com/DrMint/Okuma-Reader/releases "release 
 
 One draw back of this method is that, without Git, there isn't a mechanism to update your instance of Okuma. You'll need to reiterate the steps above. Make sure to not delete your Okuma Library when deleting the old version.
 
-### Without 
+### Without installing Okuma-Reader (Not recommended for production)
+
+What? How is this possible? Well Okuma reader instances such as the one I'm running on my domain (https://okuma.r-entries.com) can display other people libraries.
+
+Let's say you host a Okuma Library at this address https://okuma.mydomain.com/books/. To check that this URL is valid try accessing https://okuma.mydomain.com/books/config.json, it should give you the list of available slugs.
+
+You can display this library using someone else instance of Okuma Reader by using GET parameter: https://okuma.r-entries.com?library=https://okuma.mydomain.com/books/. Don't forget the "/" at the end of the library URL. This feature of "making your reader usable by other people" cannot currently be disabled but it will be in the future.
+
+Important detail: for this to work, browsers need to know that it's okay for your publicly available ressources (your library) to be accessed from another domain (the instance running Okuma Reader). As such, it's necessary to set this header for all ressources of your Okuma Library:
+
+`Access-Control-Allow-Origin "*"` which allow any other domains to use your files.
+
+For more security, you can specify the domain(s) that are allowed to access your library: 
+`Access-Control-Allow-Origin: https://okuma.r-entries.com`. 
+
+This header need to be set by your web server (or your reverse proxy if you're using one). Read https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin for more information about this header.
+
+The benefit of using this method is that you don't need to worry about keeping Okuma Reader up-to-date. On the other hand, you are dependent on someone else instance to power your library.
+
+
 
 ## Prepare books
 
