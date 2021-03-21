@@ -19,9 +19,18 @@ export function findGetParameter(parameterName) {
 export function infoToPageURL(library, title, volume = null, chapter = null, page = null) {
   // If just the library and title are given
   if (library && title && !volume && !chapter && !page) {
-    return CONSTANTS.homeURL() + 'title.html' + '?library=' + library + '&title=' + title;
+    if (library == CONSTANTS.booksURL()) {
+      return CONSTANTS.homeURL() + 'title.html' + '?title=' + title;
+    } else {
+      return CONSTANTS.homeURL() + 'title.html' + '?library=' + library + '&title=' + title;
+    }
   } else {
-    var result = CONSTANTS.readerURL() + '?library=' + library + '&title=' + title;
+    var result = CONSTANTS.readerURL();
+    if (library == CONSTANTS.booksURL()) {
+      result += '?title=' + title;
+    } else {
+      result += '?library=' + library + '&title=' + title;
+    }
     if (volume) result += '&volume=' + volume;
     if (chapter) result += '&chapter=' + chapter;
     if (page) result += '&page=' + page;

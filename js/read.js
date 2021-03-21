@@ -1,7 +1,7 @@
 "use strict";
 import { zoom } from './directive.js';
 import * as CONSTANTS from './constants.js';
-import { findGetParameter, stringToBoolean, fetchLanguages, infoToImageURL, assertsTitleExists, chooseLanguage, fetchLanguage, fetchLibrary, fetchBook, fetchVolume } from './tools.js';
+import { findGetParameter, stringToBoolean, fetchLanguages, infoToPageURL, infoToImageURL, assertsTitleExists, chooseLanguage, fetchLanguage, fetchLibrary, fetchBook, fetchVolume } from './tools.js';
 import { setCookie, getCookie, getPosCookie, setPosCookie } from './cookie.js';
 
 function getChapterNumPage(chapter = CHAPTER) {
@@ -209,7 +209,6 @@ function changePage(newChapter = null, newPage = null) {
 
 }
 
-
 function addLoading() {
   ELEM_LOADING++;
   refreshLoading();
@@ -351,7 +350,7 @@ function refreshDipslayPages() {
   {
     if (window.history.replaceState) {
       //prevents browser from storing history with each change:
-      let newURL = CONSTANTS.readerURL() + '?library=' + LIBRARY + '&title=' + TITLE + '&volume=' + VOLUME + '&chapter=' + CHAPTER + '&page=' + PAGE;
+      const newURL = infoToPageURL(LIBRARY, TITLE, VOLUME, CHAPTER, PAGE);
       window.history.replaceState(null, '', newURL);
     }
   }
