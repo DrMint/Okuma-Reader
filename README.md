@@ -218,7 +218,7 @@ To do that:
 
 ### Full installation using release packages
 
-The [release packages](https://github.com/DrMint/Okuma-Reader/releases "release packages") are stable versions of Okuma. They are snapshot of the reposity. This method doesn't requiere Git to be installed of your computer.
+The [release packages](https://github.com/DrMint/Okuma-Reader/releases "release packages") are stable versions of Okuma. They are snapshot of the repository. This method doesn't requiere Git to be installed of your computer.
 
 1. Download the lastest release
 2. Create library folder
