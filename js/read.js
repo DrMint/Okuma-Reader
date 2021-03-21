@@ -239,12 +239,12 @@ function refreshDipslayPages() {
     // To use double page, the user should have asked for double page
     UCONFIG.doublePage = UCONFIG.useDoublePage;
 
-    // To use double page, VCONFIG.allowDoublePage should be true
-    UCONFIG.doublePage = UCONFIG.doublePage && VCONFIG.allowDoublePage;
+    // To use double page, VCONFIG.disallowDoublePage should be true
+    UCONFIG.doublePage = UCONFIG.doublePage && !VCONFIG.disallowDoublePage;
 
     // If the VCONFIG file asked for the fist page to be single, doublePage should
     // only be enable for pages other than the first one
-    UCONFIG.doublePage = UCONFIG.doublePage && !(VCONFIG.fistPageSingle && PAGE == 1 && CHAPTER == 1);
+    UCONFIG.doublePage = UCONFIG.doublePage && !(!VCONFIG.firstPagesDouble && PAGE == 1 && CHAPTER == 1);
 
     // Lastly double page should be disable if the last page is left alone.
     UCONFIG.doublePage = UCONFIG.doublePage && (PAGE + 1 <= getChapterNumPage() || CHAPTER < getNumChapters());
@@ -268,7 +268,7 @@ function refreshDipslayPages() {
 
         // If the current page is the first of a chapter that isn't the first
         // one, then we should show the last page of the previous chapter
-        if (VCONFIG.fistPageSingle && getNumPagesBefore() % 2 == 1) {
+        if (!VCONFIG.firstPagesDouble && getNumPagesBefore() % 2 == 1) {
           if (PAGE == 1) {
             leftPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER - 1, getChapterNumPage(CHAPTER - 1), TCONFIG.fileExtension);
           } else {
@@ -574,7 +574,7 @@ function setHandlers() {
     }
   }
 
-  if (!VCONFIG.allowDoublePage) doublePageButton.style.display = "none";
+  if (VCONFIG.disallowDoublePage) doublePageButton.style.display = "none";
 
   // Set default value for continuous pages
   {
