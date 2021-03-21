@@ -75,8 +75,10 @@ At the beginning of the book, there is a lot of side pages on the right side. Th
 With each page turned, the number of side pages on the left side will gradually increase and the opposite will occours on the right side.
 
 ## Library structure
-- books/
-	- a-example-book/
+
+### Overview
+- library/
+	- an-example-book/
 		- 1/
 			- 1/
 				- 1.jpg
@@ -95,6 +97,7 @@ With each page turned, the number of side pages on the left side will gradually 
 			- ...
 			- config.json
 		- config.json
+		- info.json
 	- another-one/
 		- 1/
 			- ... 
@@ -102,44 +105,92 @@ With each page turned, the number of side pages on the left side will gradually 
 		- config.json
 	- config.json
 
-A few rules and constraints:
-- All images in a book must have the same extension
-- The chapters must be numbered from 1 to n
-- The pages of a chapter must be numbered from 1 to n
-- If possible, all pages should have the same size (or at least the same ratio)
-- A image should correspond to one page, images that have been combined as a double-page should be split
+### Root folder
+The library folder is where the titles (series/book/manga...) are stored. Its stucture uses the Okuma Library Directory Structure. This folder mush be accessible online in order to use it with Okuma Reader. It isn't necessary to enable files and directory listing on your web server.
 
-## Config files for titles and volumes
-A config file must be provided for each title (series). Here's an example:
+The first layer is composed of folders, one for each "title". There is also a JSON file called config.json that contains a list of the folders. The name of a title folder is called the title's slug. A slug must only contain lowercase letters and numbers. Spaces are replaced with dashes. So a book called "My Awesome First Book" could use a slug like "awesome-first-book".
 
-```
+Here the stucture of the config.json file containing the titles' slugs / name of the folders:
+```json
 {
-  "title": "My book's title",
-  "bookType": "manga",
-  "numVolumes": 1,
-  "fileExtension": ".jpg",
-  "japaneseOrder": true
+  "titles":
+  [
+    "an-example-book",
+    "another-one"
+  ]
 }
-
 ```
 
-numPages is the number of pages for each chapter. In this example, this book has 4 chapters.
-The currently available types are "book", "manga", and "webtoons".
-
-A config file for each volume must also be provided:
-
-```
+### Second layer: Title folder
+Inside each title folder, there is a folder for each of its volume. If the title in question is just a simple book, that book still has one volume. The volume are stored inside folders numbered `1`, `2`, `3`... There is also a config.json file that stored information about this title:
+```json
 {
-  "numPages": [38, 24, 40, 30],
+  "title": "An Exemple Book",
+  "bookType": "manga",
+  "numVolumes": 3,
+  "fileExtension": ".webp",
+  "japaneseOrder": false
+}
+```
+
+- `title` is the displayed name for that title. Contrary to the slug, it can be any string you want.
+- `bookType` is the type of the book. Currently available types are: "manga", "book", "imageset", and "webtoon". Mangas and books are mostly the same thing, the only difference is the texture of the paper and of the side pages. Image sets are not books, nor have pages. Thus, the double-page mode is disabled. All filters are also unavailable except for the "book shadow". Webtoon are vertical "comics" supposed to be read on a web browser. This mode uses "vertical continuous scrolling". Again, all effect except for book shadow are unavailable.
+- `numVolumes` is the number of volumes, which correspond to the number of sub-folders in the title folder.
+- `fileExtension` is the image file format used for this title. All pages in all volumes of a title have to use the same file extension for this reason. The fileExtension value must contain the "." at the beginning.
+- `japaneseOrder` is an optional parameter that controls the order of the book. Japanese books are supposed to be read from right to left contrary to most western books. If the title isn't using japaneseOrder, you can set the property to false or just remove the line entirely.
+
+If you want to add more information to a title, there is an optional info.json file that can be added next to the config.json file.
+Here its structure:
+
+```json
+{
+  "status": "completed",
+  "published": "12-06-1982 to 06-11-1990",
+  "genres": ["Action", "Sci-Fi", "Supernatural", "Drama", "Mature", "Seinen", "Tragedy"],
+  "language": "English",
+  "authors":
+    [
+      ["John Smith", "story"],
+	  ["Ben Smith", "illustation"]
+    ],
+  "serialization": "Publishing Company Name",
+  "synopsis": "A brief outline or general view, as of a subject or written work; an abstract or a summary..."
+}
+```
+
+- `status` is the current status of the title. The available values are "completed", "ongoing", "cancelled".
+- `published` is when the book started getting published. There aren't any restriction right now on how to format it.
+- `genres` is a list of genres/tags to quickly understand what the title is about. In the future those tags will be useful to search titles of a particular genre.
+- `language` is the language of the title. Again, there isn't any limitation on how to format it.
+- `authors` is a list of names and their position. Currently the only translated position are "story" and "illustration". If you use something else such as "proof-reader", it will still be shown but it won't be localized when using a different language.
+- `serialization` is a name of the publishing company.
+- `synopsis` is the relatively short summary of the book. It can use HTML tags such as \<br> or \<strong> ...
+
+
+### Third layer: Volume folder
+Inside each volume folder, there is a folder for each of its chapters. If the volume in question doesn't really have chapters, you can consider is has just one chapter. The chapters are stored inside folders numbered `1`, `2`, `3`... There is also a config.json file that stored information about this volume:
+
+```json
+{
+  "numPages": [38, 24, 40, 30, 30, 50],
   "fistPageSingle": true,
-  "preferDoublePage": true,
   "allowDoublePage": true
 }
-
 ```
-fistPageSingle, preferDoublePage, and allowDoublePage doesn't work if the bookType is "webtoons"
+
+- `numPages` is a list with the number of pages/images for each chapter (subfolder).
+- `fistPageSingle` is used for double-page mode. It indicate if the first page should be displayed as a single page (for exemple the cover page). It will only have an effect on the first chapter, not the following ones.
+- `allowDoublePage` indicates if the user is allowed to enable double-page mode.
+
+"fistPageSingle" and "allowDoublePage" can be ommited if false, or if the title "bookType" doesn't allow double-page mode anyway such as webtoons and image sets.
+
+### Fourth layer: Chapter folder
+This isn't much to say about this folder. The pages are stored as image files with the extension indicated by the title `config.json` file. The pages are numbered 1, 2, 3, ... All chapters use that numbering system: the first page of a chapter is always numbered "1".
+If possible, all pages should have the same size (or at least the same ratio). A image should correspond to one page, images that display two pages side by side should be split.
 
 ## Installation
+
+### Full installation (recommended)
 
 1. Clone the git: `git clone https://github.com/DrMint/Okuma-Reader.git`
 2. Create library folder
@@ -149,7 +200,7 @@ To update:
 Simply use `git pull`.
 
 If it fails with this kind of error:
-```
+```bash
 error: Your local changes to the following files would be overwritten by merge:
         js/constants.js
 Please commit your changes or stash them before you merge.
@@ -164,6 +215,18 @@ To do that:
 4. Verify what's difference between js/constants.js and your copy at ~/constants.js
 5. If there is a new line in js/constants.js, add it to your ~/constants.js
 6. Restore your modified js/constants.js: `cp ~/constants.js js/constants.js`
+
+### Using release packages
+
+The [release packages](https://github.com/DrMint/Okuma-Reader/releases "release packages") are stable versions of Okuma. They are snapshot of the reposity. This method doesn't requiere Git to be installed of your computer.
+
+1. Download the lastest release
+2. Create library folder
+3. Modify the js/constants.js with your website URLs
+
+One draw back of this method is that, without Git, there isn't a mechanism to update your instance of Okuma. You'll need to reiterate the steps above. Make sure to not delete your Okuma Library when deleting the old version.
+
+### Without 
 
 ## Prepare books
 
