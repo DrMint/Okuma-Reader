@@ -239,6 +239,7 @@ Important detail: for this to work, browsers need to know that it's okay for you
 `Access-Control-Allow-Origin "*"` which allow any other domains to use your files.
 
 For more security, you can specify the domain(s) that are allowed to access your library: 
+
 `Access-Control-Allow-Origin: https://okuma.r-entries.com`. 
 
 This header need to be set by your web server (or your reverse proxy if you're using one). Read https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin for more information about this header.
