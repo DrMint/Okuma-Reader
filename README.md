@@ -137,7 +137,7 @@ Inside each title folder, there is a folder for each of its volume. If the title
 - `bookType` is the type of the book. Currently available types are: "manga", "book", "imageset", and "webtoon". Mangas and books are mostly the same thing, the only difference is the texture of the paper and of the side pages. Image sets are not books, nor have pages. Thus, the double-page mode is disabled. All filters are also unavailable except for the "book shadow". Webtoon are vertical "comics" supposed to be read on a web browser. This mode uses "vertical continuous scrolling". Again, all effect except for book shadow are unavailable.
 - `numVolumes` is the number of volumes, which correspond to the number of sub-folders in the title folder.
 - `fileExtension` is the image file format used for this title. All pages in all volumes of a title have to use the same file extension for this reason. The fileExtension value must contain the "." at the beginning.
-- `japaneseOrder` is an optional parameter that controls the order of the book. Japanese books are supposed to be read from right to left contrary to most western books. If the title isn't using japaneseOrder, you can set the property to false or just remove the line entirely.
+- `japaneseOrder` is an optional parameter that controls the order of the book. Japanese books are meant to be read from right to left contrary to most western books. If the title isn't using japaneseOrder, you can set the property to false or just remove the line entirely.
 
 If you want to add more information to a title, there is an optional info.json file that can be added next to the config.json file.
 Here its structure:
@@ -173,16 +173,16 @@ Inside each volume folder, there is a folder for each of its chapters. If the vo
 ```json
 {
   "numPages": [38, 24, 40, 30, 30, 50],
-  "fistPageSingle": true,
-  "allowDoublePage": true
+  "fistPagesDouble": false,
+  "disallowDoublePage": false
 }
 ```
 
 - `numPages` is a list with the number of pages/images for each chapter (subfolder).
-- `fistPageSingle` is used for double-page mode. It indicate if the first page should be displayed as a single page (for exemple the cover page). It will only have an effect on the first chapter, not the following ones.
-- `allowDoublePage` indicates if the user is allowed to enable double-page mode.
+- `fistPagesDouble` is used for double-page mode. If set to true, it indicates that the first two pages should be displayed as double pages (for exemple if the cover page is missing). It will only have an effect on the first chapter, not the following ones.
+- `disallowDoublePage` indicates if the user is not allowed to enable double-page mode.
 
-"fistPageSingle" and "allowDoublePage" can be ommited if false, or if the title "bookType" doesn't allow double-page mode anyway such as webtoons and image sets.
+"fistPagesDouble" and "disallowDoublePage" can be ommited if false, or if the title "bookType" doesn't allow double-page mode anyway such as webtoons and image sets.
 
 ### Fourth layer: Chapter folder
 This isn't much to say about this folder. The pages are stored as image files with the extension indicated by the title `config.json` file. The pages are numbered 1, 2, 3, ... All chapters use that numbering system: the first page of a chapter is always numbered "1".
