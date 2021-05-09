@@ -186,7 +186,7 @@ Inside each volume folder, there is a folder for each of its chapters. If the vo
 
 ### Fourth layer: Chapter folder
 This isn't much to say about this folder. The pages are stored as image files with the extension indicated by the title `config.json` file. The pages are numbered 1, 2, 3, ... All chapters use that numbering system: the first page of a chapter is always numbered "1".
-If possible, all pages should have the same size (or at least the same ratio). A image should correspond to one page, images that display two pages side by side should be split.
+If possible, all pages should have the same size (or at least the same ratio). An image should correspond to one page, images that display two pages side by side should be split.
 
 ## Installation
 
