@@ -1,0 +1,50 @@
+{
+
+  "ps": " ",
+
+  "homePage":
+  {
+    "home": "Dom",
+    "availableBooks": "Dostępne książki"
+  },
+
+  "titlePage":
+  {
+    "status":
+    {
+      "completed": "Ukończona",
+      "ongoing": "Trwająca",
+      "cancelled": "Anulowana"
+    },
+    "authors":
+    {
+      "story": "Historia",
+      "illustation": "Ilustracja"
+    },
+    "language": "Język",
+    "volume": "Tom",
+    "publication": "Publikacja"
+  },
+
+  "readPage":
+  {
+    "chapter": "Rozdział",
+    "configMenu":
+    {
+      "pageWidthContainer": "Szerokość strony",
+      "doublePageButton": "Tryb wyświetlania",
+      "paperTextureButton": "Papierowa tekstura",
+      "bookFoldButton": "Cień zgięcia",
+      "lightingButton": "Realistyczne światło",
+      "sidePagesButton": "Boczne strony",
+      "bookShadowButton": "Cień książki",
+      "themeSelection":
+      {
+        "darkTheme": "Ciemny motyw",
+        "lightTheme": "Jasny motyw"
+      }
+    }
+
+  }
+
+}
