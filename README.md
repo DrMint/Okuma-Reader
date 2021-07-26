@@ -188,6 +188,9 @@ Inside each volume folder, there is a folder for each of its chapters. If the vo
 This isn't much to say about this folder. The pages are stored as image files with the extension indicated by the title `config.json` file. The pages are numbered 1, 2, 3, ... All chapters use that numbering system: the first page of a chapter is always numbered "1".
 If possible, all pages should have the same size (or at least the same ratio). An image should correspond to one page, images that display two pages side by side should be split.
 
+### Okuma-Tools
+I've released [Okuma-Tools](https://github.com/DrMint/Okuma-Tools) to help with preparing books. It has a couple of very nice features like conversion to WebP or JPG, cutting in half double pages, and even normalizing the image ratio throughout all the pages (useful when the source is a scan). It's still a WIP and, as of today, I haven't documented it. That being said, it's using argparse, which means it should guide you through the CLI.
+
 ## Installation
 
 ### Full installation using Git (recommended)
@@ -212,7 +215,7 @@ To do that:
 1. Copy your modified js/constants.js: `cp js/constants.js ~/constants.js`
 2. Undo changes to js/constants.js: `git checkout js/constants.js`
 3. Update: `git pull`
-4. Verify what's difference between js/constants.js and your copy at ~/constants.js
+4. Verify what's different between js/constants.js and your copy at ~/constants.js
 5. If there is a new line in js/constants.js, add it to your ~/constants.js
 6. Restore your modified js/constants.js: `cp ~/constants.js js/constants.js`
 
