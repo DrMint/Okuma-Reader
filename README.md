@@ -266,6 +266,7 @@ Convert PDFs into PNG images.
 Then you can use a batch convertion tool to convert the images into JPGs, or even better, WebP.
 
 ## Things I want to add/change/improve (more or less in order of priority)
+- Add the ability to swipe left and right to turn pages on mobile and maybe desktop.
 - Add a message/info pop-up when visiting the page for the first time with explanation on how to use it.
 - When launching it for the first time, ask what "reading experience" the user wants: realistic (with the book filters) or simple (just the plain images)
 - Add a book info pop-up where you can read the synopsis, learn about the author(s), status, date of release...
