@@ -391,7 +391,7 @@ function refreshDipslayPages() {
 
   // Update the slider background gradient
   {
-    let currentPosition = (parseInt(pageSlider.value) - 0.5) / parseInt(pageSlider.max) * 100;
+    let currentPosition = (parseInt(pageSlider.value) - 1) / (parseInt(pageSlider.max) - 1) * 100;
     pageSlider.style.background = "linear-gradient(90deg, var(--menu-text-color) 0%, var(--menu-text-color) " + currentPosition.toString() + "%, gray " + currentPosition.toString() + "%, gray 100%)";
   }
 
