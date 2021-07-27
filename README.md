@@ -175,16 +175,16 @@ Inside each volume folder, there is a folder for each of its chapters. If the vo
 ```json
 {
   "numPages": [38, 24, 40, 30, 30, 50],
-  "fistPagesDouble": false,
+  "firstPagesDouble": false,
   "disallowDoublePage": false
 }
 ```
 
 - `numPages` is a list with the number of pages/images for each chapter (subfolder).
-- `fistPagesDouble` is used for double-page mode. If set to true, it indicates that the first two pages should be displayed as double pages (for exemple if the cover page is missing). It will only have an effect on the first chapter, not the following ones.
+- `firstPagesDouble` is used for double-page mode. If set to true, it indicates that the first two pages should be displayed as double pages (for exemple if the cover page is missing). It will only have an effect on the first chapter, not the following ones.
 - `disallowDoublePage` indicates if the user is not allowed to enable double-page mode.
 
-"fistPagesDouble" and "disallowDoublePage" can be ommited if false, or if the title "bookType" doesn't allow double-page mode anyway such as webtoons and image sets.
+"firstPagesDouble" and "disallowDoublePage" can be ommited if false, or if the title "bookType" doesn't allow double-page mode anyway such as webtoons and image sets.
 
 ### Fourth layer: Chapter folder
 This isn't much to say about this folder. The pages are stored as image files with the extension indicated by the title `config.json` file. The pages are numbered 1, 2, 3, ... All chapters use that numbering system: the first page of a chapter is always numbered "1".
