@@ -190,9 +190,6 @@ Inside each volume folder, there is a folder for each of its chapters. If the vo
 This isn't much to say about this folder. The pages are stored as image files with the extension indicated by the title `config.json` file. The pages are numbered 1, 2, 3, ... All chapters use that numbering system: the first page of a chapter is always numbered "1".
 If possible, all pages should have the same size (or at least the same ratio). An image should correspond to one page, images that display two pages side by side should be split.
 
-### Okuma-Tools
-I've released [Okuma-Tools](https://github.com/DrMint/Okuma-Tools) to help with preparing books. It has a couple of very nice features like conversion to WebP or JPG, cutting in half double pages, and even normalizing the image ratio throughout all the pages (useful when the source is a scan). It's still a WIP and, as of today, I haven't documented it. That being said, it's using argparse, which means it should guide you through the CLI.
-
 ## Installation
 
 ### Full installation using Git (recommended)
@@ -255,7 +252,10 @@ The benefit of using this method is that you don't need to worry about keeping O
 
 ## Prepare books
 
-Convert PDFs into PNG images.
+### Okuma-Tools
+I've released [Okuma-Tools](https://github.com/DrMint/Okuma-Tools) to help with preparing books. It has a couple of very nice features like conversion to WebP or JPG, cutting in half double pages, and even normalizing the image ratio throughout all the pages (useful when the source is a scan). It's still a WIP and, as of today, I haven't documented it. That being said, it's using argparse, which means it should guide you through the CLI.
+
+### Convert PDFs into PNG images
 
 `-r600` means that the internal resolution is 600dpi
 
@@ -266,6 +266,7 @@ Convert PDFs into PNG images.
 Then you can use a batch convertion tool to convert the images into JPGs, or even better, WebP.
 
 ## Things I want to add/change/improve (more or less in order of priority)
+- Add the ability to swipe left and right to turn pages on mobile and maybe desktop.
 - Add a message/info pop-up when visiting the page for the first time with explanation on how to use it.
 - When launching it for the first time, ask what "reading experience" the user wants: realistic (with the book filters) or simple (just the plain images)
 - Add a book info pop-up where you can read the synopsis, learn about the author(s), status, date of release...
