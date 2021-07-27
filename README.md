@@ -10,6 +10,8 @@ The design is entirely cilent-side, the server simply hosts the images.
 
 [Demo](https://okuma.r-entries.com/)
 
+We also have a [Discord Server](https://discord.gg/MvcQZnw9Q6) which you can join to discuss about future features, make suggestions, and get support. 
+
 ## Features
 
 - Support for series with multiple chapters and volumes.
