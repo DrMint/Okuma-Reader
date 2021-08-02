@@ -19,7 +19,7 @@ function displayBook(bookData, title) {
 
   link.href = infoToPageURL(LIBRARY, title);
   p.innerHTML = bookData.title;
-  cover.src = infoToImageURL(LIBRARY, title, 1, 1, 1, bookData.fileExtension);
+  cover.src = infoToImageURL(LIBRARY, title, 1, 1, bookData.fileExtension);
 
   link.appendChild(p);
   link.appendChild(cover);

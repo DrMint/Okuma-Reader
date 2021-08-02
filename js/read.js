@@ -4,59 +4,55 @@ import * as CONSTANTS from './constants.js';
 import { findGetParameter, stringToBoolean, fetchLanguages, infoToPageURL, infoToImageURL, assertsTitleExists, chooseLanguage, fetchLanguage, fetchLibrary, fetchBook, fetchVolume } from './tools.js';
 import { setCookie, getCookie, getPosCookie, setPosCookie } from './cookie.js';
 
-function getChapterNumPage(chapter = CHAPTER) {
-  return VCONFIG.numPages[chapter - 1];
-}
-
-function getNumChapters() {
-  return VCONFIG.numPages.length || 1;
-}
-
-function getNumPagesBefore() {
-  let result = 0;
-  for (var i = 0; i < CHAPTER - 1; i++) {
-    result += VCONFIG.numPages[i];
+function getChapterCount() {
+  var count = 0;
+  for (var i = 0; i < VCONFIG.bookmarks.length; i++) {
+    if (VCONFIG.bookmarks[i].type == 'chapter') count++;
   }
-  result += PAGE;
-  return result;
+  return count;
 }
 
-function getTotalPages() {
-  let result = 0;
-  for (var i = 0; i < VCONFIG.numPages.length; i++) {
-    result += VCONFIG.numPages[i];
+function getChapterFirstPage(chapterNum) {
+  var count = 1;
+  for (var i = 0; i < VCONFIG.bookmarks.length; i++) {
+    if (VCONFIG.bookmarks[i].type == 'chapter') {
+      if (count == chapterNum) return VCONFIG.bookmarks[i].page;
+      count++;
+    }
   }
-  return result;
+}
+
+function getCurrentChapter(page = PAGE) {
+  for (var i = 0; i < VCONFIG.bookmarks.length; i++) {
+    if (VCONFIG.bookmarks[i].type == 'chapter') {
+      if (VCONFIG.bookmarks[i].page > PAGE) return i;
+    }
+  }
+  return i;
 }
 
 function imgFinishedLoading() {
 
-  /*  Create a list of pages to cache and then cache them asynchronously
-      The list starts caching the next pages and then the previous pages
-      (in case the user started from the middle of the book).*/
-  {
-    let numOfNextPagesToCache = 5;
-    let numOfPreviousPagesToCache = 3;
+  /* Create a list of pages to cache and then cache them asynchronously
+  The list starts caching the next pages and then the previous pages
+  (in case the user started from the middle of the book). */
+  let numOfNextPagesToCache = 5;
+  let numOfPreviousPagesToCache = 3;
 
-    var pagesToCache = [];
-    for (var i = 1; i < numOfNextPagesToCache + 1; i++) {
-      if (PAGE + i <= getChapterNumPage()) {
-        pagesToCache.push(infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER, PAGE + i, TCONFIG.fileExtension));
-      } else if (CHAPTER < getNumChapters()) {
-        pagesToCache.push(infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER + 1, PAGE + i - getChapterNumPage(), TCONFIG.fileExtension));
-      }
+  var pagesToCache = [];
+  for (var i = 1; i < numOfNextPagesToCache + 1; i++) {
+    if (PAGE + i <= VCONFIG.numPages) {
+      pagesToCache.push(infoToImageURL(LIBRARY, TITLE, VOLUME, PAGE + i, TCONFIG.fileExtension));
     }
-    for (var i = 1; i < numOfPreviousPagesToCache + 1; i++) {
-      if (PAGE - i > 0) {
-        pagesToCache.push(infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER, PAGE - i, TCONFIG.fileExtension));
-      } else if (CHAPTER > 1) {
-        pagesToCache.push(infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER - 1, getChapterNumPage(CHAPTER - 1) - (i - 1), TCONFIG.fileExtension));
-      }
-    }
-
-    // The list pagesToCache is finished, we can call the caching fonction
-    precacheImages(pagesToCache);
   }
+  for (var i = 1; i < numOfPreviousPagesToCache + 1; i++) {
+    if (PAGE - i > 0) {
+      pagesToCache.push(infoToImageURL(LIBRARY, TITLE, VOLUME, PAGE - i, TCONFIG.fileExtension));
+    }
+  }
+
+  // The list pagesToCache is finished, we can call the caching fonction
+  precacheImages(pagesToCache);
 
 }
 
@@ -109,102 +105,87 @@ function toggleHandlerElement(button, variableName, targets, className, refreshP
 
 function goNextPage() {
   if (UCONFIG.doublePage) {
-    changePage(CHAPTER, PAGE + 2);
+    changePage(PAGE + 2);
   } else {
-    changePage(CHAPTER, PAGE + 1);
+    changePage(PAGE + 1);
   }
 }
 
 function goPreviousPage() {
   if (UCONFIG.doublePage) {
-    changePage(CHAPTER, PAGE - 2);
+    changePage(PAGE - 2);
   } else {
-    changePage(CHAPTER, PAGE - 1);
+    changePage(PAGE - 1);
   }
 }
 
-function changePage(newChapter = null, newPage = null) {
+function changePage(newPage = null) {
 
   // When launch for the first time
-  if (newChapter == null || newPage == null) {
+  if (newPage == null) {
 
-    var paramPage = parseInt(findGetParameter('page'));
     var paramChapter = parseInt(findGetParameter('chapter'));
+    var paramPage = parseInt(findGetParameter('page'));
     var pos = getPosCookie(TITLE);
 
-    // If a page/chapter is indicated in the GET
-    if (!(Number.isNaN(paramPage) || Number.isNaN(paramChapter))) {
+    // If a page is indicated in the GET
+    if (!Number.isNaN(paramPage)) {
       newPage = paramPage;
-      newChapter = paramChapter;
-    // If a page/chapter has been saved in the cookie
+    // If a chapter is indicated in the GET
+    } else if (!Number.isNaN(paramChapter)) {
+      newPage = getChapterFirstPage(paramChapter);
+    // If a page has been saved in the cookie
     } else if (pos != undefined && pos[VOLUME] != undefined) {
-      newPage = pos[VOLUME].page;
-      newChapter = pos[VOLUME].chapter;
-    // Else open the first page/chapter
+      newPage = pos[VOLUME];
+    // Else open the first page
     } else {
       newPage = 1;
-      newChapter = 1;
     }
 
   } else {
 
     /* Sanitize the parameters before actually changing the actual values */
-    if (newChapter < 1) newChapter = 1;
-
-    if (newChapter > getNumChapters()) newChapter = getNumChapters();
-
     if (newPage < 1) {
-      // Go the previous chapter last page if tring to go previous page on the
-      // first page on current chapter.
-      if (newChapter > 1) {
-        newChapter--;
-        newPage = getChapterNumPage(newChapter) + newPage;
-      } else {
-         newPage = 1;
-      }
+      newPage = 1;
+    } else if (newPage > VCONFIG.numPages) {
+      newPage = VCONFIG.numPages;
+    }
 
-    } else if (newPage > getChapterNumPage()) {
-      // Go the next chapter first page if tring to go next page on the
-      // last page on previous chapter.
-      if (newChapter < getNumChapters()) {
-
-        // If you currently are on the last page of a chapter and in double page
-        // mode, the first page of the next chapter is already shown
-        // thus go to the second page of the new chapter.
-        if (PAGE == getChapterNumPage() && UCONFIG.doublePage) {
-          newPage = 2;
-        } else {
-          newPage = 1;
-        }
-        newChapter++;
-
-      } else {
-
-        newPage = getChapterNumPage();
-
-      }
+    // Correction for current page position depending on double page
+    if (isDoublePagePossible(newPage) && newPage > 1) {
+      if (VCONFIG.firstPagesDouble && newPage % 2 == 0) newPage -= 1;
+      if (!VCONFIG.firstPagesDouble && newPage % 2 == 1) newPage -= 1;
     }
 
   }
 
   let hasPageChanged = newPage != PAGE;
-  let hasChapterChanged = newChapter != CHAPTER;
 
-  CHAPTER = newChapter
   PAGE = newPage;
 
-  if (TCONFIG.bookType == 'webtoon' && hasChapterChanged) {
+  if (TCONFIG.bookType == 'webtoon') {
     document.getElementById('continuousScrollingPages').innerHTML = "";
-    for (var i = 1; i <= getChapterNumPage(); i++) {
+    var start = getChapterFirstPage(getCurrentChapter());
+    var end = getChapterFirstPage(getCurrentChapter() + 1) - 1;
+    if (getCurrentChapter() == getChapterCount()) {
+      end = VCONFIG.numPages;
+    }
+    for (var i = start; i <= end; i++) {
       var img = document.createElement('img');
-      img.src = infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER, i, TCONFIG.fileExtension);
+      img.src = infoToImageURL(LIBRARY, TITLE, VOLUME, i, TCONFIG.fileExtension);
       img.loading = "lazy";
       document.getElementById('continuousScrollingPages').appendChild(img);
     }
   }
 
-  if (hasPageChanged || hasChapterChanged) {
+  if (hasPageChanged) {
     refreshDipslayPages();
+  }
+
+  // Update the slider background gradient
+  {
+    let currentPosition = (parseInt(pageSlider.value) - 1) / (parseInt(pageSlider.max) - 1) * 100;
+    pageSlider.style.background = "linear-gradient(90deg, var(--menu-text-color) 0%, var(--menu-text-color) " + currentPosition.toString() + "%, gray " + currentPosition.toString() + "%, gray 100%)";
   }
 
 }
@@ -227,6 +208,23 @@ function refreshLoading() {
   }
 }
 
+function isDoublePagePossible(targetPage = PAGE) {
+  // To use double page, the user should have asked for double page
+  var result = UCONFIG.useDoublePage;
+
+  // To use double page, VCONFIG.disallowDoublePage should be true
+  result &= !VCONFIG.disallowDoublePage;
+
+  // If the VCONFIG file asked for the fist page to be single, doublePage should
+  // only be enable for pages other than the first one
+  result &= !(!VCONFIG.firstPagesDouble && targetPage == 1);
+
+  // Lastly double page should be disable if the last page is left alone.
+  result &= targetPage + 1 <= VCONFIG.numPages;
+
+  return result;
+}
+
 function refreshDipslayPages() {
 
   if (TCONFIG.bookType == 'webtoon') {
@@ -236,18 +234,7 @@ function refreshDipslayPages() {
   /* -------------------------- FOR BOOK MODE ONLY (NOT CONTINUOUS SCROLLING) ------------------------------------*/
   } else {
 
-    // To use double page, the user should have asked for double page
-    UCONFIG.doublePage = UCONFIG.useDoublePage;
-
-    // To use double page, VCONFIG.disallowDoublePage should be true
-    UCONFIG.doublePage = UCONFIG.doublePage && !VCONFIG.disallowDoublePage;
-
-    // If the VCONFIG file asked for the fist page to be single, doublePage should
-    // only be enable for pages other than the first one
-    UCONFIG.doublePage = UCONFIG.doublePage && !(!VCONFIG.firstPagesDouble && PAGE == 1 && CHAPTER == 1);
-
-    // Lastly double page should be disable if the last page is left alone.
-    UCONFIG.doublePage = UCONFIG.doublePage && (PAGE + 1 <= getChapterNumPage() || CHAPTER < getNumChapters());
+    UCONFIG.doublePage = isDoublePagePossible();
 
     if (UCONFIG.doublePage) {
       imgPageRight.style.display = null;
@@ -260,28 +247,11 @@ function refreshDipslayPages() {
     /* Load the current page*/
     {
 
-      let leftPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER, PAGE, TCONFIG.fileExtension);
+      let leftPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, PAGE, TCONFIG.fileExtension);
 
       if (UCONFIG.doublePage) {
 
-        let rightPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER, PAGE + 1, TCONFIG.fileExtension);
-
-        // If the current page is the first of a chapter that isn't the first
-        // one, then we should show the last page of the previous chapter
-        if (!VCONFIG.firstPagesDouble && getNumPagesBefore() % 2 == 1) {
-          if (PAGE == 1) {
-            leftPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER - 1, getChapterNumPage(CHAPTER - 1), TCONFIG.fileExtension);
-          } else {
-            leftPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER, PAGE - 1, TCONFIG.fileExtension);
-          }
-          rightPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER, PAGE, TCONFIG.fileExtension);
-        }
-
-        // If the current page is the last of a chapter that isn't the last chapter
-        // then we should show the first page and the next chapter
-        if (PAGE == getChapterNumPage() && CHAPTER < getNumChapters()) {
-          rightPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, CHAPTER + 1, 1, TCONFIG.fileExtension);
-        }
+        let rightPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, PAGE + 1, TCONFIG.fileExtension);
 
         addLoading();
         getImage(rightPageURL).then(function(successUrl) {
@@ -304,8 +274,8 @@ function refreshDipslayPages() {
     /* Move the side page to simulate the fact that you place the next page on the side */
     {
       if (UCONFIG.sidePages && UCONFIG.doublePage) {
-        let sidePageMaxValue = Math.min(getTotalPages() / 150 * 4, 6);
-        let progress = getNumPagesBefore() / getTotalPages();
+        let sidePageMaxValue = Math.min(VCONFIG.numPages / 150 * 4, 6);
+        let progress = PAGE / VCONFIG.numPages;
         let viewedPagesWidth = (progress * sidePageMaxValue).toString() + "vmin";
         let toBeViewedPagesWidth = ((1 - progress) * sidePageMaxValue).toString() + "vmin";
 
@@ -350,7 +320,7 @@ function refreshDipslayPages() {
   {
     if (window.history.replaceState) {
       //prevents browser from storing history with each change:
-      const newURL = infoToPageURL(LIBRARY, TITLE, VOLUME, CHAPTER, PAGE);
+      const newURL = infoToPageURL(LIBRARY, TITLE, VOLUME, PAGE);
       window.history.replaceState(null, '', newURL);
     }
   }
@@ -358,25 +328,26 @@ function refreshDipslayPages() {
 
   /* Refresh the slider bar */
   {
-    pageSlider.max = getChapterNumPage();
+    pageSlider.max = VCONFIG.numPages;
     pageSlider.value = PAGE.toString();
     pageSliderCurrent.innerHTML = PAGE.toString();
-    pageSliderTotal.innerHTML = getChapterNumPage();
+    pageSliderTotal.innerHTML = VCONFIG.numPages;
   }
 
-  if (getNumChapters() > 1) {
+
+  if (getChapterCount() > 1) {
     // Change currently selected chapter in chapterSelection
-    chapterSelection.selectedIndex = CHAPTER - 1;
+    chapterSelection.selectedIndex = getCurrentChapter() - 1;
 
     // Showing or hiding the previous chapter button$
-    if (CHAPTER > 1) {
+    if (getCurrentChapter() > 1) {
       previousChapterButton.style.display = null;
     } else {
       previousChapterButton.style.display = "none";
     }
 
     // Showing or hiding the next chapter button
-    if (CHAPTER < getNumChapters()) {
+    if (getCurrentChapter() < getChapterCount()) {
       nextChapterButton.style.display = null;
     } else {
       nextChapterButton.style.display = "none";
@@ -387,13 +358,7 @@ function refreshDipslayPages() {
   document.getElementById("paperTexture").style.backgroundPosition = Math.floor((Math.random() * 100) + 1).toString() + "%" + Math.floor((Math.random() * 100) + 1).toString() + "%";
 
   // Refresh the book info at the top
-  bookChapter.innerHTML = LCONFIG.readPage.chapter + " " + CHAPTER;
-
-  // Update the slider background gradient
-  {
-    let currentPosition = (parseInt(pageSlider.value) - 1) / (parseInt(pageSlider.max) - 1) * 100;
-    pageSlider.style.background = "linear-gradient(90deg, var(--menu-text-color) 0%, var(--menu-text-color) " + currentPosition.toString() + "%, gray " + currentPosition.toString() + "%, gray 100%)";
-  }
+  bookVolume.innerHTML = LCONFIG.titlePage.volume + " " + VOLUME;
 
 }
 
@@ -409,8 +374,8 @@ function setHandlers() {
     document.onkeydown = function() {
       //console.log(window.event.keyCode);
       switch (window.event.keyCode) {
-        case 36: changePage(CHAPTER, 1); break;
-        case 35: changePage(CHAPTER, getChapterNumPage()); break;
+        case 35: nextChapterButton.click(); break;
+        case 36: previousChapterButton.click(); break;
       }
 
       if (TCONFIG.japaneseOrder) {
@@ -432,7 +397,7 @@ function setHandlers() {
 
 
     pageSlider.oninput = function() {
-      changePage(CHAPTER, parseInt(pageSlider.value));
+      changePage(parseInt(pageSlider.value));
     }
 
     pageSlider.onmousedown = function() {
@@ -502,12 +467,20 @@ function setHandlers() {
   /* -------------------------- FOR BOTH BOOK AND SCROLLING MODE ------------------------------------*/
 
   previousChapterButton.onclick = function() {
-    changePage(CHAPTER - 1, 1);
+    if (chapterSelection.selectedIndex > 0) {
+      chapterSelection.selectedIndex -= 1;
+      chapterSelection.onchange()
+    }
   }
 
+
   nextChapterButton.onclick = function() {
-    changePage(CHAPTER + 1, 1);
+    if (chapterSelection.selectedIndex < chapterSelection.options.length - 1) {
+      chapterSelection.selectedIndex += 1;
+      chapterSelection.onchange()
+    }
   }
+
 
   fullScreenButton.onclick = function() {
     if (document.fullscreenElement) {
@@ -517,16 +490,18 @@ function setHandlers() {
     }
   }
 
+
   document.onfullscreenchange = function ( event ) {
     if (document.fullscreenElement) {
       fullScreenButton.classList.add("enabled");
     } else {
       fullScreenButton.classList.remove("enabled");
     }
-  };
+  }
+
 
   chapterSelection.onchange = function() {
-    changePage(chapterSelection.selectedIndex + 1, 1);
+    changePage(getChapterFirstPage(chapterSelection.selectedIndex + 1));
     document.activeElement.blur(); // Remove focus
   }
 
@@ -597,19 +572,23 @@ function setHandlers() {
   bookTitle.innerHTML = TCONFIG.title;
 
   // Hide the select chapter menu if there is just one chapter
-  if (getNumChapters() < 2) {
+  if (getChapterCount() < 2) {
     document.getElementById("chapterSelectionContainer").style.display = "none";
-    document.getElementById("bookChapter").style.display = "none";
     nextChapterButton.style.display = "none";
     previousChapterButton.style.display = "none";
   } else {
     document.getElementById("chapterSelectionContainer").style.display = null;
-    document.getElementById("bookChapter").style.display = null;
     nextChapterButton.style.display = null;
     previousChapterButton.style.display = null;
   }
 
+  // Hide the current volume label if there is just one volume
+  if (TCONFIG.numVolumes < 2) {
+    document.getElementById("bookVolume").style.display = "none";
+  }
+
   // Hide config options when not suited
+  if (!BOOKTYPE.useDoublePage)      document.getElementById("doublePageButton").style.display   = "none";
   if (!BOOKTYPE.bookFoldButton)     document.getElementById("bookFoldButton").style.display     = "none";
   if (!BOOKTYPE.sidePagesButton)    document.getElementById("sidePagesButton").style.display    = "none";
   if (!BOOKTYPE.lightingButton)     document.getElementById("lightingButton").style.display     = "none";
@@ -635,7 +614,7 @@ function setHandlers() {
 
     // Save current position in the volume in cookies
     var pos = getPosCookie(TITLE, true);
-    pos[VOLUME] = {"chapter": CHAPTER, "page": PAGE};
+    pos[VOLUME] = PAGE;
     setPosCookie(pos, TITLE);
   };
 
@@ -663,7 +642,7 @@ function applyLanguage() {
   /* Populate the chapterSelection menu with the chapter from this title */
   var currentChapterSelection = chapterSelection.selectedIndex;
   chapterSelection.innerHTML = "";
-  for (var i = 0; i < getNumChapters(); i++) {
+  for (var i = 0; i < getChapterCount(); i++) {
     var option = document.createElement("option");
     option.text = LCONFIG.readPage.chapter + " " + (i + 1).toString();
     chapterSelection.add(option);
@@ -671,12 +650,12 @@ function applyLanguage() {
   chapterSelection.selectedIndex = currentChapterSelection;
 
   // Refresh the book info at the top
-  bookChapter.innerHTML = LCONFIG.readPage.chapter + " " + CHAPTER;
+  bookVolume.innerHTML = LCONFIG.titlePage.volume + " " + VOLUME;
 }
 
 function applyCookie() {
 
-  themeSelection.selectedIndex = parseInt(('themeSelection') || 0);
+  themeSelection.selectedIndex = parseInt(getCookie('themeSelection') || 0);
   themeSelection.onchange();
 
   // If screen is in landscape mode, realistic options are true by default
@@ -785,7 +764,7 @@ var pageSliderTotal;
 
 const navImage = document.getElementById("navImage");
 const bookTitle = document.getElementById("bookTitle");
-const bookChapter = document.getElementById("bookChapter");
+const bookVolume = document.getElementById("bookVolume");
 const body = document.getElementsByTagName("body")[0];
 
 const fullScreenButton = document.getElementById("fullScreenButton");
@@ -806,7 +785,6 @@ var TITLE = findGetParameter('title');
 var VOLUME = parseInt(findGetParameter('volume'));
 if (Number.isNaN(VOLUME)) VOLUME = 1;
 
-var CHAPTER;      // Stores the current chapter
 var PAGE;         // Stores the current page
 
 var UCONFIG = {}  // User CONFIG that will be saved as cookies

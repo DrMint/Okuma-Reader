@@ -21,7 +21,7 @@ function displayBookData(bookData) {
 
     link.href = infoToPageURL(LIBRARY, TITLE, i);
     if (bookData.numVolumes > 1) p.innerHTML = 'Volume ' + i;
-    cover.src = infoToImageURL(LIBRARY, TITLE, i, 1, 1, bookData.fileExtension);
+    cover.src = infoToImageURL(LIBRARY, TITLE, i, 1, bookData.fileExtension);
 
     link.appendChild(p);
     link.appendChild(cover);
