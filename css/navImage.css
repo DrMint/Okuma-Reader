@@ -1,10 +1,3 @@
-@media only screen and (max-width: 80vh) {
-  #navImage #imgPageLeft,
-  #navImage #imgPageRight {
-    max-width: 100vw;
-  }
-}
-
 #navImage {
   display: grid;
   grid-auto-flow: column;
@@ -27,11 +20,6 @@ body.book #navImage {
 
 #navImage > #continuousScrollingPages > img {
   width: 100%;
-}
-
-#navImage #imgPageLeft,
-#navImage #imgPageRight {
-  max-height: 100vh;
 }
 
 #navImage > #filters > div {
@@ -107,11 +95,6 @@ body.book #navImage > #filters > #specular.enabled {
 
 #navImage.doublePage > #filters > #specular.enabled {
   background-image: url("../img/specularDoublePage.webp");
-}
-
-#navImage.doublePage #imgPageLeft,
-#navImage.doublePage #imgPageRight {
-  max-width: 50vw;
 }
 
 #navImage {

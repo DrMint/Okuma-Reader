@@ -23,7 +23,8 @@ function getChapterFirstPage(chapterNum) {
 }
 
 function getCurrentChapter(page = PAGE) {
-  for (let i = 0; i < VCONFIG.bookmarks.length; i++) {
+  let i;
+  for (i = 0; i < VCONFIG.bookmarks.length; i++) {
     if (VCONFIG.bookmarks[i].type == 'chapter') {
       if (VCONFIG.bookmarks[i].page > PAGE) return i;
     }
@@ -36,10 +37,10 @@ function imgFinishedLoading() {
   /* Create a list of pages to cache and then cache them asynchronously
   The list starts caching the next pages and then the previous pages
   (in case the user started from the middle of the book). */
-  let numOfNextPagesToCache = 5;
-  let numOfPreviousPagesToCache = 3;
+  const numOfNextPagesToCache = 5;
+  const numOfPreviousPagesToCache = 3;
 
-  let pagesToCache = [];
+  const pagesToCache = [];
   for (let i = 1; i < numOfNextPagesToCache + 1; i++) {
     if (PAGE + i <= VCONFIG.numPages) {
       pagesToCache.push(infoToImageURL(LIBRARY, TITLE, VOLUME, PAGE + i, TCONFIG.fileExtension));
@@ -53,6 +54,7 @@ function imgFinishedLoading() {
 
   // The list pagesToCache is finished, we can call the caching fonction
   precacheImages(pagesToCache);
+  refreshLayoutNavImage();
 
 }
 
@@ -66,15 +68,41 @@ function precacheImages(pagesToCache, currentIndex = 0) {
 
 function getImage(url) {
   return new Promise(function(resolve, reject){
-    const img = new Image()
+    const img = new Image();
     img.onload = function() {
-      resolve(url)
+      resolve(url);
     }
     img.onerror = function() {
-      reject(url)
+      reject(url);
     }
-    img.src = url
+    img.src = url;
   })
+}
+
+function refreshLayoutNavImage() {
+  const margin = UCONFIG.pageWidthSlider / 100;
+  const availableScreenWidth = window.innerWidth * margin;
+  let horizontalLayoutHeight = (margin * window.innerHeight) * imgPageLeft.naturalWidth /  imgPageLeft.naturalHeight;
+  let verticalLayoutWidthCSS = (margin * 100).toString() + "vw";
+  const horizontalLayoutHeightCSS = (margin * 100).toString() + "vh";
+  if (UCONFIG.doublePage) {
+    horizontalLayoutHeight *= 2;
+    verticalLayoutWidthCSS = (margin * 100 / 2).toString() + "vw";
+  }
+  if (availableScreenWidth < horizontalLayoutHeight) {
+    // Vertical Layout
+    imgPageLeft.style.height = null;
+    imgPageRight.style.height = null;
+    imgPageLeft.style.width = verticalLayoutWidthCSS;
+    imgPageRight.style.width = verticalLayoutWidthCSS;
+  } else {
+    // Horizontal Layout
+    imgPageLeft.style.height = horizontalLayoutHeightCSS;
+    imgPageRight.style.height = horizontalLayoutHeightCSS;
+    imgPageLeft.style.width = null;
+    imgPageRight.style.width = null;
+  }
+  refreshSidePages();
 }
 
 function toggleNavMenu() {
@@ -99,7 +127,7 @@ function toggleHandlerElement(button, variableName, targets, className, refreshP
         document.getElementById(targets[i]).classList.remove(className[i]);
       }
     }
-    if (refreshPages) refreshDipslayPages();
+    if (refreshPages) refreshDisplayPages();
   };
 }
 
@@ -159,7 +187,7 @@ function changePage(newPage = null) {
 
   }
 
-  let hasPageChanged = newPage != PAGE;
+  const hasPageChanged = newPage != PAGE;
 
   PAGE = newPage;
 
@@ -179,12 +207,12 @@ function changePage(newPage = null) {
   }
 
   if (hasPageChanged) {
-    refreshDipslayPages();
+    refreshDisplayPages();
   }
 
   // Update the slider background gradient
   {
-    let currentPosition = (parseInt(pageSlider.value) - 1) / (parseInt(pageSlider.max) - 1) * 100;
+    const currentPosition = (parseInt(pageSlider.value) - 1) / (parseInt(pageSlider.max) - 1) * 100;
     pageSlider.style.background = "linear-gradient(90deg, var(--menu-text-color) 0%, var(--menu-text-color) " + currentPosition.toString() + "%, gray " + currentPosition.toString() + "%, gray 100%)";
   }
 
@@ -225,7 +253,37 @@ function isDoublePagePossible(targetPage = PAGE) {
   return result;
 }
 
-function refreshDipslayPages() {
+function refreshSidePages() {
+  /* Move the side page to simulate the fact that you place the next page on the side */
+  if (UCONFIG.sidePages && UCONFIG.doublePage) {
+    const sidePageMaxValue = Math.min(VCONFIG.numPages / 150 * 4, 6);
+    const progress = PAGE / VCONFIG.numPages;
+    const viewedPagesWidth = (progress * sidePageMaxValue * pageWidthSlider.value / 100).toString() + "vmin";
+    const toBeViewedPagesWidth = ((1 - progress) * sidePageMaxValue * pageWidthSlider.value / 100).toString() + "vmin";
+
+    if (TCONFIG.japaneseOrder) {
+      navImage.style.paddingLeft = toBeViewedPagesWidth;
+      navImage.style.paddingRight = viewedPagesWidth;
+    } else {
+      navImage.style.paddingLeft = viewedPagesWidth;
+      navImage.style.paddingRight = toBeViewedPagesWidth;
+    }
+    document.getElementById("lighting").style.backgroundSize = "calc(100% + " + (navImage.style.paddingLeft).toString() + " - " + (navImage.style.paddingRight).toString() + ") 100%";
+    document.getElementById("specular").style.backgroundSize = "calc(100% + " + (navImage.style.paddingLeft).toString() + " - " + (navImage.style.paddingRight).toString() + ") 100%";
+    document.getElementById("bookFold").style.backgroundSize = "calc(100% + " + (navImage.style.paddingLeft).toString() + " - " + (navImage.style.paddingRight).toString() + ") 100%";
+
+  } else {
+
+    navImage.style.paddingLeft = null;
+    navImage.style.paddingRight = null;
+    document.getElementById("lighting").style.backgroundSize = null;
+    document.getElementById("specular").style.backgroundSize = null;
+    document.getElementById("bookFold").style.backgroundSize = null;
+
+  }
+}
+
+function refreshDisplayPages() {
 
   if (TCONFIG.bookType == 'webtoon') {
 
@@ -247,11 +305,11 @@ function refreshDipslayPages() {
     /* Load the current page*/
     {
 
-      let leftPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, PAGE, TCONFIG.fileExtension);
+      const leftPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, PAGE, TCONFIG.fileExtension);
 
       if (UCONFIG.doublePage) {
 
-        let rightPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, PAGE + 1, TCONFIG.fileExtension);
+        const rightPageURL = infoToImageURL(LIBRARY, TITLE, VOLUME, PAGE + 1, TCONFIG.fileExtension);
 
         addLoading();
         getImage(rightPageURL).then(function(successUrl) {
@@ -270,36 +328,7 @@ function refreshDipslayPages() {
 
     }
 
-
-    /* Move the side page to simulate the fact that you place the next page on the side */
-    {
-      if (UCONFIG.sidePages && UCONFIG.doublePage) {
-        let sidePageMaxValue = Math.min(VCONFIG.numPages / 150 * 4, 6);
-        let progress = PAGE / VCONFIG.numPages;
-        let viewedPagesWidth = (progress * sidePageMaxValue).toString() + "vmin";
-        let toBeViewedPagesWidth = ((1 - progress) * sidePageMaxValue).toString() + "vmin";
-
-        if (TCONFIG.japaneseOrder) {
-          navImage.style.paddingLeft = toBeViewedPagesWidth;
-          navImage.style.paddingRight = viewedPagesWidth;
-        } else {
-          navImage.style.paddingLeft = viewedPagesWidth;
-          navImage.style.paddingRight = toBeViewedPagesWidth;
-        }
-        document.getElementById("lighting").style.backgroundSize = "calc(100% + " + (navImage.style.paddingLeft).toString() + " - " + (navImage.style.paddingRight).toString() + ") 100%";
-        document.getElementById("specular").style.backgroundSize = "calc(100% + " + (navImage.style.paddingLeft).toString() + " - " + (navImage.style.paddingRight).toString() + ") 100%";
-        document.getElementById("bookFold").style.backgroundSize = "calc(100% + " + (navImage.style.paddingLeft).toString() + " - " + (navImage.style.paddingRight).toString() + ") 100%";
-
-      } else {
-
-        navImage.style.paddingLeft = null;
-        navImage.style.paddingRight = null;
-        document.getElementById("lighting").style.backgroundSize = null;
-        document.getElementById("specular").style.backgroundSize = null;
-        document.getElementById("bookFold").style.backgroundSize = null;
-
-      }
-    }
+    refreshSidePages();
 
     if (UCONFIG.useDoublePage) {
       document.getElementById("bookFoldButton").style.display = null;
@@ -445,26 +474,47 @@ function setHandlers() {
     });
     document.getElementsByClassName("zoom")[0].click();
 
+
+    pageWidthSlider.oninput = function() {
+      UCONFIG.pageWidthSlider = pageWidthSlider.value;
+      refreshLayoutNavImage();
+    }
+
+
   /* -------------------------- FOR CONTINUOUS SCROLLING MODE ONLY ------------------------------------*/
   } else {
 
     toggleHandlerElement("paperTextureButton", "continuousScrolling_paperTexture", ["paperTextureButton", "paperTexture"], ["enabled", "enabled"]);
     toggleHandlerElement("bookShadowButton", "continuousScrolling_bookShadow", ["bookShadowButton", "navImage"], ["enabled", "bookShadow"]);
 
-    document.getElementById("pageWidthSlider").oninput = function() {
-      document.getElementById("continuousScrollingPages").style.width = document.getElementById("pageWidthSlider").value + "vw";
-    }
-
-    document.getElementById("pageWidthSlider").onmouseup = function() {
-      document.activeElement.blur(); // Remove focus
+    pageWidthSlider.oninput = function() {
+      UCONFIG.pageWidthSlider = pageWidthSlider.value;
+      document.getElementById("continuousScrollingPages").style.width = UCONFIG.pageWidthSlider + "vw";
     }
 
     document.getElementById("navImageContainer").onclick = function() {
       toggleNavMenu();
     }
+
+    {
+      document.getElementsByTagName('body')[0].classList.add("continuousScrolling");
+      imgPageLeft.style.display = "none";
+      imgPageRight.style.display = "none";
+      sliderContainer.style.display = "none";
+      document.getElementById("continuousScrollingPages").style.width = pageWidthSlider.value + "vw";
+    }
+
   }
 
   /* -------------------------- FOR BOTH BOOK AND SCROLLING MODE ------------------------------------*/
+
+  pageWidthSlider.onmouseup = function() {
+    document.activeElement.blur(); // Remove focus
+  }
+
+  window.addEventListener('resize', function(event) {
+    refreshLayoutNavImage();
+  }, true);
 
   previousChapterButton.onclick = function() {
     if (chapterSelection.selectedIndex > 0) {
@@ -551,23 +601,6 @@ function setHandlers() {
 
   if (VCONFIG.disallowDoublePage) doublePageButton.style.display = "none";
 
-  // Set default value for continuous pages
-  {
-    if (TCONFIG.bookType == 'webtoon') {
-      document.getElementsByTagName('body')[0].classList.add("continuousScrolling");
-      imgPageLeft.style.display = "none";
-      imgPageRight.style.display = "none";
-      sliderContainer.style.display = "none";
-
-      if( window.innerHeight > window.innerWidth ) {
-        document.getElementById("pageWidthSlider").value = "100";
-      } else {
-        document.getElementById("pageWidthSlider").value = "40";
-      }
-      document.getElementById("continuousScrollingPages").style.width = document.getElementById("pageWidthSlider").value + "vw";
-    }
-  }
-
   // Refresh the book info at the top
   bookTitle.innerHTML = TCONFIG.title;
 
@@ -593,7 +626,6 @@ function setHandlers() {
   if (!BOOKTYPE.sidePagesButton)    document.getElementById("sidePagesButton").style.display    = "none";
   if (!BOOKTYPE.lightingButton)     document.getElementById("lightingButton").style.display     = "none";
   if (!BOOKTYPE.paperTextureButton) document.getElementById("paperTextureButton").style.display = "none";
-  if (!BOOKTYPE.pageWidthContainer) document.getElementById("pageWidthContainer").style.display = "none";
   if (!BOOKTYPE.bookShadowButton)   document.getElementById("bookShadow").style.display         = "none";
   document.getElementsByTagName("body")[0].style.touchAction = BOOKTYPE.touchAction;
 
@@ -658,36 +690,56 @@ function applyCookie() {
   themeSelection.selectedIndex = parseInt(getCookie('themeSelection') || 0);
   themeSelection.onchange();
 
-  // If screen is in landscape mode, realistic options are true by default
-  const defaultRealisticOption = window.innerHeight < window.innerWidth;
+  let defaultWidthSlider;
+  if (TCONFIG.bookType === 'webtoon') {
+    if( window.innerHeight > window.innerWidth ) {
+      defaultWidthSlider = 100;
+    } else {
+      defaultWidthSlider = 40;
+    }
+  } else {
+    defaultWidthSlider = 90;
+  }
+  pageWidthSlider.value = parseInt(getCookie('pageWidthSlider') || defaultWidthSlider);
+  pageWidthSlider.oninput();
 
+  // If screen is in landscape mode, realistic options are true by default
+  const defaultRealisticOption = window.innerWidth > window.innerHeight;
+
+  // Everytime, we set the inverse of what we want and then click on the button to get back to the state we want
   if (BOOKTYPE.bookFoldButton) {
-    UCONFIG.bookFold = !(stringToBoolean(getCookie('bookFold')) || defaultRealisticOption);
+    const cookieValue = getCookie('bookFold');
+    UCONFIG.bookFold = cookieValue !== '' ? !stringToBoolean(cookieValue) : !defaultRealisticOption;
     bookFoldButton.click();
   }
 
   if (BOOKTYPE.lightingButton) {
-    UCONFIG.lighting = !(stringToBoolean(getCookie('lighting')) || defaultRealisticOption);
+    const cookieValue = getCookie('lighting');
+    UCONFIG.lighting = cookieValue !== '' ? !stringToBoolean(cookieValue) : !defaultRealisticOption;
     lightingButton.click();
   }
 
   if (BOOKTYPE.paperTextureButton) {
-    UCONFIG.paperTexture = !(stringToBoolean(getCookie('paperTexture')) || defaultRealisticOption);
+    const cookieValue = getCookie('paperTexture');
+    UCONFIG.paperTexture = cookieValue !== '' ? !stringToBoolean(cookieValue) : !defaultRealisticOption;
     paperTextureButton.click();
   }
 
   if (BOOKTYPE.sidePagesButton) {
-    UCONFIG.sidePages = !(stringToBoolean(getCookie('sidePages')) || defaultRealisticOption);
+    const cookieValue = getCookie('sidePages');
+    UCONFIG.sidePages = cookieValue !== '' ? !stringToBoolean(cookieValue) : !defaultRealisticOption;
     sidePagesButton.click();
   }
 
   if (BOOKTYPE.bookShadowButton) {
-    UCONFIG.bookShadow = !(stringToBoolean(getCookie('bookShadow')) || defaultRealisticOption);
+    const cookieValue = getCookie('bookShadow');
+    UCONFIG.bookShadow = cookieValue !== '' ? !stringToBoolean(cookieValue) : !defaultRealisticOption;
     bookShadowButton.click();
   }
 
   if (BOOKTYPE.useDoublePage) {
-    UCONFIG.useDoublePage = !(stringToBoolean(getCookie('useDoublePage')) || defaultRealisticOption);
+    const cookieValue = getCookie('useDoublePage');
+    UCONFIG.useDoublePage = cookieValue !== '' ? !stringToBoolean(cookieValue) : !defaultRealisticOption;
     doublePageButton.click();
   }
 
@@ -728,7 +780,6 @@ function setBookTypeConfig() {
     "sidePagesButton": false,
     "lightingButton": false,
     "paperTextureButton": false,
-    "pageWidthContainer": false,
     "bookShadowButton": false,
     "touchAction": "none"
   }
@@ -738,7 +789,6 @@ function setBookTypeConfig() {
       BOOKTYPE.bookShadowButton = true;
       break;
     case "webtoon":
-      BOOKTYPE.pageWidthContainer = true;
       BOOKTYPE.bookShadowButton = true;
       BOOKTYPE.touchAction = "pan-y"
       break;
@@ -774,16 +824,17 @@ const themeSelection = document.getElementById("themeSelection");
 const languageSelection = document.getElementById("languageSelection");
 const chapterSelection = document.getElementById("chapterSelection");
 const pageSlider = document.getElementById("pageSlider");
+const pageWidthSlider = document.getElementById("pageWidthSlider");
 
 
 const libraryParam = findGetParameter('library');
 const LIBRARY = libraryParam ? libraryParam : CONSTANTS.booksURL();
 
-let TITLE = findGetParameter('title');
+const TITLE = findGetParameter('title');
 
 // Retrieve the VOLUME
-let VOLUME = parseInt(findGetParameter('volume'));
-if (Number.isNaN(VOLUME)) VOLUME = 1;
+const volumeParam = parseInt(findGetParameter('volume'));
+const VOLUME = !Number.isNaN(volumeParam) ? volumeParam : 1;
 
 let PAGE;         // Stores the current page
 
