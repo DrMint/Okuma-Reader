@@ -2,10 +2,8 @@
 import * as CONSTANTS from './constants.js';
 import { findGetParameter, applyTheme, infoToPageURL, infoToImageURL, chooseAndFetchLanguage, fetchBook, fetchLibrary } from './tools.js';
 
-var LIBRARY = findGetParameter('library');
-if (LIBRARY == null) LIBRARY = CONSTANTS.booksURL();
-
-applyTheme();
+const libraryParam = findGetParameter('library');
+const LIBRARY = libraryParam ? libraryParam : CONSTANTS.booksURL();
 
 function applyLanguage(languageData) {
     document.title = CONSTANTS.websiteName() + ' - ' + languageData.homePage.home;
@@ -13,9 +11,9 @@ function applyLanguage(languageData) {
 }
 
 function displayBook(bookData, title) {
-  var link = document.createElement("a");
-  var p = document.createElement("p");
-  var cover = document.createElement("img");
+  const link = document.createElement("a");
+  const p = document.createElement("p");
+  const cover = document.createElement("img");
 
   link.href = infoToPageURL(LIBRARY, title);
   p.innerHTML = bookData.title;
@@ -28,6 +26,7 @@ function displayBook(bookData, title) {
 
 chooseAndFetchLanguage()
   .then(languageData => applyLanguage(languageData))
+  .then(applyTheme)
   .then(() => fetchLibrary(LIBRARY))
   .then(libraryData => libraryData.titles.forEach((title, index) => {
     fetchBook(LIBRARY, title)

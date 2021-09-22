@@ -5,16 +5,16 @@ import { findGetParameter, stringToBoolean, fetchLanguages, infoToPageURL, infoT
 import { setCookie, getCookie, getPosCookie, setPosCookie } from './cookie.js';
 
 function getChapterCount() {
-  var count = 0;
-  for (var i = 0; i < VCONFIG.bookmarks.length; i++) {
+  let count = 0;
+  for (let i = 0; i < VCONFIG.bookmarks.length; i++) {
     if (VCONFIG.bookmarks[i].type == 'chapter') count++;
   }
   return count;
 }
 
 function getChapterFirstPage(chapterNum) {
-  var count = 1;
-  for (var i = 0; i < VCONFIG.bookmarks.length; i++) {
+  let count = 1;
+  for (let i = 0; i < VCONFIG.bookmarks.length; i++) {
     if (VCONFIG.bookmarks[i].type == 'chapter') {
       if (count == chapterNum) return VCONFIG.bookmarks[i].page;
       count++;
@@ -23,7 +23,7 @@ function getChapterFirstPage(chapterNum) {
 }
 
 function getCurrentChapter(page = PAGE) {
-  for (var i = 0; i < VCONFIG.bookmarks.length; i++) {
+  for (let i = 0; i < VCONFIG.bookmarks.length; i++) {
     if (VCONFIG.bookmarks[i].type == 'chapter') {
       if (VCONFIG.bookmarks[i].page > PAGE) return i;
     }
@@ -39,13 +39,13 @@ function imgFinishedLoading() {
   let numOfNextPagesToCache = 5;
   let numOfPreviousPagesToCache = 3;
 
-  var pagesToCache = [];
-  for (var i = 1; i < numOfNextPagesToCache + 1; i++) {
+  let pagesToCache = [];
+  for (let i = 1; i < numOfNextPagesToCache + 1; i++) {
     if (PAGE + i <= VCONFIG.numPages) {
       pagesToCache.push(infoToImageURL(LIBRARY, TITLE, VOLUME, PAGE + i, TCONFIG.fileExtension));
     }
   }
-  for (var i = 1; i < numOfPreviousPagesToCache + 1; i++) {
+  for (let i = 1; i < numOfPreviousPagesToCache + 1; i++) {
     if (PAGE - i > 0) {
       pagesToCache.push(infoToImageURL(LIBRARY, TITLE, VOLUME, PAGE - i, TCONFIG.fileExtension));
     }
@@ -66,7 +66,7 @@ function precacheImages(pagesToCache, currentIndex = 0) {
 
 function getImage(url) {
   return new Promise(function(resolve, reject){
-    var img = new Image()
+    const img = new Image()
     img.onload = function() {
       resolve(url)
     }
@@ -92,7 +92,7 @@ function toggleNavMenu() {
 function toggleHandlerElement(button, variableName, targets, className, refreshPages = false) {
   document.getElementById(button).onclick = function() {
     UCONFIG[variableName] = !UCONFIG[variableName];
-    for (var i = 0; i < targets.length; i++) {
+    for (let i = 0; i < targets.length; i++) {
       if (UCONFIG[variableName]) {
         document.getElementById(targets[i]).classList.add(className[i]);
       } else {
@@ -124,9 +124,9 @@ function changePage(newPage = null) {
   // When launch for the first time
   if (newPage == null) {
 
-    var paramChapter = parseInt(findGetParameter('chapter'));
-    var paramPage = parseInt(findGetParameter('page'));
-    var pos = getPosCookie(TITLE);
+    const paramChapter = parseInt(findGetParameter('chapter'));
+    const paramPage = parseInt(findGetParameter('page'));
+    const pos = getPosCookie(TITLE);
 
     // If a page is indicated in the GET
     if (!Number.isNaN(paramPage)) {
@@ -165,13 +165,13 @@ function changePage(newPage = null) {
 
   if (TCONFIG.bookType == 'webtoon') {
     document.getElementById('continuousScrollingPages').innerHTML = "";
-    var start = getChapterFirstPage(getCurrentChapter());
-    var end = getChapterFirstPage(getCurrentChapter() + 1) - 1;
+    const start = getChapterFirstPage(getCurrentChapter());
+    const end = getChapterFirstPage(getCurrentChapter() + 1) - 1;
     if (getCurrentChapter() == getChapterCount()) {
       end = VCONFIG.numPages;
     }
-    for (var i = start; i <= end; i++) {
-      var img = document.createElement('img');
+    for (let i = start; i <= end; i++) {
+      const img = document.createElement('img');
       img.src = infoToImageURL(LIBRARY, TITLE, VOLUME, i, TCONFIG.fileExtension);
       img.loading = "lazy";
       document.getElementById('continuousScrollingPages').appendChild(img);
@@ -210,7 +210,7 @@ function refreshLoading() {
 
 function isDoublePagePossible(targetPage = PAGE) {
   // To use double page, the user should have asked for double page
-  var result = UCONFIG.useDoublePage;
+  let result = UCONFIG.useDoublePage;
 
   // To use double page, VCONFIG.disallowDoublePage should be true
   result &= !VCONFIG.disallowDoublePage;
@@ -511,7 +511,7 @@ function setHandlers() {
     UCONFIG.themeSelection = themeSelection.selectedIndex;
 
     // Remove all other theme
-    for (var themeName in LCONFIG.readPage.configMenu.themeSelection) {
+    for (let themeName in LCONFIG.readPage.configMenu.themeSelection) {
       body.classList.remove(themeName);
     }
 
@@ -535,15 +535,15 @@ function setHandlers() {
   };
 
   /* Populate the languageSelection menu with the languages from the lang/config.json */
-  for (var key in LANGUAGES) {
-    var option = document.createElement("option");
+  for (let key in LANGUAGES) {
+    const option = document.createElement("option");
     option.text = LANGUAGES[key];
     option.value = key;
     languageSelection.appendChild(option);
   }
 
   const keys = Object.keys(LANGUAGES);
-  for (var i in keys) {
+  for (let i in keys) {
     if (keys[i] == UCONFIG.lang) {
       languageSelection.selectedIndex = parseInt(i);
     }
@@ -613,7 +613,7 @@ function setHandlers() {
     }
 
     // Save current position in the volume in cookies
-    var pos = getPosCookie(TITLE, true);
+    const pos = getPosCookie(TITLE, true);
     pos[VOLUME] = PAGE;
     setPosCookie(pos, TITLE);
   };
@@ -622,17 +622,17 @@ function setHandlers() {
 
 function applyLanguage() {
   /* Localize all the options in the config menu */
-  for (var key in LCONFIG.readPage.configMenu) {
+  for (let key in LCONFIG.readPage.configMenu) {
     if (typeof LCONFIG.readPage.configMenu[key] === 'string') {
       document.getElementById(key).getElementsByTagName('p')[0].innerHTML = LCONFIG.readPage.configMenu[key];
     }
   }
 
   /* Populate the themeSelection menu with the themes from the language file */
-  var currentThemeSelection = themeSelection.selectedIndex;
+  const currentThemeSelection = themeSelection.selectedIndex;
   themeSelection.innerHTML = "";
-  for (var key in LCONFIG.readPage.configMenu.themeSelection) {
-    var option = document.createElement("option");
+  for (let key in LCONFIG.readPage.configMenu.themeSelection) {
+    const option = document.createElement("option");
     option.text = LCONFIG.readPage.configMenu.themeSelection[key];
     option.value = key;
     themeSelection.appendChild(option);
@@ -640,10 +640,10 @@ function applyLanguage() {
   themeSelection.selectedIndex = currentThemeSelection;
 
   /* Populate the chapterSelection menu with the chapter from this title */
-  var currentChapterSelection = chapterSelection.selectedIndex;
+  const currentChapterSelection = chapterSelection.selectedIndex;
   chapterSelection.innerHTML = "";
-  for (var i = 0; i < getChapterCount(); i++) {
-    var option = document.createElement("option");
+  for (let i = 0; i < getChapterCount(); i++) {
+    const option = document.createElement("option");
     option.text = LCONFIG.readPage.chapter + " " + (i + 1).toString();
     chapterSelection.add(option);
   }
@@ -659,7 +659,7 @@ function applyCookie() {
   themeSelection.onchange();
 
   // If screen is in landscape mode, realistic options are true by default
-  var defaultRealisticOption = window.innerHeight < window.innerWidth;
+  const defaultRealisticOption = window.innerHeight < window.innerWidth;
 
   if (BOOKTYPE.bookFoldButton) {
     UCONFIG.bookFold = !(stringToBoolean(getCookie('bookFold')) || defaultRealisticOption);
@@ -755,12 +755,12 @@ function setBookTypeConfig() {
 }
 
 // -----------------------------------------------------------------------------
-var imgPageLeft;
-var imgPageRight;
-var previousChapterButton;
-var nextChapterButton;
-var pageSliderCurrent;
-var pageSliderTotal;
+let imgPageLeft;
+let imgPageRight;
+let previousChapterButton;
+let nextChapterButton;
+let pageSliderCurrent;
+let pageSliderTotal;
 
 const navImage = document.getElementById("navImage");
 const bookTitle = document.getElementById("bookTitle");
@@ -776,28 +776,28 @@ const chapterSelection = document.getElementById("chapterSelection");
 const pageSlider = document.getElementById("pageSlider");
 
 
-var LIBRARY = findGetParameter('library');
-if (LIBRARY == null) LIBRARY = CONSTANTS.booksURL();
+const libraryParam = findGetParameter('library');
+const LIBRARY = libraryParam ? libraryParam : CONSTANTS.booksURL();
 
-var TITLE = findGetParameter('title');
+let TITLE = findGetParameter('title');
 
 // Retrieve the VOLUME
-var VOLUME = parseInt(findGetParameter('volume'));
+let VOLUME = parseInt(findGetParameter('volume'));
 if (Number.isNaN(VOLUME)) VOLUME = 1;
 
-var PAGE;         // Stores the current page
+let PAGE;         // Stores the current page
 
-var UCONFIG = {}  // User CONFIG that will be saved as cookies
-var LCONFIG;      // Language JSON config File
-var TCONFIG;      // Title JSON config File
-var VCONFIG;      // Volume JSON config File
+let UCONFIG = {}  // User CONFIG that will be saved as cookies
+let LCONFIG;      // Language JSON config File
+let TCONFIG;      // Title JSON config File
+let VCONFIG;      // Volume JSON config File
 
-var IS_BAR_VISIBLE = true;  // are the navbars visible
-var ELEM_LOADING = 0;       // The number of element currently loading
+let IS_BAR_VISIBLE = true;  // are the navbars visible
+let ELEM_LOADING = 0;       // The number of element currently loading
 
-var LANGUAGES;  // Stores the list of available languages
+let LANGUAGES;  // Stores the list of available languages
 
-var BOOKTYPE; // Store the specific configuration for this type of document (book, manga, webtoon, imageset...)
+let BOOKTYPE; // Store the specific configuration for this type of document (book, manga, webtoon, imageset...)
 
 fetchLanguages()
   .then(languages => LANGUAGES = languages.languages)

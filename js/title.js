@@ -6,18 +6,18 @@ function displayBookData(bookData) {
   // Change the title of the webpage
   document.title = CONSTANTS.websiteName() + ' - ' + bookData.title;
 
-  var bookTitle = document.createElement("h2");
-  var bookInfoDiv = document.getElementById("bookInfo")
+  const bookTitle = document.createElement("h2");
+  const bookInfoDiv = document.getElementById("bookInfo")
   bookTitle.innerHTML = bookData.title;
   bookInfoDiv.appendChild(bookTitle);
 
   fetchBookInfo(LIBRARY, TITLE)
     .then(bookInfo => writeBookInfo(bookInfo, LCONFIG, bookInfoDiv));
 
-  for (var i = 1; i <= bookData.numVolumes; i++) {
-    var link = document.createElement("a");
-    var p = document.createElement("p");
-    var cover = document.createElement("img");
+  for (let i = 1; i <= bookData.numVolumes; i++) {
+    const link = document.createElement("a");
+    const p = document.createElement("p");
+    const cover = document.createElement("img");
 
     link.href = infoToPageURL(LIBRARY, TITLE, i);
     if (bookData.numVolumes > 1) p.innerHTML = 'Volume ' + i;
@@ -29,12 +29,11 @@ function displayBookData(bookData) {
   }
 }
 
-var TCONFIG;
-var TINFO;
-var LCONFIG;
-var LIBRARY = findGetParameter('library');
-if (LIBRARY == null) LIBRARY = CONSTANTS.booksURL();
-var TITLE = findGetParameter('title');
+const libraryParam = findGetParameter('library');
+const LIBRARY = libraryParam ? libraryParam : CONSTANTS.booksURL();
+
+let LCONFIG;
+const TITLE = findGetParameter('title');
 
 chooseAndFetchLanguage()
   .then(languageData => LCONFIG = languageData)

@@ -25,7 +25,7 @@ export function infoToPageURL(library, title, volume = null, page = null) {
       return CONSTANTS.homeURL() + 'title.html' + '?library=' + library + '&title=' + title;
     }
   } else {
-    var result = CONSTANTS.readerURL();
+    let result = CONSTANTS.readerURL();
     if (library == CONSTANTS.booksURL()) {
       result += '?title=' + title;
     } else {
@@ -55,10 +55,10 @@ export function assertsTitleExists(titles, title) {
 
 export function applyTheme() {
   const body = document.getElementsByTagName("body")[0];
-  var themeSelection = parseInt(getCookie('themeSelection'));
-  if (isNaN(themeSelection)) themeSelection = 0;
+  const cookieThemeSelection = parseInt(getCookie('themeSelection'));
+  const themeSelection = !isNaN(cookieThemeSelection) ? cookieThemeSelection : 0;
   const themeNames = ['darkTheme', 'lightTheme'];
-  for (var i = 0; i < themeNames.length; i++) {
+  for (let i = 0; i < themeNames.length; i++) {
     body.classList.remove(themeNames[i]);
   }
   body.classList.add(themeNames[themeSelection]);
@@ -66,17 +66,17 @@ export function applyTheme() {
 
 export function writeBookInfo(bookInfo, languageData, bookInfoDiv) {
   if (bookInfo.status && languageData.titlePage.status[bookInfo.status]) {
-    var status = document.createElement("p");
+    const status = document.createElement("p");
     status.innerHTML = languageData.titlePage.status[bookInfo.status];
     status.id = "status";
     bookInfoDiv.appendChild(status);
   }
 
   if (bookInfo.genres) {
-    var genres = document.createElement("div");
+    const genres = document.createElement("div");
     genres.id = "genres";
     bookInfo.genres.forEach((genre, index) => {
-      var line = document.createElement("p");
+      const line = document.createElement("p");
       line.innerHTML = genre;
       genres.appendChild(line);
     });
@@ -84,18 +84,18 @@ export function writeBookInfo(bookInfo, languageData, bookInfoDiv) {
   }
 
   if (bookInfo.language) {
-    var status = document.createElement("p");
+    const status = document.createElement("p");
     status.innerHTML = languageData.titlePage.language + languageData.ps + ": " + bookInfo.language;
     status.id = "status";
     bookInfoDiv.appendChild(status);
   }
 
   if (bookInfo.authors) {
-    var authors = document.createElement("div");
+    const authors = document.createElement("div");
     authors.id = "authors";
     bookInfo.authors.forEach((author, index) => {
       if (languageData.titlePage.authors[author[0]]) {
-        var line = document.createElement("p");
+        const line = document.createElement("p");
         line.innerHTML = languageData.titlePage.authors[author[0]] + languageData.ps + ': ' + author[1];
         authors.appendChild(line);
       }
@@ -104,14 +104,14 @@ export function writeBookInfo(bookInfo, languageData, bookInfoDiv) {
   }
 
   if (bookInfo.serialization) {
-    var serialization = document.createElement("p");
+    const serialization = document.createElement("p");
     serialization.innerHTML = languageData.titlePage.publication + languageData.ps + ": " + bookInfo.serialization;
     serialization.id = "serialization";
     bookInfoDiv.appendChild(serialization);
   }
 
   if (bookInfo.synopsis) {
-    var synopsis = document.createElement("p");
+    const synopsis = document.createElement("p");
     synopsis.innerHTML = bookInfo.synopsis;
     synopsis.id = "synopsis";
     bookInfoDiv.appendChild(synopsis);
@@ -128,7 +128,7 @@ export function chooseLanguage() {
       // Language selected by the user
       // Language given in parameters
       // Browser language
-      var result;
+      let result;
       if (getCookie('lang') != '') {
         result = getCookie('lang');
       } else if (findGetParameter('lang') != null) {

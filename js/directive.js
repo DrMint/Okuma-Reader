@@ -10,71 +10,71 @@ export function zoom(classNames, settings, clickCallback) {
     classNames = (typeof(classNames) !== 'undefined' && Object.keys(classNames).length ? classNames : {});
     settings = (typeof(settings) !== 'undefined' && Object.keys(settings).length ? settings : {});
 
-    var C_scaleDefault = settings["scaleDefault"] || 2; // Used on doubleclick, doubletap and resize
-    var C_scaleDifference = settings["scaleDifference"] || 0.3; // Used on wheel zoom
-    var C_scaleMax = settings["scaleMax"] || 5;
-    var C_scaleMin = settings["scaleMin"] || 1;
+    let C_scaleDefault = settings["scaleDefault"] || 2; // Used on doubleclick, doubletap and resize
+    let C_scaleDifference = settings["scaleDifference"] || 0.3; // Used on wheel zoom
+    let C_scaleMax = settings["scaleMax"] || 5;
+    let C_scaleMin = settings["scaleMin"] || 1;
 
     /* Selectors */
-    var _active = classNames["active"] || "active";
-    var _dataScale = "data-scale";
-    var _dataTranslateX = "data-translate-x";
-    var _dataTranslateY = "data-translate-y";
-    var _transition = classNames["transition"] || "transition";
-    var _visible = classNames["visible"] || "visible";
-    var $container;
-    var $element;
-    var $zoom = document.getElementsByClassName(classNames["zoom"] || "zoom");
+    let _active = classNames["active"] || "active";
+    let _dataScale = "data-scale";
+    let _dataTranslateX = "data-translate-x";
+    let _dataTranslateY = "data-translate-y";
+    let _transition = classNames["transition"] || "transition";
+    let _visible = classNames["visible"] || "visible";
+    let $container;
+    let $element;
+    let $zoom = document.getElementsByClassName(classNames["zoom"] || "zoom");
 
     /* Helpers */
-    var capture = false;
-    var doubleClickMonitor = [null];
-    var containerHeight;
-    var containerWidth;
-    var containerOffsetX;
-    var containerOffsetY;
-    var initialScale;
-    var elementHeight;
-    var elementWidth;
-    var heightDifference;
-    var initialOffsetX;
-    var initialOffsetY;
-    var initialPinchDistance;
-    var initialPointerOffsetX;
-    var initialPointerOffsetX2;
-    var initialPointerOffsetY;
-    var initialPointerOffsetY2;
-    var limitOffsetX;
-    var limitOffsetY;
-    var mousemoveCount = 0;
-    var offset;
-    var pinchOffsetX;
-    var pinchOffsetY;
-    var pointerOffsetX;
-    var pointerOffsetX2;
-    var pointerOffsetY;
-    var pointerOffsetY2;
-    var scaleDirection;
-    var scaleDifference;
-    var targetOffsetX;
-    var targetOffsetY;
-    var targetPinchDistance;
-    var targetScale;
-    var touchable = false;
-    var touchCount;
-    var touchmoveCount = 0;
-    var doubleTapMonitor = [null];
-    var widthDifference;
+    let capture = false;
+    let doubleClickMonitor = [null];
+    let containerHeight;
+    let containerWidth;
+    let containerOffsetX;
+    let containerOffsetY;
+    let initialScale;
+    let elementHeight;
+    let elementWidth;
+    let heightDifference;
+    let initialOffsetX;
+    let initialOffsetY;
+    let initialPinchDistance;
+    let initialPointerOffsetX;
+    let initialPointerOffsetX2;
+    let initialPointerOffsetY;
+    let initialPointerOffsetY2;
+    let limitOffsetX;
+    let limitOffsetY;
+    let mousemoveCount = 0;
+    let offset;
+    let pinchOffsetX;
+    let pinchOffsetY;
+    let pointerOffsetX;
+    let pointerOffsetX2;
+    let pointerOffsetY;
+    let pointerOffsetY2;
+    let scaleDirection;
+    let scaleDifference;
+    let targetOffsetX;
+    let targetOffsetY;
+    let targetPinchDistance;
+    let targetScale;
+    let touchable = false;
+    let touchCount;
+    let touchmoveCount = 0;
+    let doubleTapMonitor = [null];
+    let widthDifference;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    var edgeClickArea = 0.2;
-    var doubleTapAllowOffset = 30;
-    var hasDoubleTapTriggered = false;
+    let edgeClickArea = 0.2;
+    let doubleTapAllowOffset = 30;
+    let hasDoubleTapTriggered = false;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /* EVENT - DOM ready ********************************************************/
     /****************************************************************************/
-    for (var i = 0; i < $zoom.length; i++) {
+    for (let i = 0; i < $zoom.length; i++) {
         /* Initialize selectors */
         $container = $zoom[i];
         $element = $container.children[0];
@@ -89,7 +89,7 @@ export function zoom(classNames, settings, clickCallback) {
     /****************************************************************************/
     window.addEventListener("load", function() {
         /* Wait for images to be loaded */
-        for (var i = 0; i < $zoom.length; i++) {
+        for (let i = 0; i < $zoom.length; i++) {
             /* Initialize selectors */
             $container = $zoom[i];
             $element = $container.children[0];
@@ -100,7 +100,7 @@ export function zoom(classNames, settings, clickCallback) {
         /* EVENT - resize - window ************************************************/
         /**************************************************************************/
         window.addEventListener("resize", function() {
-            for (var i = 0; i < $zoom.length; i++) {
+            for (let i = 0; i < $zoom.length; i++) {
                 /* Initialize selectors */
                 $container = $zoom[i];
                 $element = $container.children[0];
@@ -627,7 +627,7 @@ function isWithinRange(value, min, max) {
 /* @hasClass ******************************************************************/
 /******************************************************************************/
 function hasClass($element, targetClass) {
-    var rgx = new RegExp("(?:^|\\s)" + targetClass + "(?!\\S)", "g");
+    const rgx = new RegExp("(?:^|\\s)" + targetClass + "(?!\\S)", "g");
 
     if ($element.className.match(rgx)) {
         return true;
@@ -639,9 +639,9 @@ function hasClass($element, targetClass) {
 /* @-<massAddEventListener ****************************************************/
 /******************************************************************************/
 function massAddEventListener($elements, event, customFunction, useCapture) {
-    var useCapture = useCapture || false;
+    useCapture = useCapture || false;
 
-    for (var i = 0; i < $elements.length; i++) {
+    for (let i = 0; i < $elements.length; i++) {
         $elements[i].addEventListener(event, customFunction, useCapture);
     }
 }
@@ -667,7 +667,7 @@ function moveScaleElement($element, targetOffsetX, targetOffsetY, targetScale) {
 /* @removeClass ***************************************************************/
 /******************************************************************************/
 function removeClass($element, targetClass) {
-    var rgx = new RegExp("(?:^|\\s)" + targetClass + "(?!\\S)", "g");
+    const rgx = new RegExp("(?:^|\\s)" + targetClass + "(?!\\S)", "g");
 
     $element.className = $element.className.replace(rgx, "");
 }
