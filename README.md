@@ -82,22 +82,14 @@ With each page turned, the number of side pages on the left side will gradually 
 - library/
 	- an-example-book/
 		- 1/
-			- 1/
-				- 1.jpg
-				- 2.jpg
-				- ...
-			- 2/
-				- 1.jpg
-				- 2.jpg
-				- ...
-			- 3/
-				- 1.jpg
-				- ...
+			- 1.jpg
+			- 2.jpg
 			- ...
 			- config.json
 		- 2/
+			- 1.jpg
+			- 2.jpg
 			- ...
-			- config.json
 		- config.json
 		- info.json
 	- another-one/
@@ -170,25 +162,35 @@ Here its structure:
 
 
 ### Third layer: Volume folder
-Inside each volume folder, there is a folder for each of its chapters. If the volume in question doesn't really have chapters, you can consider is has just one chapter. The chapters are stored inside folders numbered `1`, `2`, `3`... There is also a config.json file that stored information about this volume:
+Inside each volume folder, the pages are stored as image files with the extension indicated by the title `config.json` file. The pages are numbered 1, 2, 3, ... All chapters use that numbering system: the first page of a volume is always numbered "1".
+If possible, all pages should have the same size (or at least the same ratio). An image should correspond to one page, images that display two pages side by side should be split. There is also a config.json file that stored information about this volume:
 
 ```json
 {
-  "numPages": [38, 24, 40, 30, 30, 50],
+  "numPages": 104,
   "firstPagesDouble": false,
-  "disallowDoublePage": false
+  "disallowDoublePage": false,
+  "bookmarks": [
+    {
+      "name": "",
+      "type": "chapter",
+      "page": 1
+    },
+    {
+      "name": "",
+      "type": "chapter",
+      "page": 52
+    }
+  ]
 }
 ```
 
-- `numPages` is a list with the number of pages/images for each chapter (subfolder).
+- `numPages` is the number of pages/images in this volume.
 - `firstPagesDouble` is used for double-page mode. If set to true, it indicates that the first two pages should be displayed as double pages (for exemple if the cover page is missing). It will only have an effect on the first chapter, not the following ones.
 - `disallowDoublePage` indicates if the user is not allowed to enable double-page mode.
+- `bookmarks` are used to organize a volume, just like bookmarks in a PDF file. You can create chapters by indicating `type` chapter. By default, chapter are displayed as "Chapter X", where X is incremented for each chapter in `bookmarks`. Alternatively you can specify the chapter's name.
 
 "firstPagesDouble" and "disallowDoublePage" can be ommited if false, or if the title "bookType" doesn't allow double-page mode anyway such as webtoons and image sets.
-
-### Fourth layer: Chapter folder
-This isn't much to say about this folder. The pages are stored as image files with the extension indicated by the title `config.json` file. The pages are numbered 1, 2, 3, ... All chapters use that numbering system: the first page of a chapter is always numbered "1".
-If possible, all pages should have the same size (or at least the same ratio). An image should correspond to one page, images that display two pages side by side should be split.
 
 ## Installation
 
