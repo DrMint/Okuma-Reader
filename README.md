@@ -194,6 +194,26 @@ If possible, all pages should have the same size (or at least the same ratio). A
 
 ## Installation
 
+### Without installation (simplest method)
+
+What? How is this possible? Well, all Okuma-Reader instances can be used to display someone else library.
+
+Let's say you or someone else hosts an Okuma-Library at this address https://drmint.github.io/Okuma-Library/books/. To check that this URL is valid try accessing https://drmint.github.io/Okuma-Library/books/config.json, it should give you the list of available slugs.
+
+You can display this library using someone else instance of Okuma-Reader (here is one hosted using GitHub Pages) by setting the appropriate GET parameter: https://drmint.github.io/Okuma-Reader/?library=https://drmint.github.io/Okuma-Library/books/ (Don't forget the "/" at the end of the library URL). This feature of "making your reader usable by other people" cannot currently be disabled but it will be in the future.
+
+Important detail: for this to work, browsers need to know that it's okay for your publicly available ressources (your library) to be accessed from another domain (the instance running Okuma Reader). So if the setup described above doesn't work right away, it's possible you'll need to set this header for all ressources of your Okuma Library:
+
+`Access-Control-Allow-Origin "*"` which allow any other domains to use your files.
+
+For more security, you can specify the domain(s) that are allowed to access your library: 
+
+`Access-Control-Allow-Origin: https://drmint.github.io/Okuma-Reader`. 
+
+This header need to be set by your web server (or your reverse proxy if you're using one). Read https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin for more information about this header.
+
+The benefit of using this method is that you don't need to worry about keeping Okuma Reader up-to-date. On the other hand, you are dependent on someone else instance to power your library.
+
 ### Full installation using Git (recommended)
 
 1. Clone the git: `git clone https://github.com/DrMint/Okuma-Reader.git`
@@ -229,26 +249,6 @@ The [release packages](https://github.com/DrMint/Okuma-Reader/releases "release 
 3. Modify the js/constants.js with your website URLs
 
 One draw back of this method is that, without Git, there isn't a mechanism to update your instance of Okuma. You'll need to reiterate the steps above. Make sure to not delete your Okuma Library when deleting the old version.
-
-### Without installing Okuma-Reader
-
-What? How is this possible? Well all Okuma-Reader instances can be used to display someone else library.
-
-Let's say you host an Okuma-Library at this address https://drmint.github.io/Okuma-Library/books/. To check that this URL is valid try accessing https://drmint.github.io/Okuma-Library/books/config.json, it should give you the list of available slugs.
-
-You can display this library using someone else instance of Okuma-Reader (here is the one hosted with GitHub Pages) by using a GET parameter: https://drmint.github.io/Okuma-Reader/?library=https://drmint.github.io/Okuma-Library/books/. Don't forget the "/" at the end of the library URL. This feature of "making your reader usable by other people" cannot currently be disabled but it will be in the future.
-
-Important detail: for this to work, browsers need to know that it's okay for your publicly available ressources (your library) to be accessed from another domain (the instance running Okuma Reader). As such, it's necessary to set this header for all ressources of your Okuma Library:
-
-`Access-Control-Allow-Origin "*"` which allow any other domains to use your files.
-
-For more security, you can specify the domain(s) that are allowed to access your library: 
-
-`Access-Control-Allow-Origin: https://drmint.github.io/Okuma-Reader`. 
-
-This header need to be set by your web server (or your reverse proxy if you're using one). Read https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin for more information about this header.
-
-The benefit of using this method is that you don't need to worry about keeping Okuma Reader up-to-date. On the other hand, you are dependent on someone else instance to power your library.
 
 
 
