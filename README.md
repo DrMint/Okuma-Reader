@@ -202,11 +202,11 @@ Let's say you or someone else hosts an Okuma-Library at this address https://drm
 
 You can display this library using someone else instance of Okuma-Reader (here is one hosted using GitHub Pages) by setting the appropriate GET parameter: https://drmint.github.io/Okuma-Reader/?library=https://drmint.github.io/Okuma-Library/books/ (Don't forget the "/" at the end of the library URL). This feature of "making your reader usable by other people" cannot currently be disabled but it will be in the future.
 
-Important detail: for this to work, browsers need to know that it's okay for your publicly available ressources (your library) to be accessed from another domain (the instance running Okuma Reader). So if the setup described above doesn't work right away, it's possible you'll need to set this header for all ressources of your Okuma Library:
+Important detail: for this to work, browsers need to know that it's okay for your publicly available ressources (your library) to be accessed from another domain (the instance running Okuma Reader). So if the setup described above doesn't work right away, you should check your browser's console. It should give you an error simillar to this: `Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://your-domain.com/path/to/library/config.json. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing)` 
+
+If that's the case, you'll need to set this header for all ressources of your Okuma Library:
 
 `Access-Control-Allow-Origin "*"` which allow any other domains to use your files.
-
-Before actually doing that, you can check if it's the problem by checking your browser's console. It should give you an error simillar to this: `Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://your-domain.com/path/to/library/config.json. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing)` 
 
 For more security, you can specify the domain(s) that are allowed to access your library: 
 
