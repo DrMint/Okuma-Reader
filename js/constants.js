@@ -4,6 +4,6 @@
 */
 export function homeURL() {return           "https://drmint.github.io/Okuma-Reader/"}
 export function readerURL() {return         "https://drmint.github.io/Okuma-Reader/read.html"}
-export function booksURL() {return          "https://drmint.github.io/Okuma-Reader/books/"}
+export function booksURL() {return          "https://drmint.github.io/Okuma-Library/books/"}
 export function websiteName() {return       "Okuma Example"}
 export function defaultLanguage() {return   "en"}
