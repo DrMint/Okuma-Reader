@@ -236,7 +236,7 @@ What? How is this possible? Well all Okuma-Reader instances can be used to displ
 
 Let's say you host an Okuma-Library at this address https://drmint.github.io/Okuma-Library/books/. To check that this URL is valid try accessing https://drmint.github.io/Okuma-Library/books/config.json, it should give you the list of available slugs.
 
-You can display this library using someone else instance of Okuma-Reader (here is the one hosted with GitHub Pages) by using a GET parameter: https://drmint.github.io/Okuma-Reader/?library=https://drmint.github.io/Okuma-Library/books/config.json. Don't forget the "/" at the end of the library URL. This feature of "making your reader usable by other people" cannot currently be disabled but it will be in the future.
+You can display this library using someone else instance of Okuma-Reader (here is the one hosted with GitHub Pages) by using a GET parameter: https://drmint.github.io/Okuma-Reader/?library=https://drmint.github.io/Okuma-Library/books/. Don't forget the "/" at the end of the library URL. This feature of "making your reader usable by other people" cannot currently be disabled but it will be in the future.
 
 Important detail: for this to work, browsers need to know that it's okay for your publicly available ressources (your library) to be accessed from another domain (the instance running Okuma Reader). As such, it's necessary to set this header for all ressources of your Okuma Library:
 
