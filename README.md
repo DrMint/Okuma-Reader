@@ -206,6 +206,8 @@ Important detail: for this to work, browsers need to know that it's okay for you
 
 `Access-Control-Allow-Origin "*"` which allow any other domains to use your files.
 
+Before actually doing that, you can check if it's the problem by checking your browser's console. It should give you an error simillar to this: `Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://your-domain.com/path/to/library/config.json. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing)` 
+
 For more security, you can specify the domain(s) that are allowed to access your library: 
 
 `Access-Control-Allow-Origin: https://drmint.github.io/Okuma-Reader`. 
