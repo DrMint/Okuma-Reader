@@ -151,12 +151,12 @@ export function chooseAndFetchLanguage() {
 }
 
 export function fetchLanguages() {
-  return fetch('../lang/config.json')
+  return fetch(CONSTANTS.homeURL() + 'lang/config.json')
     .then(response => response.json())
 }
 
 export function fetchLanguage(languageName) {
-  return fetch('../lang/' + languageName + '.json')
+  return fetch(CONSTANTS.homeURL() + 'lang/' + languageName + '.json')
     .then(response => response.json())
 }
 
