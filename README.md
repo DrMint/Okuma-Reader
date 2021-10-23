@@ -8,7 +8,7 @@
 Online book reader written in JS with some key features like Japanese page order, double-page view and pre-caching on next pages.
 The design is entirely cilent-side, the server simply hosts the images.
 
-[Demo](https://okuma.r-entries.com/)
+[Demo](https://drmint.github.io/Okuma-Reader/)
 
 We also have a [Discord Server](https://discord.gg/MvcQZnw9Q6) which you can join to discuss about future features, make suggestions, and get support. 
 
@@ -230,13 +230,13 @@ The [release packages](https://github.com/DrMint/Okuma-Reader/releases "release 
 
 One draw back of this method is that, without Git, there isn't a mechanism to update your instance of Okuma. You'll need to reiterate the steps above. Make sure to not delete your Okuma Library when deleting the old version.
 
-### Without installing Okuma-Reader (Not recommended for production)
+### Without installing Okuma-Reader
 
-What? How is this possible? Well Okuma reader instances such as the one I'm running on my domain (https://okuma.r-entries.com) can display other people libraries.
+What? How is this possible? Well all Okuma-Reader instances can be used to display someone else library.
 
-Let's say you host a Okuma Library at this address https://okuma.mydomain.com/books/. To check that this URL is valid try accessing https://okuma.mydomain.com/books/config.json, it should give you the list of available slugs.
+Let's say you host an Okuma-Library at this address https://drmint.github.io/Okuma-Library/books/. To check that this URL is valid try accessing https://drmint.github.io/Okuma-Library/books/config.json, it should give you the list of available slugs.
 
-You can display this library using someone else instance of Okuma Reader by using GET parameter: https://okuma.r-entries.com?library=https://okuma.mydomain.com/books/. Don't forget the "/" at the end of the library URL. This feature of "making your reader usable by other people" cannot currently be disabled but it will be in the future.
+You can display this library using someone else instance of Okuma-Reader (here is the one hosted with GitHub Pages) by using a GET parameter: https://drmint.github.io/Okuma-Reader/?library=https://drmint.github.io/Okuma-Library/books/config.json. Don't forget the "/" at the end of the library URL. This feature of "making your reader usable by other people" cannot currently be disabled but it will be in the future.
 
 Important detail: for this to work, browsers need to know that it's okay for your publicly available ressources (your library) to be accessed from another domain (the instance running Okuma Reader). As such, it's necessary to set this header for all ressources of your Okuma Library:
 
@@ -244,7 +244,7 @@ Important detail: for this to work, browsers need to know that it's okay for you
 
 For more security, you can specify the domain(s) that are allowed to access your library: 
 
-`Access-Control-Allow-Origin: https://okuma.r-entries.com`. 
+`Access-Control-Allow-Origin: https://drmint.github.io/Okuma-Reader`. 
 
 This header need to be set by your web server (or your reverse proxy if you're using one). Read https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin for more information about this header.
 
