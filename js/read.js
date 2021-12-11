@@ -194,7 +194,7 @@ function changePage(newPage = null) {
   if (TCONFIG.bookType == 'webtoon') {
     document.getElementById('continuousScrollingPages').innerHTML = "";
     const start = getChapterFirstPage(getCurrentChapter());
-    const end = getChapterFirstPage(getCurrentChapter() + 1) - 1;
+    let end = getChapterFirstPage(getCurrentChapter() + 1) - 1;
     if (getCurrentChapter() == getChapterCount()) {
       end = VCONFIG.numPages;
     }
