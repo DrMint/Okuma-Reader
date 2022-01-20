@@ -23,8 +23,8 @@ We also have a [Discord Server](https://discord.gg/MvcQZnw9Q6) which you can joi
 - A main page to showcase all available books.
 - Page turn with arrow keys or by clicking/tapping on the edge of a page.
 - Next/previous chapter buttons and chapter selection drop-down menu.
-- Asynchronous pre-caching of the next pages (or next chapter first pages when at the end of a chapter).
-- Single and double-page display with the ability to display the cover page as a single page.
+- Asynchronous pre-caching of the next pages.
+- Single and double-page mode with the ability to display the cover page as a single page.
 - Automatically save the current page/chapter and selected options for when the user comes reading again.
 - Config files per title and per volume.
 - Animation when loading a page
