@@ -1,16 +1,15 @@
-
 <p align="center">
-  <img src="https://r-entries.com/etuliens/img/Reader/icon.png" width="20%">
+  <img src="docs/icon.png" width="20%">
 </p>
 
-
 # Okuma-Reader
+
 Online book reader written in JS with some key features like Japanese page order, double-page view and pre-caching on next pages.
 The design is entirely cilent-side, the server simply hosts the images.
 
 [Demo](https://drmint.github.io/Okuma-Reader/)
 
-We also have a [Discord Server](https://discord.gg/MvcQZnw9Q6) which you can join to discuss about future features, make suggestions, and get support. 
+We also have a [Discord Server](https://discord.gg/MvcQZnw9Q6) which you can join to discuss about future features, make suggestions, and get support.
 
 ## Features
 
@@ -33,90 +32,96 @@ We also have a [Discord Server](https://discord.gg/MvcQZnw9Q6) which you can joi
 
 ## Interface
 
-![](https://r-entries.com/etuliens/img/Reader/1.JPG)
+![](docs/1.JPG)
 
 At the top, there is information about the current book, the current chapter, a button to enter/exit fullscreen mode, and a button to open the settings menu. At the bottom, you will find the current page, a slider you can use to quickly skim through the book, and the total number of pages.
 
-![](https://r-entries.com/etuliens/img/Reader/12.JPG)
+![](docs/12.JPG)
 When a book/manga has multiple chapters, a chapter selection menu is also present with arrows to go to the previous or next chapter. Please note that in Japanese ordering mode, the current page number is at the right, the total number of pages is at the left.
 
 ### Interface on mobile
+
 <p align="center">
-  <img src="https://r-entries.com/etuliens/img/Reader/3.JPG" width="50%">
+  <img src="docs/3.JPG" width="50%">
 </p>
 On mobile, the interface is pretty much the same. The main difference is that the chapter selection menu will be absent to safe space.
 
 ### Options
-![](https://r-entries.com/etuliens/img/Reader/2.JPG)
+
+![](docs/2.JPG)
 There is also a light mode. The user can tweak the reader settings in the side menu, such as single or double pages mode, turning on or off the filters and the current theme.
 
 ### Filters
+
 The reader includes quite a few visual effects called filters. Their goal is to make the plain images look more like an actual book.
 
-![](https://r-entries.com/etuliens/img/Reader/11.JPG)
+![](docs/11.JPG)
 With all filters turned off, this is just two plain images.
 
-![](https://r-entries.com/etuliens/img/Reader/10.JPG)
+![](docs/10.JPG)
 The same pages with the filters turned on.
 Here what each filter does:
- - Paper texture: adds some grain to the paper. The amount and type of grain depends on the book type (see the Config files section).
- - Book fold: adds a self-shadowed area in the middle of the book.
- - Realistic lighting: adds specularity to the paper.
- - Side pages: accurately simulates the fact that the previous and next pages are visible on the side of the book. (see the Side pages section).
- - Book shadow: adds a shadow to the bottom and side of the book to make it seems as if the book is laying on the surface.
+
+- Paper texture: adds some grain to the paper. The amount and type of grain depends on the book type (see the Config files section).
+- Book fold: adds a self-shadowed area in the middle of the book.
+- Realistic lighting: adds specularity to the paper.
+- Side pages: accurately simulates the fact that the previous and next pages are visible on the side of the book. (see the Side pages section).
+- Book shadow: adds a shadow to the bottom and side of the book to make it seems as if the book is laying on the surface.
 
 ### Side pages
+
 To make the experience more realistic, I added a feature called side pages.
-![](https://r-entries.com/etuliens/img/Reader/4.JPG)
+![](docs/4.JPG)
 Side pages are not shown on single pages such as the first page.
 
-![](https://r-entries.com/etuliens/img/Reader/5.JPG)
+![](docs/5.JPG)
 At the beginning of the book, there is a lot of side pages on the right side. The amount of side pages shown actually depends on the number of remaining pages.
 
-![](https://r-entries.com/etuliens/img/Reader/6.JPG)
+![](docs/6.JPG)
 With each page turned, the number of side pages on the left side will gradually increase and the opposite will occours on the right side.
 
 ## Library structure
 
 ### Overview
+
 - library/
-	- an-example-book/
-		- 1/
-			- 1.jpg
-			- 2.jpg
-			- ...
-			- config.json
-		- 2/
-			- 1.jpg
-			- 2.jpg
-			- ...
-		- config.json
-		- info.json
-	- another-one/
-		- 1/
-			- ... 
-			- config.json
-		- config.json
-	- config.json
+  - an-example-book/
+    - 1/
+      - 1.jpg
+      - 2.jpg
+      - ...
+      - config.json
+    - 2/
+      - 1.jpg
+      - 2.jpg
+      - ...
+    - config.json
+    - info.json
+  - another-one/
+    - 1/
+      - ...
+      - config.json
+    - config.json
+  - config.json
 
 ### Root folder
+
 The library folder is where the titles (series/book/manga...) are stored. Its stucture uses the Okuma Library Directory Structure. This folder mush be accessible online in order to use it with Okuma Reader. It isn't necessary to enable files and directory listing on your web server.
 
 The first layer is composed of folders, one for each "title". There is also a JSON file called config.json that contains a list of the folders. The name of a title folder is called the title's slug. A slug must only contain lowercase letters and numbers. Spaces are replaced with dashes. So a book called "My Awesome First Book" could use a slug like "awesome-first-book".
 
 Here the stucture of the config.json file containing the titles' slugs / name of the folders:
+
 ```json
 {
-  "titles":
-  [
-    "an-example-book",
-    "another-one"
-  ]
+  "titles": ["an-example-book", "another-one"]
 }
 ```
 
 ### Second layer: Title folder
+
 Inside each title folder, there is a folder for each of its volume. If the title in question is just a simple book, that book still has one volume. The volume are stored inside folders numbered `1`, `2`, `3`... There is also a config.json file that stored information about this title:
+
 ```json
 {
   "title": "An Exemple Book",
@@ -140,13 +145,20 @@ Here its structure:
 {
   "status": "completed",
   "published": "12-06-1982 to 06-11-1990",
-  "genres": ["Action", "Sci-Fi", "Supernatural", "Drama", "Mature", "Seinen", "Tragedy"],
+  "genres": [
+    "Action",
+    "Sci-Fi",
+    "Supernatural",
+    "Drama",
+    "Mature",
+    "Seinen",
+    "Tragedy"
+  ],
   "language": "English",
-  "authors":
-    [
-      ["John Smith", "story"],
-	  ["Ben Smith", "illustation"]
-    ],
+  "authors": [
+    ["John Smith", "story"],
+    ["Ben Smith", "illustation"]
+  ],
   "serialization": "Publishing Company Name",
   "synopsis": "A brief outline or general view, as of a subject or written work; an abstract or a summary..."
 }
@@ -160,8 +172,8 @@ Here its structure:
 - `serialization` is a name of the publishing company.
 - `synopsis` is the relatively short summary of the book. It can use HTML tags such as \<br> or \<strong> ...
 
-
 ### Third layer: Volume folder
+
 Inside each volume folder, the pages are stored as image files with the extension indicated by the title `config.json` file. The pages are numbered 1, 2, 3, ... All chapters use that numbering system: the first page of a volume is always numbered "1".
 If possible, all pages should have the same size (or at least the same ratio). An image should correspond to one page, images that display two pages side by side should be split. There is also a config.json file that stored information about this volume:
 
@@ -202,15 +214,15 @@ Let's say you or someone else hosts an Okuma-Library at this address https://drm
 
 You can display this library using someone else instance of Okuma-Reader (here is one hosted using GitHub Pages) by setting the appropriate GET parameter: https://drmint.github.io/Okuma-Reader/?library=https://drmint.github.io/Okuma-Library/books/ (Don't forget the "/" at the end of the library URL). This feature of "making your reader usable by other people" cannot currently be disabled but it will be in the future.
 
-Important detail: for this to work, browsers need to know that it's okay for your publicly available ressources (your library) to be accessed from another domain (the instance running Okuma Reader). So if the setup described above doesn't work right away, you should check your browser's console. It should give you an error simillar to this: `Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://your-domain.com/path/to/library/config.json. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing)` 
+Important detail: for this to work, browsers need to know that it's okay for your publicly available ressources (your library) to be accessed from another domain (the instance running Okuma Reader). So if the setup described above doesn't work right away, you should check your browser's console. It should give you an error simillar to this: `Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://your-domain.com/path/to/library/config.json. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing)`
 
 If that's the case, you'll need to set this header for all ressources of your Okuma Library:
 
 `Access-Control-Allow-Origin "*"` which allow any other domains to use your files.
 
-For more security, you can specify the domain(s) that are allowed to access your library: 
+For more security, you can specify the domain(s) that are allowed to access your library:
 
-`Access-Control-Allow-Origin: https://drmint.github.io/Okuma-Reader`. 
+`Access-Control-Allow-Origin: https://drmint.github.io/Okuma-Reader`.
 
 This header need to be set by your web server (or your reverse proxy if you're using one). Read https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin for more information about this header.
 
@@ -226,12 +238,14 @@ To update:
 Simply use `git pull`.
 
 If it fails with this kind of error:
+
 ```bash
 error: Your local changes to the following files would be overwritten by merge:
         js/constants.js
 Please commit your changes or stash them before you merge.
 Aborting
 ```
+
 It means that a new update changed constants.js. You will have to merge the differences yourself.
 To do that:
 
@@ -252,11 +266,10 @@ The [release packages](https://github.com/DrMint/Okuma-Reader/releases "release 
 
 One draw back of this method is that, without Git, there isn't a mechanism to update your instance of Okuma. You'll need to reiterate the steps above. Make sure to not delete your Okuma Library when deleting the old version.
 
-
-
 ## Prepare books
 
 ### Okuma-Tools
+
 I've released [Okuma-Tools](https://github.com/DrMint/Okuma-Tools) to help with preparing books. It has a couple of very nice features like conversion to WebP or JPG, cutting in half double pages, and even normalizing the image ratio throughout all the pages (useful when the source is a scan). It's still a WIP and, as of today, I haven't documented it. That being said, it's using argparse, which means it should guide you through the CLI.
 
 ### Convert PDFs into PNG images
@@ -270,6 +283,7 @@ I've released [Okuma-Tools](https://github.com/DrMint/Okuma-Tools) to help with 
 Then you can use a batch convertion tool to convert the images into JPGs, or even better, WebP.
 
 ## Things I want to add/change/improve (more or less in order of priority)
+
 - Add the ability to swipe left and right to turn pages on mobile and maybe desktop.
 - Add a message/info pop-up when visiting the page for the first time with explanation on how to use it.
 - When launching it for the first time, ask what "reading experience" the user wants: realistic (with the book filters) or simple (just the plain images)
@@ -286,4 +300,5 @@ Then you can use a batch convertion tool to convert the images into JPGs, or eve
 - The ability to display archives from the client's computer (without uploading it).
 
 ## License and attribution
+
 This project uses [ironexdev](https://github.com/ironexdev)/[zoom](https://github.com/ironexdev/zoom) for handling pinch-zoom, pan, double-tap, zoom using the mouse wheel. It has been modified to allow single clicks (on the sides to go to the next/previous page and in the middle to toggle the top and bottom menus).
